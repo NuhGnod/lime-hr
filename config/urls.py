@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.conf import settings
 from config.views import *
 
+
+
 urlpatterns = [
     path('', home_view, name='main'),
     path('admin/', admin.site.urls),
