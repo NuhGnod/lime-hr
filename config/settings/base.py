@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # service app
     'accounts',
     'evaluation',
+    'mdm',
     'management',
 ]
 
@@ -149,6 +150,10 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Cache
 CACHES = {

@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
 # from .utils import set_cache_data
 from django.conf import settings
 from config.views import *
@@ -26,6 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('eval/', include('evaluation.urls')),
+    path('mdm/', include('mdm.urls')),
     path('manage/', include('management.urls')),
 ]
 
@@ -37,6 +39,8 @@ if settings.DEBUG:
         path('__debug__/', include(debug_toolbar.urls)),
         path('api-auth/', include('rest_framework.urls'))
     ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # 캐쉬 데이터 로딩
 # tmp = set_cache_data()
