@@ -5,3 +5,4 @@ __pycache__/
 .venv*
 *.pub
 .vscode
+db.sqlite3
