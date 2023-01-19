@@ -4,7 +4,7 @@
     <h3>코드 리스트</h3>
     {% for code in code_list %}
     <hr/>
-    <h2>{{code.comm_cd}}</h2>
-    <h4>{{code.comm_cd_list}}</h4>
+    <h2>공통코드 :{{code.common_code}}{{code.upper_code}}{{code.lower_code}} </h2>
+
     {% endfor %}
 {% endblock %}

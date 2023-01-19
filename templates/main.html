@@ -1,6 +1,21 @@
 {% extends "_layout.html" %}
 
-{% block content %}
+{% block content %}e
     <h1>메인 페이지</h1>
-    <a href="{% url 'management:code_list' %}">코드목록</a>
+    <form action={% url 'management:code' %} method="POST">
+    {% csrf_token %}
+    <label for="common_code">공통 코드 </label>
+    <input id="common_code" type="text" name="common_code">
+
+    <label for="parent_code">상위 코드 </label>
+    <input id="parent_code" type="text" name="parent_code">
+
+    <label for="name">코드 이름 </label>
+    <input id="name" type="text" name="name">
+
+
+    <input type="submit" value="OK">
+</form>
+    <a href="{% url 'management:code' %}">코드목록</a>
+    <a href="{% url 'management:code' %}">코드 생성</a>
 {% endblock %}
