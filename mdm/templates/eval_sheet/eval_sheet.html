@@ -1,0 +1,14 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-3">
+            {% include 'eval_sheet/eval_sheet_list.html' %}
+        </div>
+        <div class="col-md-9">
+            {% include 'eval_sheet/eval_sheet_detail.html' %}
+
+        </div>
+        {% include 'eval_sheet/create_eval_sheet_modal.html' %}
+    </div>
+{% endblock %}

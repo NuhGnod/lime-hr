@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import environ
-
+from django.urls import reverse_lazy
 # env 파일 선언
 env = environ.Env(DEBUG=(bool, False))
 
@@ -17,6 +17,12 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
+
+LOGIN_URL = reverse_lazy('accounts:login')
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login'
+
+SITE_ID=1
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +43,7 @@ INSTALLED_APPS = [
     # service app
     'accounts',
     'evaluation',
+    'mdm',
     'management',
 ]
 
@@ -143,6 +150,10 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Cache
 CACHES = {

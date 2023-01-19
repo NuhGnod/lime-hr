@@ -1,0 +1,55 @@
+{% extends "_login_layout.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="{% url 'main' %}"><img style="width:100%" src="{% static 'img/logo/logo_s.png' %}"/></a>
+        </div>
+        <div class="login-box-body">
+            <p class="login-box-msg">로그인 해주세요</p>
+
+            <form action="{% url 'accounts:login' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group has-feedback">
+                    <input name="username" id="username" type="email" class="form-control" placeholder="Email">
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input name="password" id="password" type="password" class="form-control" placeholder="Password">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="checkbox icheck">
+                            <label>
+                                <input type="checkbox"> ID 기억하기
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">로그인</button>
+                    </div>
+                </div>
+            </form>
+
+            <a href="#">비밀번호 변경</a><br>
+            <a href="register.html" class="text-center">회원가입</a>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block java_script %}
+    <script>
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+        });
+    </script>
+{% endblock %}
