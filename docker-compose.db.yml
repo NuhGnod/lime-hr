@@ -2,7 +2,7 @@ version: '3.2'
 services:
   mariadb:
     image: mariadb
-    container_name: hrml_db
+    container_name: hrm_db
     restart: always
     ports:
       - "3306:3306"
