@@ -5,10 +5,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db_url(
+        'DEV_DATABASE_URL',
+        default='mysql://root:1q2w3e4r!@172.7.0.2:3320/lime_hr_dev'
+    ),
 }
 
 LOGGING = {
