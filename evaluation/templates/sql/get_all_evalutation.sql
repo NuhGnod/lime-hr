@@ -1,6 +1,6 @@
 SELECT
-    COMM_CD AS commCd,
-    COMM_CD_NM AS commCdNm,
-    HIRK_COMM_CD AS hirkCommCd
- FROM COMM_CD
- WHERE COMM_CD != '{{comm_cd}}'
+    comm_cd,
+    cd_nm,
+    hi_comm_cd
+ FROM comm_cd
+ WHERE comm_cd != '{{comm_cd}}'

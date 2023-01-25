@@ -1,4 +1,18 @@
 from django.db import connections
+from django.template.loader import render_to_string
+
+
+# def set_cache_data():
+#     sql = render_to_string(
+#             'evaluation/templates/sql/get_all_evalutation.sql', {"comm_cd": 'CD001000'})
+#
+#     return_list = dict_fetchall(sql)
+#
+#     print("===========================")
+#     print(return_list)
+#     print("===========================")
+
+
 
 
 def dict_fetchall(sql, using='default'):

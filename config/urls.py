@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-# from .utils import set_cache_data
+from evaluation.utils import set_cache_data
 from django.conf import settings
 from config.views import *
 
@@ -43,4 +43,4 @@ if settings.DEBUG:
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # 캐쉬 데이터 로딩
-# tmp = set_cache_data()
+set_cache_data()
