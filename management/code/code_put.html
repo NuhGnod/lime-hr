@@ -1,0 +1,129 @@
+{% load static %}
+<script>
+
+    function delete_ajax() {
+        $.ajax({
+            url: "{% url 'management:modify_code' 'comm_cd' %}",
+            type: "PUT",
+            datatype: "json",
+            data: {
+                "csrfmiddlewaretoken": $("#token").children(1).val(),
+                'comm_cd': $("#comm_cd").val(),
+                'hi_comm_cd': $("#hi_comm_cd").val(),
+                'cd_nm': $("#cd_nm").val(),
+                'cd_desc': $("#cd_desc").val(),
+                'etc_1': $("#etc_1").val(),
+                'etc_2': $("#etc_2").val(),
+                'etc_3': $("#etc_3").val(),
+                'alias_cd': $("#alias_cd").val(),
+                'del_yn': "Y"
+            },
+            success: function (data) {
+                console.log("data : ", data)
+            }
+        })
+    }
+
+    function save_ajax() {
+        console.log($("#cd_desc").val())
+        $.ajax({
+            url: "{% url 'management:code' %}",
+            type: "POST",
+            datatype: "json",
+            data: {
+                "csrfmiddlewaretoken": $("#token").children(1).val(),
+                'comm_cd': $("#comm_cd").val(),
+                'hi_comm_cd': $("#hi_comm_cd").val(),
+                'cd_nm': $("#cd_nm").val(),
+                'cd_desc': $("#cd_desc").val(),
+                'etc_1': $("#etc_1").val(),
+                'etc_2': $("#etc_2").val(),
+                'etc_3': $("#etc_3").val(),
+                'alias_cd': $("#alias_cd").val(),
+                'del_yn': $("#del_yn").val(),
+
+            },
+            success: function (data) {
+                window.location.reload();
+                console.log("data : ", data)
+
+            }
+        })
+    }
+</script>
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">공통 코드 상세정보</h3>
+        {#        <form action={% url 'management:code' %}  method="POST" role="form">#}
+        <div id="token">
+            {% csrf_token %}
+
+        </div>
+
+        <div class="box-tools pull-right">
+            <div class="btn-group">
+
+                {#                                        <input type ="submit" class="btn btn-default btn-sm" value="수정"></input>#}
+                <button type="button" class="btn btn-default btn-sm" onclick="save_ajax()">저장</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="delete_ajax()">삭제</button>
+                {#                                        <input type="submit" class="btn btn-danger btn-sm" value="삭제"></input>#}
+            </div>
+        </div>
+        <!-- /.box-tools -->
+
+        {% for code in list %}
+
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="comm_cd">공통 코드</label>
+                    <input type="text" name="comm_cd" class="form-control" id="comm_cd" placeholder="공통코드 입력" value="{{ code.comm_cd }}">
+                </div>
+                <div class="form-group">
+                    <label for="hi_comm_cd">상위 코드</label>
+                    <input name="hi_comm_cd" class="form-control" id="hi_comm_cd" placeholder="상위코드 입력" value="{{ code.hi_comm_cd }}">
+                </div>
+                <label for="cd_nm">코드 이름</label>
+                <input name="cd_nm" class="form-control" id="cd_nm" placeholder="코드 이름 입력" value="{{ code.cd_nm }}">
+            </div>
+            <div class="form-group">
+                <label for="cd_desc">코드 상세</label>
+                <input name="cd_desc" class="form-control" id="cd_desc" placeholder="코드 상세 입력" value="{{ code.cd_desc }}">
+            </div>
+            <div class="form-group">
+                <label for="etc_1">비고 1</label>
+                <input name="etc_1" class="form-control" id="etc_1" placeholder="비고 1 입력" value="{{ code.etc_1 }}">
+            </div>
+            <div class="form-group">
+                <label for="etc_2">비고 2</label>
+                <input name="etc_2" class="form-control" id="etc_2" placeholder="비고 2 입력" value="{{ code.etc_2 }}">
+            </div>
+            <div class="form-group">
+                <label for="etc_3">비고 3</label>
+                <input name="etc_3" class="form-control" id="etc_3" placeholder="비고 3 입력" value="{{ code.etc_3 }}">
+            </div>
+            <div class="form-group">
+                <label for="alias_cd">대체 코드</label>
+                <input name="alias_cd" class="form-control" id="alias_cd" placeholder="대체 코드 입력" value="{{ code.alias_cd }}">
+            </div>
+            <div class="form-group">
+                <label for="del_yn">삭제 여부</label>
+                <select id="del_yn">
+                    <option value="Y">Y</option>
+                    <option value="N" selected="selected">N</option>
+                </select>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    {#        </form>#}
+
+
+</div>
+<!-- /.box-header -->
+
+<!-- /.box-body -->
+
+</div>
+
