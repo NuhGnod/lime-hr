@@ -1,7 +1,7 @@
 version: '3.2'
 services:
   deploy:
-    container_name: hrm_db_web
+    container_name: hrm_web
     build:
       context: .
       dockerfile: dockers/Dockerfile
