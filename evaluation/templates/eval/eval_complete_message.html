@@ -1,0 +1,23 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+
+    <div class="error-page">
+        <h2 class="headline text-success"><i class="fa fa-check-circle"></i></h2>
+
+        <div class="error-content text-center">
+            <h3> 모든 평가를 완료하였습니다.</h3>
+
+            <p>
+                평가 이후 완료 문구 지정 예정 <br/>
+                평가 이후 완료 문구 지정 예정
+            </p>
+            <a  class="btn btn-primary" href="{% url 'main' %}">홈으로 이동
+                        </a>
+            <a class="btn btn-primary">평가메인으로 이동</a>
+
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -5,7 +5,6 @@ from django.shortcuts import render
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def get_all_code(request):
-    code_list = [dict(comm_cd="CC001001", comm_cd_nm="코드명1"), dict(comm_cd="CC001002", comm_cd_nm="코드명2")]
+def get_all_evaluation(request):
 
-    return render(request, 'code/code_list.html', {'code_list': code_list})
+    return render(request, 'eval/eval_complete_message.html')

@@ -1,0 +1,16 @@
+version: '3.2'
+services:
+  mariadb:
+    image: mariadb
+    container_name: hrml_db
+    restart: always
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env.db
+    volumes:
+      - /data/DB/conf.d:/etc/mysql/conf.d
+      - /data/DB/data:/var/lib/mysql
+      - /data/DB/initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      TZ: Asia/Seoul
