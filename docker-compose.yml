@@ -1,5 +1,23 @@
 version: '3.2'
 services:
+  mariadb:
+    image: mariadb
+    container_name: hrm_db
+    restart: always
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env.db
+    volumes:
+      - /data/DB/conf.d:/etc/mysql/conf.d
+      - /data/DB/data:/var/lib/mysql
+      - /data/DB/initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      hrm_network:
+        ipv4_address: 172.23.0.5
+
   web:
     container_name: hrm_web
     build:
@@ -8,9 +26,6 @@ services:
     ports:
       - "8000:80"
     network_mode: "host"
-    networks:
-      canvas_network:
-        ipv4_address: 172.23.0.4
     stdin_open: true
     tty: true
     restart: always
