@@ -17,3 +17,7 @@ services:
     networks:
       hrm_network:
         ipv4_address: 172.23.0.5
+
+networks:
+  hrm_network:
+    external: true
