@@ -11,7 +11,7 @@ from django.http import JsonResponse
 def get_all_evaluation_sheet(request, *args, **kwargs):
     print(kwargs)
     result = dict(sheet="123123",**kwargs)
-    return render(request, 'eval_sheet/eval_sheet.html',result)
+    return render(request, 'eval_sheet/eval_sheet.html', result)
 
 
 @api_view(['GET'])
