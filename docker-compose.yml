@@ -5,7 +5,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "8000:80"
     network_mode: "host"
+    networks:
+      canvas_network:
+        ipv4_address: 172.23.0.4
     stdin_open: true
     tty: true
     restart: always
+
+networks:
+  hrm_network:
+    external: true
+
+#docker network create --gateway 172.23.0.1 --subnet 172.23.0.0/16 hrm_network
