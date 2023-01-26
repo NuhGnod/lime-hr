@@ -1,0 +1,49 @@
+{% extends "_layout.html" %}
+{% load static %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h2>{{ eval_type_nm }}</h2>
+                </div>
+                <div class="box-body">
+                    <form role="form" action="{% url 'evaluation:eval_form_submit' eval_rel_id %}" method="post">
+                        {% csrf_token %}
+                        {% for item in eval_item %}
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h4>{{ item.eval_item }}</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    {% for det_item in item.eval_item_detail %}
+                                        <div class="col-md-2">
+                                            <label>
+                                                <input type="radio" value="{{ det_item.detail_id }}" name="{{ item.eval_item_id}}"
+                                                       class="flat-red"/>
+                                                {{ det_item.detail_nm }}
+                                            </label>
+
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div>
+                            <button type="submit" class="btn btn-block btn-primary">제출</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+    </script>
+
+{% endblock %}
