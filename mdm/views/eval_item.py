@@ -10,5 +10,5 @@ from django.http import JsonResponse
 @permission_classes([AllowAny])
 def get_all_evaluation_item(request, *args, **kwargs):
     print(kwargs)
-    result = dict(sheet="123123",**kwargs)
+    result = dict(sheet="123123", **kwargs)
     return render(request, 'eval_item/eval_item.html', result)
