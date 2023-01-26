@@ -23,8 +23,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8000:80"
     network_mode: "host"
     stdin_open: true
     tty: true
