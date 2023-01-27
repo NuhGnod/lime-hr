@@ -5,66 +5,65 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <div class="pull-right">
-                        <button type="button" class="btn btn-primary btn-sm"
-                                >추가
+
+                    <div class="box-header">
+                        <h3 class="box-title">Hover Data Table</h3>
+                    </div><div  class="pull-right add">
+                        <button  id="add"style="cursor: pointer" type="button" class="btn btn-primary btn-sm">추가d
                         </button>
 
                     </div>
-                    <div class="box-header">
-                        <h3 class="box-title">Hover Data Table</h3>
-                    </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                            <table id="example2" class="table table-bordered table-striped">
-                                <thead>
-                                <tr>
-                                    <th>공통 코드</th>
-                                    <th>상위 코드</th>
-                                    <th>코드 이름</th>
-                                    <th>코드 상세</th>
-                                    <th>비고 1</th>
-                                    <th>비고 2</th>
-                                    <th>비고 3</th>
-                                    <th>대체 코드</th>
-                                    <th>삭제 여부</th>
+                        <table id="example2" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>공통 코드</th>
+                                <th>상위 코드</th>
+                                <th>코드 이름</th>
+                                <th>코드 상세</th>
+                                <th>비고 1</th>
+                                <th>비고 2</th>
+                                <th>비고 3</th>
+                                <th>대체 코드</th>
+                                <th>삭제 여부</th>
+
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for code in code_list %}
+                                <tr style="cursor: pointer" class="ctr">
+                                    <td id="{{ code.comm_cd }}">{{ code.comm_cd }}</td>
+                                    <td>{{ code.hi_comm_cd }}</td>
+                                    <td>{{ code.cd_nm }}</td>
+                                    <td>{{ code.cd_desc }}</td>
+                                    <td>{{ code.etc_1 }}</td>
+                                    <td>{{ code.etc_2 }}</td>
+                                    <td>{{ code.etc_3 }}</td>
+                                    <td>{{ code.alias_cd }}</td>
+                                    <td>{{ code.del_yn }}</td>
 
                                 </tr>
-                                </thead>
+                            {% endfor %}
 
-                                <tbody>
-                                {% for code in code_list %}
-                                    <tr class="ctr" >
-                                        <td id="{{ code.comm_cd }}">{{ code.comm_cd }}</td>
-                                        <td>{{ code.hi_comm_cd }}</td>
-                                        <td>{{ code.cd_nm }}</td>
-                                        <td>{{ code.cd_desc }}</td>
-                                        <td>{{ code.etc_1 }}</td>
-                                        <td>{{ code.etc_2 }}</td>
-                                        <td>{{ code.etc_3 }}</td>
-                                        <td>{{ code.alias_cd }}</td>
-                                        <td>{{ code.del_yn }}</td>
-
-                                    </tr>
-                                {% endfor %}
-
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>공통 코드</th>
-                                    <th>상위 코드</th>
-                                    <th>코드 이름</th>
-                                    <th>코드 상세</th>
-                                    <th>비고 1</th>
-                                    <th>비고 2</th>
-                                    <th>비고 3</th>
-                                    <th>대체 코드</th>
-                                    <th>삭제 여부</th>
-                                </tr>
-                                </tfoot>
-                            </table>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>공통 코드</th>
+                                <th>상위 코드</th>
+                                <th>코드 이름</th>
+                                <th>코드 상세</th>
+                                <th>비고 1</th>
+                                <th>비고 2</th>
+                                <th>비고 3</th>
+                                <th>대체 코드</th>
+                                <th>삭제 여부</th>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
-{#                    <!-- /.box-body -->#}
+                    {#                    <!-- /.box-body -->#}
                 </div>
                 <!-- /.box -->
 
@@ -91,20 +90,37 @@
     <script src="../../../static/dist/js/demo.js"></script>
     <!-- page script -->
     <script>
+
         $('.ctr').on("click", row_select);
+        $('#add').on("click", add_comm_cd);
+
+        function add_comm_cd() {
+            console.log("asdadasdsadsadad")
+            $.ajax({
+                url: "{% url 'management:code_add' %}",
+                type: "GET",
+                datatype: "json",
+
+                success: function (data) {
+                    $(".box-primary").html(data)
+                }
+            })
+        }
+
         function row_select() {
             $.ajax({
-            url: "{% url 'management:code_list' %}",
-            type: "GET",
-            datatype: "json",
-            data: {
-                'comm_cd' : $(this).children().first()[0].id,
-            },
-            success: function (data) {
-                $(".box-primary").html(data)
-            }
-        })
+                url: "{% url 'management:code_list' %}",
+                type: "GET",
+                datatype: "json",
+                data: {
+                    'comm_cd': $(this).children().first()[0].id,
+                },
+                success: function (data) {
+                    $(".box-primary").html(data)
+                }
+            })
         }
+
         $(function () {
             $("#example1").DataTable();
             $('#example2').DataTable({
