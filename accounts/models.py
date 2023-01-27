@@ -34,6 +34,7 @@ class EusoMem(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True, null=False, verbose_name='이메일')
     name = models.CharField(max_length=50)
     is_superuser = models.IntegerField(blank=True, null=True)
+    is_staff = models.IntegerField(blank=True, null=True)
     last_login = models.DateTimeField(blank=True, null=True)
     posi_cd = models.CharField(max_length=10, blank=True, null=True)
     duty_resp_cd = models.CharField(max_length=10, blank=True, null=True)
