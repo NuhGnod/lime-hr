@@ -1,0 +1,38 @@
+<div class="box box-primary">
+
+    <div class="box-header">
+        <h3 class="box-title">평가계획 목록</h3>
+        <button style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가</button>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+        <table class="table table table-hover">
+            <thead>
+            <tr>
+                <th>No</th>
+                <th>평가계획</th>
+                <th>평가일정</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="cursor:pointer" onclick="clickEvalPlan(1)">
+                <td>1</td>
+                <td>평가계획1</td>
+                <td>2023-03-01 ~ 2023-03-10</td>
+            </tr>
+            <tr style="cursor:pointer" onclick="clickEvalPlan(2)">
+                <td>2</td>
+                <td>평가계획2</td>
+                <td>2023-03-01 ~ 2023-03-10</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function clickEvalPlan(planId){
+        console.log("planId : ", planId);
+    }
+</script>
+<!-- /.box -->
