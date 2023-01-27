@@ -7,11 +7,6 @@ from rest_framework.response import Response
 from django.urls import reverse
 from management.serializers import *
 
-# @api_view(['GET'])
-# @permission_classes([AllowAny])
-# def get_all_code(request):
-#     code_list = [dict(comm_cd="CC001001", comm_cd_nm="코드명1"), dict(comm_cd="CC001002", comm_cd_nm="코드명2")]
-#     return render(request, 'code/code_list.html', {'code_list': code_list})
 @api_view(['POST', 'GET', 'DELETE'])
 @permission_classes([AllowAny])
 @csrf_exempt
