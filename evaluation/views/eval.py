@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-
+from mdm.models import EvalPlan
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -12,6 +12,13 @@ def evaluation_main(request, *args, **kwargs):
     평가 메인 페이지
     require : 평가계획목록, 나의평가진행현황
     '''
+
+    eval_plan_list = EvalPlan.objects.filter(del_yn='N')
+
+    print("========================")
+    print(eval_plan_list)
+    print("========================")
+
     result = dict(**kwargs)
     return render(request, 'eval/eval_main.html', result)
 
