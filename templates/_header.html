@@ -238,7 +238,7 @@
 
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">프로필</a>
+                                <a href="{% url 'accounts:profile' user.id %}" class="btn btn-default btn-flat">프로필</a>
                             </div>
                             <div class="pull-right">
                                 <a href="{% url 'accounts:logout' %}" class="btn btn-default btn-flat">로그아웃</a>

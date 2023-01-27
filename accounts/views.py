@@ -1,10 +1,19 @@
 from django.shortcuts import render
 from django.views.generic import FormView
-# Create your views here.
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.shortcuts import render
+from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse
+from .models import EusoMem
 
-class LoginView(FormView):
-    template_name = 'auth/login.html'
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_profile(request, pk, *args, **kwargs):
+    qs = EusoMem.objects.get(pk=pk)
 
-    def get_context_data(self, **kwargs):
-        context = super(LoginView, self).get_context_data(**kwargs)
-        return context
+    print("==================")
+    print(qs)
+    print("==================")
+    pass
+
