@@ -1,9 +1,10 @@
 from django.urls import path, re_path
-from management.views import *
+from management.views.pjt import get_all_pjt
 
 app_name = 'management'
 
 urlpatterns = [
+    path('pjt/', get_all_pjt, name='pjt_list'),
     # path('code/', get_all_code, name='code_list'),
     path('code/', code, name='code'),
     # path('code/', ddlCode, name='modify_code')
