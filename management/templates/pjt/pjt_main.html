@@ -1,0 +1,114 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+<section class="content">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h2 class="box-title">
+                        <strong>유클리드 프로젝트 목록</strong>
+                    </h2>
+                    <button type="button" class="btn btn-block btn-primary btn-sm pull-right" data-toggle="modal" data-target="#AddPjtModal" style="width: 15rem;">
+                        프로젝트 추가
+                    </button>
+                </div>
+
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>프로젝트 이름</th>
+                            <th>프로젝트 기간</th>
+                            <th style="width: 50px"></th>
+                        </tr>
+                        {% for pjt in pjt_list %}
+                        <tr>
+                            <td>{{ pjt.pjt_no }}</td>
+                            <td>{{ pjt.pjt_nm }}</td>
+                            <td>{{ pjt.start_dt }} ~ {{ pjt.end_dt }}</td>
+                            <td>
+                                <button onclick="doJoinPjtDisplay({{ pjt.pjt_no }})" type="button" class="btn btn-block btn-default btn-xs">참여</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <div class="box-footer clearfix">
+                    <ul class="pagination pagination-sm no-margin pull-right">
+                        <li><a href="#">&laquo;</a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8" id="join_pjt">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title" id="join_pjt_nm">
+                        <strong>프로젝트 참여 등록</strong>
+                    </h3>
+                </div>
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fa fa-info"></i> 프로젝트를 선택해주세요</h5>
+                </div>
+            </div>
+        </div>
+
+        {% include 'pjt/add_pjt_modal.html' %}
+
+    </div>
+</section>
+
+
+<script>
+    function doJoinPjtDisplay(pjt_no) {
+        console.log("체크1")
+        console.log(pjt_no)
+        console.log(typeof pjt_no.toString())
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+        });
+
+        $.ajax({
+            url: "{% url 'management:join_pjt_mem' %}",
+            type: "POST",
+            datatype: "json",
+            data: {
+                pjt_no: pjt_no
+                }
+            })
+            .done(function (html) {
+                    $('#join_pjt').html(html)
+            })
+            .fail(function (xhr, status, errorThrown) {
+                $('#join_pjt').html("오류 발생. <br>")
+                    .append("오류명: " + errorThrown)
+                }
+            )
+    }
+
+
+    $('#AddPjtModal').on('shown.bs.modal', function () {
+      $('#AddPjtModal').focus()
+    })
+
+    function memDelete(memId){
+        console.log("삭제진행 : ",memId);
+    }
+
+    $(function () {
+            //Date range picker
+        $('#reservation').daterangepicker();
+        $('#reservation2').daterangepicker();
+
+    })
+</script>
+{% endblock %}
+
