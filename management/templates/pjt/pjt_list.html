@@ -61,6 +61,7 @@
             <!-- form start -->
             <form class="form-horizontal">
               <div class="box-body">
+                  <input type="hidden" value="" id="prjt_id" name="prjt_id">
                     <div class="form-group">
                           <label class="col-sm-2 control-label">이름</label>
                             <div class="input-group col-sm-8">
@@ -109,49 +110,16 @@
             <!-- /.box-header -->
             <div class="box-body no-padding">
               <table class="table table-striped table-hover">
-                <tr>
-                    <th style="width: 10px">#</th>
-                    <th>역할</th>
-                    <th>이름</th>
-                    <th>참여기간</th>
-                    <th style="width: 40px"></th>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>PM</td>
-                    <td>송재익</td>
-                    <td>01/26/2023 - 01/26/2023</td>
-                    <td><button type="submit" class="btn btn-danger pull-right btn-sm">삭제</button></td>
-                </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>PL</td>
-                      <td>송재익</td>
-                    <td>01/26/2023 - 01/26/2023</td>
-                    <td><button type="submit" class="btn btn-danger pull-right btn-sm">삭제</button></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>개발자</td>
-                    <td>김민교</td>
-                    <td>01/26/2023 - 01/26/2023</td>
-                    <td><button type="submit" class="btn btn-danger pull-right btn-sm">삭제</button></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>개발자</td>
-                    <td>김동훈</td>
-                    <td>01/26/2023 - 01/26/2023</td>
-                    <td><button type="submit" class="btn btn-danger pull-right btn-sm">삭제</button></td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>개발자</td>
-                    <td>이주희</td>
-                    <td>01/26/2023 - 01/26/2023</td>
-                    <td><button type="submit" class="btn btn-danger pull-right btn-sm">삭제</button></td>
-                </tr>
-
+                  <thead>
+                    <tr>
+                        <th style="width: 10px">#</th>
+                        <th>역할</th>
+                        <th>이름</th>
+                        <th>참여기간</th>
+                        <th style="width: 40px"></th>
+                    </tr>
+                </thead>
+                  <tbody id="pjt_mem_list"></tbody>
               </table>
             </div>
             <!-- /.box-body -->
@@ -194,7 +162,7 @@
                               <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                               </div>
-                              <input type="text" class="form-control pull-right" id="reservation" >
+                              <input type="text" class="form-control pull-right" id="reservation2" >
                           </div>
                       </div>
                   </div>
@@ -216,30 +184,54 @@
 <script>
     function doJoinPjtDisplay() {
         let join_pjt = document.getElementById('join_pjt')
-        if(join_pjt.style.display=="none") {
+        if (join_pjt.style.display == "none") {
+
+            $.ajax({
+                url: "{% url 'management:get_pjt_mem' %}",
+                type: "GET",
+                datatype: "json",
+                data: {},
+            success: function (data) {
+                    let tbody = ""
+                    for (let key in data) {
+                        let mem_id = data[key]["mem_nm"];
+
+                        tbody += "<tr>"
+                                    + "<td>" + key.toString() + "</td>"
+                                    +"<td>" + data[key]["role_cd"] + "</td>"
+                                    +"<td>" + data[key]["mem_nm"] + "</td>"
+                                    +"<td>" + data[key]["enter_dt"] + "~" + data[key]["out_dt"] + "</td>"
+                                    +"<td><button type='submit' onclick='memDelete(mem_id)' class='btn btn-danger pull-right btn-sm'>삭제</button></td>"
+                                + "</tr>"
+                    }
+                    let pjt_mem_list_tbody = document.getElementById("pjt_mem_list")
+                    pjt_mem_list_tbody.innerHTML = tbody
+                    $('#prjt_id').value()
+
+                    $('#join_pjt').html(data)
+                console.log(data)
+            }
+        })
             join_pjt.setAttribute('style', 'display: block');
         } else {
             join_pjt.setAttribute('style', 'display: none');
         }
     }
 
-    function doAddPjtDisplay() {
-        let add_pjt_modal = document.getElementById('add_pjt_modal')
-        console.log(add_pjt_modal.style.display)
-        if(add_pjt_modal.style.display=='none') {
-            add_pjt_modal.style.display = 'block';
-        } else {
-            add_pjt_modal.style.display = 'none';
-        }
-    }
 
     $('#AddPjtModal').on('shown.bs.modal', function () {
       $('#AddPjtModal').focus()
     })
 
+    function memDelete(memId){
+        console.log("삭제진행 : ",memId);
+    }
+
+
     $(function () {
             //Date range picker
         $('#reservation').daterangepicker();
+        $('#reservation2').daterangepicker();
         //Date range as a button
         $('#daterange-btn').daterangepicker(
             {
