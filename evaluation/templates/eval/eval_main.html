@@ -4,37 +4,13 @@
     <script>
 
 
-
         $(function () {
-            console.log($('#eval-plan').value);
-
 
             $('#eval-plan').change(function () {
                 console.log('value', this.value);
             })
 
         })
-
-
-        function moveEvalDesc() {
-            $.ajax({
-                url: "{% url 'evaluation:eval_check' %}",
-                type: "GET",
-                datatype: "json",
-                data: {
-                    'eval_plan': 1
-                },
-                success: function (data) {
-                    let isDiff = data.isDiff ? data.isDiff : false;
-                    let eval_rel_no = data.eval_rel_no;
-                    if (isDiff) {
-                        $('#check-eval-modal').modal('show');
-                    } else {
-                        location.href = "/eval/form/" + eval_rel_no;
-                    }
-                }
-            })
-        }
     </script>
 
     <div class="row">
@@ -49,11 +25,12 @@
                         <label for="eval-plan" class="col-sm-2 col-form-label">평가계획</label>
                         <div class="col-sm-10">
                             {% if eval_plan_list %}
-                                <select id="eval-from" name="eval-plan" class="form-control" >
+                                <select id="eval-from" name="eval-plan" class="form-control">
                                     <option value=null>평가계획을 선택해주세요</option>
                                     {% for eval_plan in eval_plan_list %}
-                                        {% if eval_plan_detail.eval_plan_no == eval_plan.eval_plan_no%}
-                                            <option selected value="{{ eval_plan.eval_plan_no }}">{{ eval_plan.eval_plan_nm }}</option>
+                                        {% if eval_plan_detail.eval_plan_no == eval_plan.eval_plan_no %}
+                                            <option selected
+                                                    value="{{ eval_plan.eval_plan_no }}">{{ eval_plan.eval_plan_nm }}</option>
                                         {% else %}
                                             <option value="{{ eval_plan.eval_plan_no }}">{{ eval_plan.eval_plan_nm }}</option>
                                         {% endif %}
@@ -70,7 +47,10 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">평가일정</label>
                         <div class="col-sm-10">
-                            <label>2023.03.01</label> ~ <label>2023.03.10</label>
+
+                            <label>{{ eval_plan_detail.eval_strt_dt }}</label> ~
+                            <label>{{ eval_plan_detail.eval_end_dt }}</label>
+
                         </div>
                     </div>
 
@@ -88,37 +68,76 @@
                                 <tr>
                                     <td class="text-center">1</td>
                                     <td class="text-center">자기역량평가</td>
-                                    <td class="text-center">0 / 1</td>
-                                    <td class="text-center">미완료</td>
+                                    <td class="text-center">{{ progress_dict.CC009004.comp_cnt }}
+                                        / {{ progress_dict.CC009004.tot_cnt }}</td>
+                                    <td class="text-center">
+                                        {% if progress_dict.CC009004.eval_stat is None %}
+                                            평가없음
+                                        {% else %}
+                                            {% if progress_dict.CC009004.eval_stat == 'Y' %}
+                                                완료
+                                            {% else %}
+                                                미완료
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">2</td>
                                     <td class="text-center">부하역량평가</td>
-                                    <td class="text-center">1 / 1</td>
-                                    <td class="text-center">완료</td>
+                                    <td class="text-center">{{ progress_dict.CC009003.comp_cnt }}
+                                        / {{ progress_dict.CC009003.tot_cnt }}</td>
+                                    <td class="text-center">
+                                        {% if progress_dict.CC009003.eval_stat is None %}
+                                            평가없음
+                                        {% else %}
+                                            {% if progress_dict.CC009003.eval_stat == 'Y' %}
+                                                완료
+                                            {% else %}
+                                                미완료
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">3</td>
                                     <td class="text-center">상사역량평가</td>
-                                    <td class="text-center">0 / 1</td>
-                                    <td class="text-center">미완료</td>
+                                    <td class="text-center">{{ progress_dict.CC009002.comp_cnt }}
+                                        / {{ progress_dict.CC009002.tot_cnt }}</td>
+                                    <td class="text-center">
+                                        {% if progress_dict.CC009002.eval_stat is None %}
+                                            평가없음
+                                        {% else %}
+                                            {% if progress_dict.CC009002.eval_stat == 'Y' %}
+                                                완료
+                                            {% else %}
+                                                미완료
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">4</td>
                                     <td class="text-center">동료역량평가</td>
-                                    <td class="text-center">0 / 0</td>
-                                    <td class="text-center">평가없음</td>
+                                    <td class="text-center">{{ progress_dict.CC009001.comp_cnt }}
+                                        / {{ progress_dict.CC009001.tot_cnt }}</td>
+                                    <td class="text-center">
+                                        {% if progress_dict.CC009001.eval_stat is None %}
+                                            평가없음
+                                        {% else %}
+                                            {% if progress_dict.CC009001.eval_stat == 'Y' %}
+                                                완료
+                                            {% else %}
+                                                미완료
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">비 고</label>
-                        <div class="col-sm-10">
-                            비고 내용 입력
-                        </div>
-                    </div>
+
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">안 내</label>
                         <div class="col-sm-10">
@@ -126,9 +145,10 @@
                         </div>
                     </div>
                     <div class="form-group text-center">
-                        <button onclick="moveEvalDesc()" class="btn btn-block btn-primary">
-                            <b>평가하러가기</b>
-                        </button>
+                        <a href="{% url 'evaluation:eval_form' pk=eval_plan_detail.eval_plan_no %}"
+                                   class="btn btn-block btn-primary">
+                        <b>평가하러가기</b>
+                        </a>
                     </div>
                 </div>
             </div>

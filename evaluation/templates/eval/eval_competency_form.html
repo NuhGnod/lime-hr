@@ -7,29 +7,114 @@
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h2>{{ eval_type_nm }}</h2>
+                    <h2>{{ eval_trgt_clss_nm }} ( {{ be_eval_mem_nm }} )</h2>
                 </div>
                 <div class="box-body">
-                    <form role="form" action="{% url 'evaluation:eval_form_submit' eval_rel_id %}" method="post">
+                    <form role="form" action="{% url 'evaluation:eval_form_submit' eval_plan_no %}" method="post">
                         {% csrf_token %}
+                        <input type="hidden" name="eval_plan_no" value="{{ eval_plan_no }}"/>
+                        <input type="hidden" name="eval_rel_no" value="{{ eval_rel_no }}"/>
+                        <input type="hidden" name="eval_trgt_clss" value="{{ eval_trgt_clss }}"/>
+                        <input type="hidden" name="eval_sheet_no" value="{{ eval_sheet_no }}"/>
                         {% for item in eval_item %}
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h4>{{ item.eval_item }}</h4>
+                                        <h4>{{ forloop.counter }}. {{ item.question }}</h4>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    {% for det_item in item.eval_item_detail %}
-                                        <div class="col-md-2">
-                                            <label>
-                                                <input type="radio" value="{{ det_item.detail_id }}" name="{{ item.eval_item_id}}"
-                                                       class="flat-red"/>
-                                                {{ det_item.detail_nm }}
-                                            </label>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=1
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            1
+                                        </label>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=2
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            2
+                                        </label>
 
-                                        </div>
-                                    {% endfor %}
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=3
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            3
+                                        </label>
+
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=4
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            4
+                                        </label>
+
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=5
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            5
+                                        </label>
+
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=6
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            6
+                                        </label>
+
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=7
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            7
+                                        </label>
+
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=8
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            8
+                                        </label>
+
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=9
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            9
+                                        </label>
+
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>
+                                            <input type="radio" value=10
+                                                   name="ques_no|{{ item.ablt_ques_no }}"
+                                                   class="flat-red"/>
+                                            10
+                                        </label>
+
+                                    </div>
+
+
                                 </div>
                             </div>
                         {% endfor %}
