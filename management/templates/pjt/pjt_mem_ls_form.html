@@ -1,0 +1,32 @@
+
+<div class="box-header">
+    <h3 class="box-title">
+        <strong>프로젝트 참여 인원</strong>
+    </h3>
+</div>
+
+<div class="box-body no-padding">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 10px">#</th>
+                <th>이름</th>
+                <th>역할</th>
+                <th>프로젝트 참여기간</th>
+                <th style="width: 70px"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mem in pjt_mem_ls %}
+                <tr>
+                    <th name="join_hist_no">{{ forloop.counter }}</th>
+                    <th name="mem_nm">{{ mem.mem_nm }}</th>
+                    <th name="role_nm">{{ mem.role_nm }}</th>
+                    <th name="date_range">{{ mem.enter_dt }} ~ {{ mem.out_dt }}</th>
+                    <th><button type="button" onclick="memDelete({{ mem.join_hist_no }}, {{ mem.pjt_no }}, {{ mem.mem_no }})" class="btn-danger btn-sm pull-right">삭제</button></th>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+

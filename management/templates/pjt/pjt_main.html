@@ -15,21 +15,17 @@
                 </div>
 
                 <div class="box-body">
-                    <table class="table table-bordered">
+                    <table class="table table-hover">
                         <tr>
                             <th style="width: 10px">#</th>
                             <th>프로젝트 이름</th>
                             <th>프로젝트 기간</th>
-                            <th style="width: 50px"></th>
                         </tr>
                         {% for pjt in pjt_list %}
-                        <tr>
+                        <tr onclick="doJoinPjtDisplay({{ pjt.pjt_no }})" style="cursor: pointer">
                             <td>{{ pjt.pjt_no }}</td>
                             <td>{{ pjt.pjt_nm }}</td>
                             <td>{{ pjt.start_dt }} ~ {{ pjt.end_dt }}</td>
-                            <td>
-                                <button onclick="doJoinPjtDisplay({{ pjt.pjt_no }})" type="button" class="btn btn-block btn-default btn-xs">참여</button>
-                            </td>
                         </tr>
                         {% endfor %}
                     </table>
@@ -69,9 +65,6 @@
 
 <script>
     function doJoinPjtDisplay(pjt_no) {
-        console.log("체크1")
-        console.log(pjt_no)
-        console.log(typeof pjt_no.toString())
         $.ajaxSetup({
             headers: { "X-CSRFToken": '{{csrf_token}}' }
         });
@@ -99,9 +92,6 @@
       $('#AddPjtModal').focus()
     })
 
-    function memDelete(memId){
-        console.log("삭제진행 : ",memId);
-    }
 
     $(function () {
             //Date range picker

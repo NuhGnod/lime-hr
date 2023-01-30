@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import EusoMem
 
 # Create your models here.
 class CommCd(models.Model):
@@ -100,3 +101,21 @@ class EusoPjt(models.Model):
     class Meta:
         managed = True
         db_table = 'euso_pjt'
+
+
+class PjtJoinHist(models.Model):
+    join_hist_no = models.AutoField(primary_key=True)
+    pjt_no = models.ForeignKey(EusoPjt, models.DO_NOTHING, db_column='pjt_no')
+    mem_no = models.ForeignKey(EusoMem, models.DO_NOTHING, db_column='mem_no')
+    role_cd = models.CharField(max_length=10, blank=True, null=True)
+    enter_dt = models.CharField(max_length=8, blank=True, null=True)
+    out_dt = models.CharField(max_length=8, blank=True, null=True)
+    reg_mem_no = models.IntegerField(blank=True, null=True)
+    modf_mem_no = models.IntegerField(blank=True, null=True)
+    reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
+    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'pjt_join_hist'

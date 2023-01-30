@@ -1,5 +1,7 @@
 from django.urls import path, re_path
-from management.views.pjt import get_all_pjt, ajax_get_pjt_member, ajax_pjt_join_member
+from management.views.pjt import (
+    get_all_pjt, get_join_pjt_member, create_pjt_join_hist_member, delete_pjt_join_hist_member, create_pjt
+    )
 from management.views import code, code_list, code_add
 
 app_name = 'management'
@@ -14,6 +16,8 @@ urlpatterns = [
 
 
     # ajax api
-    path('ajax/pjtmem', ajax_get_pjt_member, name='get_pjt_mem'),
-    path('ajax/pjtjoin', ajax_pjt_join_member, name='join_pjt_mem'),
+    path('pjtJoin/create/', create_pjt_join_hist_member, name='create_pjt_join_hist'),
+    path('pjtJoin/delete/', delete_pjt_join_hist_member, name='del_pjt_join_hist'),
+    path('pjtJoin/', get_join_pjt_member, name='join_pjt_mem'),
+    path('pjt/create/', create_pjt, name='create_pjt')
     ]

@@ -8,20 +8,27 @@
                 </div>
 
                 <div class="modal-body">
-                    <form class="form-horizontal"  action="{% url 'management:pjt_list' %}" method="post" enctype="multipart/form-data">
+                    <form class="form-horizontal" id="add_pjt">
                         {% csrf_token %}
                         <div class="box-body">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">프로젝트 이름</label>
                                 <div class="input-group col-sm-8">
-                                    <input type="text" class="form-control" placeholder="프로젝트 이름을 입력해주세요">
+                                    <input type="text" class="form-control" placeholder="프로젝트 이름을 입력해주세요" name="pjt_nm">
                                 </div>
                             </div>
 
+                            <!-- 기관 입력 -->
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">기관 이름</label>
-                                <div class="input-group col-sm-8">
-                                    <input type="text" class="form-control" placeholder="기관 이름을 입력해주세요">
+                                <div class="input-group">
+                                    <select id="cs_ls" class="form-control select2" style="width: 60rem" name="cs_no">
+                                        {%  for cs in cs_ls %}
+                                        <option value="{{ cs.cs_no }}" >
+                                            {{ cs.cs_nm }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
 
@@ -32,7 +39,7 @@
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input type="text" class="form-control pull-right" id="reservation2" >
+                                    <input type="text" class="form-control pull-right" id="reservation2" name="date_range">
                                 </div>
                             </div>
                         </div>
@@ -42,7 +49,36 @@
                             <button type="submit" class="btn btn-primary">저장</button>
                         </div>
                     </form>
+                <div id="pjtErrorBox"></div>
                 </div>
             </div>
         </div>
     </div>
+<script>
+    $("#add_pjt").submit(function( event ) {
+        $.ajaxSetup({
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+        })
+
+        let data = $(this).serializeArray()
+        console.log(data)
+
+        $.ajax({
+            url: "{% url 'management:create_pjt' %}",
+            type: 'POST',
+            datatype: 'json',
+            data: data
+            })
+            .done(function () {})
+            .fail(function (xhr, status, errorThrown, html) {
+                $('#pjtErrorBox').html(html)
+                }
+            )
+    })
+
+    $(function () {
+        $("#cs_ls").select2();
+    })
+
+
+</script>
