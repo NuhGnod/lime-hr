@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from mdm.models import EvalPlan
-
+from evaluation.serializers import EvalPlanSerializer
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def evaluation_main(request, *args, **kwargs):
@@ -12,14 +12,23 @@ def evaluation_main(request, *args, **kwargs):
     평가 메인 페이지
     require : 평가계획목록, 나의평가진행현황
     '''
-
-    eval_plan_list = EvalPlan.objects.filter(del_yn='N')
-
-    print("========================")
-    print(eval_plan_list)
-    print("========================")
-
+    # query string 가져오기
     result = dict(**kwargs)
+    query_params = request.GET
+    eval_plan_no = query_params.get('id')
+    print(eval_plan_no)
+    eval_plan_list = EvalPlan.objects.filter(del_yn='N')
+    eval_plan_list_serializer = EvalPlanSerializer(eval_plan_list, many=True)
+    result.update(eval_plan_list=eval_plan_list_serializer.data)
+
+    if eval_plan_no is not None:
+        plan_qs = EvalPlan.objects.get(eval_plan_no=eval_plan_no)
+    else:
+        plan_qs = EvalPlan.objects.get(eval_plan_no=eval_plan_list[0].eval_plan_no)
+
+    eval_plan_serializer = EvalPlanSerializer(plan_qs)
+    result.update(eval_plan_detail=eval_plan_serializer.data)
+
     return render(request, 'eval/eval_main.html', result)
 
 

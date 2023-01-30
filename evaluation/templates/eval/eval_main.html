@@ -1,6 +1,42 @@
 {% extends "_layout.html" %}
 
 {% block content %}
+    <script>
+
+
+
+        $(function () {
+            console.log($('#eval-plan').value);
+
+
+            $('#eval-plan').change(function () {
+                console.log('value', this.value);
+            })
+
+        })
+
+
+        function moveEvalDesc() {
+            $.ajax({
+                url: "{% url 'evaluation:eval_check' %}",
+                type: "GET",
+                datatype: "json",
+                data: {
+                    'eval_plan': 1
+                },
+                success: function (data) {
+                    let isDiff = data.isDiff ? data.isDiff : false;
+                    let eval_rel_no = data.eval_rel_no;
+                    if (isDiff) {
+                        $('#check-eval-modal').modal('show');
+                    } else {
+                        location.href = "/eval/form/" + eval_rel_no;
+                    }
+                }
+            })
+        }
+    </script>
+
     <div class="row">
         <div class="col-md-12">
             <div class="box box-primary">
@@ -12,11 +48,23 @@
                     <div class="form-group row">
                         <label for="eval-plan" class="col-sm-2 col-form-label">평가계획</label>
                         <div class="col-sm-10">
-                            <select id="eval-plan" class="form-control">
-                                <option value="1">2023년 1월 평가계획</option>
-                                <option value="2">2023년 2월 평가계획</option>
-                                <option value="3">2023년 3월 평가계획</option>
-                            </select>
+                            {% if eval_plan_list %}
+                                <select id="eval-from" name="eval-plan" class="form-control" >
+                                    <option value=null>평가계획을 선택해주세요</option>
+                                    {% for eval_plan in eval_plan_list %}
+                                        {% if eval_plan_detail.eval_plan_no == eval_plan.eval_plan_no%}
+                                            <option selected value="{{ eval_plan.eval_plan_no }}">{{ eval_plan.eval_plan_nm }}</option>
+                                        {% else %}
+                                            <option value="{{ eval_plan.eval_plan_no }}">{{ eval_plan.eval_plan_nm }}</option>
+                                        {% endif %}
+
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                <span>진행중인 평가계획이 없습니다.</span>
+                            {% endif %}
+
+
                         </div>
                     </div>
                     <div class="form-group row">
@@ -87,25 +135,5 @@
         </div>
     </div>
     {% include 'eval/eval_check_confirm_modal.html' %}
-    <script>
-        function moveEvalDesc() {
-            $.ajax({
-                url: "{% url 'evaluation:eval_check' %}",
-                type: "GET",
-                datatype: "json",
-                data: {
-                    'eval_plan': 1
-                },
-                success: function (data) {
-                    let isDiff = data.isDiff ? data.isDiff : false;
-                    let eval_rel_no = data.eval_rel_no;
-                    if(isDiff){
-                        $('#check-eval-modal').modal('show');
-                    }else{
-                        location.href = "/eval/form/"+eval_rel_no;
-                    }
-                }
-            })
-        }
-    </script>
+
 {% endblock %}

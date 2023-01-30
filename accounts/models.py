@@ -29,12 +29,12 @@ class MemberManager(BaseUserManager):
 
 class EusoMem(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(db_column='id', primary_key=True, verbose_name='아이디')
-    username = models.CharField(max_length=150, unique=True, blank=True, null=True)
-    password = models.CharField(max_length=128, blank=True, null=True)
+    username = models.CharField(max_length=150, unique=True, blank=True, null=True, verbose_name="로그인ID")
+    password = models.CharField(max_length=128, blank=True, null=True, verbose_name="비밀번호")
     email = models.EmailField(max_length=50, unique=True, null=False, verbose_name='이메일')
-    name = models.CharField(max_length=50)
-    is_superuser = models.IntegerField(blank=True, null=True)
-    is_staff = models.IntegerField(blank=True, null=True)
+    name = models.CharField(max_length=50, verbose_name="사원명")
+    is_superuser = models.BooleanField(default=False, verbose_name="시스템관리자 여부")
+    is_staff = models.BooleanField(default=False)
     last_login = models.DateTimeField(blank=True, null=True)
     posi_cd = models.CharField(max_length=10, blank=True, null=True)
     duty_resp_cd = models.CharField(max_length=10, blank=True, null=True)
@@ -42,12 +42,12 @@ class EusoMem(AbstractBaseUser, PermissionsMixin):
     zip_no = models.CharField(max_length=50,blank=True, null=True)
     mem_addr = models.CharField(max_length=100, blank=True, null=True)
     join_dt = models.CharField(max_length=8, blank=True, null=True)
-    mem_stat_cd = models.CharField(max_length=10, blank=True, null=True)
+    mem_stat_cd = models.CharField(max_length=10, blank=True, null=True, verbose_name="회원상태코드")
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
     reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
-    del_yn = models.CharField(max_length=1, blank=True, null=True, default='N')
+    del_yn = models.CharField(max_length=1, blank=True, null=True, default='N', verbose_name="삭제여부")
 
     objects = MemberManager()
     USERNAME_FIELD = 'username'
