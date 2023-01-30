@@ -16,9 +16,6 @@ class CommCd(models.Model):
     modf_mem_no = models.IntegerField(blank=True, null=True)
     del_yn = models.CharField(max_length=1, default="N", blank=True, null=True)
 
-    def __str__(self):
-        return self.cd_nm + "(" + self.comm_cd + ")"
-
     class Meta:
         managed = False
         db_table = 'comm_cd'
