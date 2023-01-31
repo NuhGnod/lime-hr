@@ -1,15 +1,18 @@
+import datetime
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from mdm.models import EvalPlan, AbltEvalRslt, EvalRel
-from evaluation.serializers import EvalPlanSerializer
+from evaluation.serializers import EvalPlanSerializer, AbltEvalRsltSerializer
 from django.utils.http import urlencode
 from django.template.loader import render_to_string
 from config.utils import dict_fetchall, count_fetchall
 from management.models import CommCd
 from accounts.models import EusoMem
+from django.db import transaction
 
 
 @api_view(['GET'])
@@ -23,30 +26,36 @@ def evaluation_main(request, *args, **kwargs):
     result = dict(**kwargs)
     query_params = request.GET
     eval_plan_no = query_params.get('id')
-    eval_plan_list = EvalPlan.objects.filter(del_yn='N')
+    eval_plan_list = EvalPlan.objects.filter(del_yn='N', eval_strt_dt__lte=datetime.date.today(),
+                                             eval_end_dt__gte=datetime.date.today())
 
     # 평가계획이 선택된게 없을때 제일 첫번째 평가계획이 선택되도록 redirect
-    if eval_plan_no is None and len(eval_plan_list) > 0:
-        return redirect(reverse('evaluation:eval') + "?" + urlencode({'id': eval_plan_list[0].eval_plan_no}))
+    if eval_plan_no is None:
+        if len(eval_plan_list) > 0:
+            return redirect(reverse('evaluation:eval') + "?" + urlencode({'id': eval_plan_list[0].eval_plan_no}))
+        else:
+            result.update(eval_plan_list=None)
+            result.update(eval_plan_detail=None)
+            return render(request, 'eval/eval_main.html', result)
+
 
     # 평가계획 목록 조회
     eval_plan_list_serializer = EvalPlanSerializer(eval_plan_list, many=True)
     result.update(eval_plan_list=eval_plan_list_serializer.data)
 
     # 평가계획 상세정보 조회
-    if eval_plan_no is not None:
-        plan_qs = EvalPlan.objects.get(eval_plan_no=eval_plan_no)
 
-        eval_plan_serializer = EvalPlanSerializer(plan_qs)
+    plan_qs = EvalPlan.objects.get(eval_plan_no=eval_plan_no)
 
-        result.update(eval_plan_detail=eval_plan_serializer.data)
+    eval_plan_serializer = EvalPlanSerializer(plan_qs)
 
-        # 평가 진행상태 조회
-        progress_dict = calc_eval_progress(request.user.id, eval_plan_no)
+    result.update(eval_plan_detail=eval_plan_serializer.data)
 
-        result.update(progress_dict=progress_dict)
-    else:
-        result.update(eval_plan_detail=None)
+    # 평가 진행상태 조회
+    progress_dict = calc_eval_progress(request.user.id, eval_plan_no)
+
+    result.update(progress_dict=progress_dict)
+
     return render(request, 'eval/eval_main.html', result)
 
 
@@ -127,6 +136,7 @@ def get_eval_progress(mem_no, eval_plan_no):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+@transaction.atomic()
 def get_all_evaluation(request, pk, *args, **kwargs):
     '''
     모든 평가정보를 select
@@ -159,7 +169,7 @@ def get_all_evaluation(request, pk, *args, **kwargs):
 
     # 평가항목 결과가 저장되어있지않으면 insert
     if len(eval_qs) <= 0:
-        insert_sql = render_to_string('sql/insert_ablt_eval_reslt.sql',
+        insert_sql = render_to_string('sql/insert_ablt_eval_item.sql',
                                       {"mem_no": request.user.id, "eval_rel_no": eval_rel_no,
                                        "eval_trgt_clss": eval_trgt_clss, "eval_plan_no": eval_plan_no})
         insert_cnt = count_fetchall(insert_sql)
@@ -172,9 +182,6 @@ def get_all_evaluation(request, pk, *args, **kwargs):
     eval_item = dict_fetchall(eval_item_sql)
 
     # 1 미흡, 2~4 보통, 5~7 우수, 8~10 탁월
-    print("-----------------------------------")
-    print("eval_item : ", eval_item)
-    print("-----------------------------------")
 
     result = dict(eval_sheet_no=eval_sheet_no, eval_trgt_clss=eval_trgt_clss, eval_rel_no=eval_rel_no,
                   eval_plan_no=eval_plan_no, eval_item=eval_item, eval_trgt_clss_nm=eval_trgt_clss_nm,
@@ -185,26 +192,37 @@ def get_all_evaluation(request, pk, *args, **kwargs):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@transaction.atomic()
 def insert_evaluation_form(request, pk, *args, **kwargs):
     '''
     평가제출하면 제출완료 후 이후 평가 할 사항이 있으면 평가페이지로 없으면 완료페이지로 redirect
     '''
 
     req_data = request.data.copy()
+    eval_plan_no = req_data['eval_plan_no']
+    eval_sheet_no = req_data['eval_sheet_no']
+    eval_rel_no = req_data['eval_rel_no']
+    eval_trgt_clss = req_data['eval_trgt_clss']
+
+    insert_cnt = 0
     for key in req_data.keys():
         if key.startswith("ques_no"):
             # 항목하나씩 저장시켜준다.
-            print(req_data[key])
+            ablt_ques_no = key.split("|")[1]
+            print("eval_plan_no :", eval_plan_no)
+            print("eval_sheet_no :", eval_sheet_no)
+            print("eval_trgt_clss :", eval_trgt_clss)
+            print("eval_rel_no :", eval_rel_no)
+            print("ablt_ques_no :", key.split("|")[1])
+            print("ablt_eval_rslt : ", req_data[key])
+            eval_rslt = dict(eval_plan_no=eval_plan_no, eval_sheet_no=eval_sheet_no, eval_rel_no=eval_rel_no,
+                             eval_trgt_clss=eval_trgt_clss, ablt_ques_no=ablt_ques_no, ablt_eval_rslt=req_data[key],
+                             eval_dt=datetime.datetime.now(), modf_mem_no=request.user.id, eval_stat_cd='CC016003')
 
+            insert_sql = render_to_string('sql/update_ablt_eval_rslt.sql', eval_rslt)
+            insert_cnt += count_fetchall(insert_sql)
 
-
-
-    eval_cnt = 0
-    result = dict(**kwargs)
-    # if eval_cnt > 0:
-    #     return HttpResponseRedirect(reverse('evaluation:eval_form', kwargs={'pk': 2, **kwargs}))
-    # else:
-    #     return HttpResponseRedirect(reverse('evaluation:eval_complete', kwargs={**kwargs}))
+    return redirect(reverse('evaluation:eval_form', kwargs={'pk': eval_plan_no}))
 
 
 @api_view(['GET'])
@@ -214,14 +232,3 @@ def complete_evaluation(request, *args, **kwargs):
     모든 평가를 완료하였을때 완료페이지 이동
     '''
     return render(request, 'eval/eval_complete_message.html')
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def ajax_eval_check(request):
-    '''
-    평가 진행사항 확인
-    '''
-
-    result = dict(isDiff=False, eval_rel_no=1)
-    return JsonResponse(result)
