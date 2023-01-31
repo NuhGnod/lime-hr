@@ -15,16 +15,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr style="cursor:pointer" onclick="clickEvalPlan(1)">
-                <td>1</td>
-                <td>평가계획1</td>
-                <td>2023-03-01 ~ 2023-03-10</td>
-            </tr>
-            <tr style="cursor:pointer" onclick="clickEvalPlan(2)">
-                <td>2</td>
-                <td>평가계획2</td>
-                <td>2023-03-01 ~ 2023-03-10</td>
-            </tr>
+            {% for eval_plan in eval_plan_ls %}
+                <tr style="cursor:pointer" onclick="clickEvalPlan({{ eval_plan.eval_plan_no }})">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ eval_plan.eval_plan_nm }}</td>
+                    <td>{{ eval_plan.eval_strt_dt }} ~ {{ eval_plan.eval_end_dt }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
@@ -33,6 +30,26 @@
 <script>
     function clickEvalPlan(planId){
         console.log("planId : ", planId);
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{ csrf_token }}' }
+        })
+
+        $.ajax({
+            url: "{% url 'mdm:eplan_detail' %}",
+            type: "POST",
+            datatype: "json",
+            data : {
+                plan_no: planId
+                }
+            })
+            .done(function (html) {
+                $("#evalPlanDetail").html(html)
+            })
+            .fail(function (xhr, status, errorThrown) {
+                $('#evalPlanDetail').html("오류 발생. <br>")
+                    .append("오류명: " + errorThrown)
+                }
+            )
     }
 </script>
 <!-- /.box -->

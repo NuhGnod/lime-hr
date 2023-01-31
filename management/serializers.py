@@ -50,13 +50,13 @@ class GetPjtJoinMemberSerializer(serializers.ModelSerializer):
 
     def get_mem_nm(self, obj):
         mem_no = obj.mem_no
-        mem_nm = EusoMem.objects.filter(username=mem_no).first()
-        return str(mem_nm.name)
+        mem_qs = EusoMem.objects.filter(username=mem_no, del_yn='N').first()
+        return str(mem_qs.name)
 
     def get_role_nm(self, obj):
         role_cd = obj.role_cd
-        role_nm = CommCd.objects.filter(comm_cd=role_cd).first()
-        return str(role_nm.cd_nm)
+        role_qs = CommCd.objects.filter(comm_cd=role_cd, del_yn='N').first()
+        return str(role_qs.cd_nm)
 
 
 class CreatePjtJoinMemberSerializer(serializers.ModelSerializer):

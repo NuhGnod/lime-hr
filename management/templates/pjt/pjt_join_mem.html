@@ -95,7 +95,6 @@
             headers: { "X-CSRFToken": '{{csrf_token}}' }
             })
 
-        console.log(join_hist_no)
 
         $.ajax({
             url: "{% url 'management:del_pjt_join_hist' %}",

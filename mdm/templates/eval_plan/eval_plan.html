@@ -1,14 +1,29 @@
 {% extends "_layout.html" %}
 
 {% block content %}
+<section class="content">
+    <div class="row">
+
     <div class="row">
         <div class="col-md-5">
             {% include 'eval_plan/eval_plan_list.html' %}
         </div>
-        <div class="col-md-7">
-            {% include 'eval_plan/eval_plan_detail.html' %}
 
+        <div class="col-md-7" id="evalPlanDetail">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title" id="join_pjt_nm">
+                        <strong>평가계획 상세정보</strong>
+                    </h3>
+                </div>
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fa fa-info"></i> 평가계획을 선택해주세요</h5>
+                </div>
+            </div>
         </div>
 
     </div>
+    </div>
+</section>
 {% endblock %}

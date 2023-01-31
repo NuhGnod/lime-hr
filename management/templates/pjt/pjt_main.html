@@ -64,7 +64,7 @@
 
 
 <script>
-    function doJoinPjtDisplay(pjt_no) {
+    function doJoinPjtDisplay(pjtNo) {
         $.ajaxSetup({
             headers: { "X-CSRFToken": '{{csrf_token}}' }
         });
@@ -74,7 +74,7 @@
             type: "POST",
             datatype: "json",
             data: {
-                pjt_no: pjt_no
+                pjt_no: pjtNo
                 }
             })
             .done(function (html) {

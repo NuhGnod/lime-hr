@@ -1,18 +1,19 @@
 from django.db import models
 
+
 class EvalItem(models.Model):
     eval_item_no = models.AutoField(primary_key=True)
     eval_item_clss = models.CharField(max_length=10, blank=True, null=True)
     item_nm = models.CharField(max_length=100, blank=True, null=True)
     item_desc = models.CharField(max_length=200, blank=True, null=True)
-    reg_dt = models.DateTimeField(blank=True, null=True)
-    modf_dt = models.DateTimeField(blank=True, null=True)
+    reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
-    del_yn = models.CharField(max_length=1, blank=True, null=True)
+    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'eval_item'
 
 
@@ -24,6 +25,7 @@ class EvalPlan(models.Model):
     eval_plan_desc = models.CharField(max_length=200, blank=True, null=True)
     eval_strt_dt = models.DateField(max_length=8, blank=True, null=True)
     eval_end_dt = models.DateField(max_length=8, blank=True, null=True)
+    sf_eval_wght = models.IntegerField(blank=True, null=True)
     s_eval_wght = models.IntegerField(blank=True, null=True)
     m_eval_wght = models.IntegerField(blank=True, null=True)
     j_eval_wght = models.IntegerField(blank=True, null=True)
@@ -31,12 +33,12 @@ class EvalPlan(models.Model):
     p_eval_wght = models.IntegerField(blank=True, null=True)
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
-    reg_dt = models.DateTimeField(blank=True, null=True)
-    modf_dt = models.DateTimeField(blank=True, null=True)
-    del_yn = models.CharField(max_length=1, blank=True, null=True)
+    reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
+    del_yn = models.CharField(max_length=1, blank=True, null=True, default="N")
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'eval_plan'
 
 
@@ -47,12 +49,12 @@ class EvalSheet(models.Model):
     sheet_desc = models.CharField(max_length=200, blank=True, null=True)
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
-    reg_dt = models.DateTimeField(blank=True, null=True)
-    modf_dt = models.DateTimeField(blank=True, null=True)
-    del_yn = models.CharField(max_length=1, blank=True, null=True)
+    reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
+    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'eval_sheet'
 
 
@@ -80,12 +82,12 @@ class AbltEvalQues(models.Model):
     ans_nmbr = models.IntegerField(blank=True, null=True)
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
-    reg_dt = models.DateTimeField(blank=True, null=True)
-    modf_dt = models.DateTimeField(blank=True, null=True)
-    del_yn = models.CharField(max_length=1, blank=True, null=True)
+    reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
+    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'ablt_eval_ques'
         unique_together = (('eval_sheet_no', 'ablt_ques_no', 'eval_trgt_clss'),)
 
@@ -98,12 +100,12 @@ class AbltQuesPool(models.Model):
     ans_type = models.CharField(max_length=10, blank=True, null=True)
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
-    reg_dt = models.DateTimeField(blank=True, null=True)
-    modf_dt = models.DateTimeField(blank=True, null=True)
-    del_yn = models.CharField(max_length=1, blank=True, null=True)
+    reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
+    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'ablt_ques_pool'
 
 
@@ -117,11 +119,11 @@ class AbltEvalRslt(models.Model):
     eval_dt = models.DateTimeField(blank=True, null=True)
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
-    reg_dt = models.DateTimeField(blank=True, null=True)
-    modf_dt = models.DateTimeField(blank=True, null=True)
-    del_yn = models.CharField(max_length=1, blank=True, null=True)
+    reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
+    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'ablt_eval_rslt'
         unique_together = (('eval_rel_no', 'eval_sheet_no', 'ablt_ques_no', 'eval_trgt_clss'),)
