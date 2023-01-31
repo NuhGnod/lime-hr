@@ -130,7 +130,7 @@ def calc_eval_progress(mem_no, eval_plan_no):
 
 
 def get_eval_progress(mem_no, eval_plan_no):
-    sql = render_to_string('sql/get_my_evaluation_progress.sql', {"mem_no": mem_no, "eval_plan_no": eval_plan_no})
+    sql = render_to_string('sql/eval/get_my_evaluation_progress.sql', {"mem_no": mem_no, "eval_plan_no": eval_plan_no})
     return dict_fetchall(sql)
 
 
@@ -142,7 +142,7 @@ def get_all_evaluation(request, pk, *args, **kwargs):
     모든 평가정보를 select
     '''
     eval_plan_no = pk
-    sql = render_to_string('sql/get_evaluation.sql',
+    sql = render_to_string('sql/eval/get_evaluation.sql',
                            {"mem_no": request.user.id, "eval_plan_no": eval_plan_no})
     eval_list = dict_fetchall(sql)
     if len(eval_list) <= 0:
@@ -169,14 +169,14 @@ def get_all_evaluation(request, pk, *args, **kwargs):
 
     # 평가항목 결과가 저장되어있지않으면 insert
     if len(eval_qs) <= 0:
-        insert_sql = render_to_string('sql/insert_ablt_eval_item.sql',
+        insert_sql = render_to_string('sql/eval/insert_ablt_eval_item.sql',
                                       {"mem_no": request.user.id, "eval_rel_no": eval_rel_no,
                                        "eval_trgt_clss": eval_trgt_clss, "eval_plan_no": eval_plan_no})
         insert_cnt = count_fetchall(insert_sql)
         print("-----------------------------------")
         print("insert : ", insert_cnt)
         print("-----------------------------------")
-    eval_item_sql = render_to_string('sql/get_evaluation_item.sql',
+    eval_item_sql = render_to_string('sql/eval/get_evaluation_item.sql',
                                      {"eval_rel_no": eval_rel_no, "eval_plan_no": eval_plan_no,
                                       "eval_trgt_clss": eval_trgt_clss, "eval_sheet_no": eval_sheet_no})
     eval_item = dict_fetchall(eval_item_sql)
@@ -219,7 +219,7 @@ def insert_evaluation_form(request, pk, *args, **kwargs):
                              eval_trgt_clss=eval_trgt_clss, ablt_ques_no=ablt_ques_no, ablt_eval_rslt=req_data[key],
                              eval_dt=datetime.datetime.now(), modf_mem_no=request.user.id, eval_stat_cd='CC016003')
 
-            insert_sql = render_to_string('sql/update_ablt_eval_rslt.sql', eval_rslt)
+            insert_sql = render_to_string('sql/eval/update_ablt_eval_rslt.sql', eval_rslt)
             insert_cnt += count_fetchall(insert_sql)
 
     return redirect(reverse('evaluation:eval_form', kwargs={'pk': eval_plan_no}))
