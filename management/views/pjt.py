@@ -1,4 +1,5 @@
 from rest_framework import status
+from datetime import datetime
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import render, redirect
@@ -32,10 +33,8 @@ def create_pjt(requests):
     req = requests.data
 
     date_range = [date.strip() for date in req['date_range'].split('-')]
-    start_dt = date_range[0].split('/')
-    start_dt = start_dt[2] + start_dt[0] + start_dt[1]
-    end_dt = date_range[1].split('/')
-    end_dt = end_dt[2] + end_dt[0] + end_dt[1]
+    start_dt = datetime.strptime(date_range[0], '%m/%d/%Y')
+    end_dt = datetime.strptime(date_range[1], '%m/%d/%Y')
 
     pjt_dic = {
         "pjt_nm": req["pjt_nm"],
@@ -84,10 +83,11 @@ def create_pjt_join_hist_member(requests):
     req = requests.data.copy()
 
     date_range = [date.strip() for date in req['date_range'].split('-')]
-    enter_dt = date_range[0].split('/')
-    enter_dt = enter_dt[2] + enter_dt[0] + enter_dt[1]
-    out_dt = date_range[1].split('/')
-    out_dt = out_dt[2] + out_dt[0] + out_dt[1]
+    enter_dt = datetime.strptime(date_range[0], '%m/%d/%Y').strftime("%Y-%m-%d")
+    out_dt = datetime.strptime(date_range[1], '%m/%d/%Y').strftime("%Y-%m-%d")
+
+    print(enter_dt)
+    print(out_dt)
 
     pjt_join_hist_dic = {
         "pjt_no": req['pjt_no'],
@@ -116,17 +116,15 @@ def create_pjt_join_hist_member(requests):
 @permission_classes([AllowAny])
 def delete_pjt_join_hist_member(requests):
     req = requests.data.copy()
-    join_hist_no = req['join_hist_no']
-    mem_no = req['mem_no']
 
     pjt_join_hist_dic = {
-        "join_hist_no": join_hist_no,
-        "mem_no": mem_no,
+        "join_hist_no": req['join_hist_no'],
+        "mem_no": req['mem_no'],
         "del_yn": "Y",
         "modf_mem_no": requests.user.id
     }
 
-    pjt_join_hist_qs = PjtJoinHist.objects.get(join_hist_no=join_hist_no)
+    pjt_join_hist_qs = PjtJoinHist.objects.get(join_hist_no=req['join_hist_no'])
     pjt_join_hist_serializer = DelPjtJoinMemberSerializer(pjt_join_hist_qs, data=pjt_join_hist_dic)
 
     if pjt_join_hist_serializer.is_valid():

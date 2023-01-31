@@ -1,30 +1,35 @@
+
+
 <div class="box">
     <div class="box-header">
         <h3 class="box-title">평가계획 상세정보</h3>
+        <div class="form-group pull-right">
+            <button id="evalPlanSave" type="submit" class="btn btn-primary btn-sm">저장</button>
+            <button type="button" class="btn btn-danger btn-sm ">삭제</button>
+        </div>
 
     </div>
+    <div id="eplan_error"></div>
     <!-- /.box-header -->
     <div class="box-body">
         <form id="evalPlanDetailForm">
             {% csrf_token %}
-            <div class="form-group pull-right">
-                <button id="evalPlanSave" type="submit" class="btn btn-primary btn-sm">저장</button>
-                <button type="button" class="btn btn-danger btn-sm ">삭제</button>
-            </div>
 
             <div class="row" style="display: none;">
-                <input type="text" name="evalPlanNo" value="{{ eval_plan_detail.eval_plan_no }}">
+                <input type="text" name="evalPlanNo" value="{{ eval_plan_detail.eval_plan_no }}"/>
             </div>
 
             <div class="form-group">
                 <label>평가계획 명</label>
-                <input name="evalPlanNm" class="form-control" type="text" placeholder="평가계획 명을 입력하세요" value="{{ eval_plan_detail.eval_plan_nm }}"/>
+                <input name="evalPlanNm" class="form-control" type="text" placeholder="평가계획 명을 입력하세요"
+                       value="{{ eval_plan_detail.eval_plan_nm }}" required/>
             </div>
 
-             <!-- 평가계획 상세 입력 -->
+            <!-- 평가계획 상세 입력 -->
             <div class="form-group">
                 <label>평가계획 상세</label>
-                <textarea name="evalPlanDesc" class="form-control" rows="10">{{ eval_plan_detail.eval_plan_desc }}</textarea>
+                <textarea name="evalPlanDesc" class="form-control" placeholder="평가계획 설명을 입력하세요"
+                          rows="10">{{ eval_plan_detail.eval_plan_desc }}</textarea>
             </div>
 
             <!-- 평가 시작 및 종료일 입력 -->
@@ -35,15 +40,17 @@
                     <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </div>
-                    <input type="text" class="form-control pull-right" id="reservation" name="date_range" value="{{ eval_plan_detail.eval_strt_dt }} - {{ eval_plan_detail.eval_end_dt }}">
+                    <input type="text" class="form-control pull-right" id="evalDateRange" name="date_range"
+                           value="{{ eval_plan_detail.eval_strt_dt }} - {{ eval_plan_detail.eval_end_dt }}">
                 </div>
 
             </div>
 
-           <!-- 평가 구분 선택 -->
+            <!-- 평가 구분 선택 -->
             <div class="form-group">
                 <label>평가 구분</label>
                 <select name="evalClss" class="form-control" id="evalClss">
+                    <option>--------</option>
                     {% for clss in eval_clss_ls %}
                         {% if eval_plan_detail.eval_clss == clss.comm_cd %}
                             <option value="{{ clss.comm_cd }}" selected="selected">{{ clss.cd_nm }}</option>
@@ -58,6 +65,7 @@
             <div class="form-group">
                 <label>평가지</label>
                 <select name="evalSheet" class="form-control">
+                    <option>--------</option>
                     {% for sheet in eval_sheet_ls %}
                         {% if sheet.eval_sheet_no == eval_plan_detail.eval_sheet_no %}
                             <option value="{{ sheet.eval_sheet_no }}" selected="selected">{{ sheet.sheet_nm }}</option>
@@ -69,24 +77,27 @@
             </div>
 
 
-
             <div class="form-group" id="abltEvalWght" style="display: none;">
                 <div class="row">
                     <div class="col-xs-2">
                         <label>자기평가 비중</label>
-                        <input name="sfWght" type="text" class="form-control" placeholder="숫자를 입력해주세요" value="{{ eval_plan_detail.sf_eval_wght }}">
+                        <input id="sfWght" name="sfWght" type="text" class="form-control" placeholder="숫자 입력"
+                               value="{{ eval_plan_detail.sf_eval_wght }}" readonly>
                     </div>
                     <div class="col-xs-2">
                         <label>상사평가 비중</label>
-                        <input name="sWght" type="text" class="form-control" placeholder="숫자를 입력해주세요" value="{{ eval_plan_detail.s_eval_wght }}">
+                        <input id="sWght" name="sWght" type="text" class="form-control" placeholder="숫자 입력"
+                               value="{{ eval_plan_detail.s_eval_wght }}">
                     </div>
                     <div class="col-xs-2">
                         <label>동료평가 비중</label>
-                        <input name="mWght" type="text" class="form-control" placeholder="숫자를 입력해주세요" value="{{ eval_plan_detail.m_eval_wght }}">
+                        <input id="mWght" name="mWght" type="text" class="form-control" placeholder="숫자 입력"
+                               value="{{ eval_plan_detail.m_eval_wght }}">
                     </div>
                     <div class="col-xs-2">
                         <label>부하평가 비중</label>
-                        <input name="jWght" type="text" class="form-control" placeholder="숫자를 입력해주세요" value="{{ eval_plan_detail.j_eval_wght }}">
+                        <input id="jWght" name="jWght" type="text" class="form-control" placeholder="숫자 입력"
+                               value="{{ eval_plan_detail.j_eval_wght }}">
                     </div>
                 </div>
             </div>
@@ -95,11 +106,13 @@
                 <div class="row">
                     <div class="col-xs-2">
                         <label>팀평가 비중</label>
-                        <input name="tWght" type="text" class="form-control" placeholder="숫자를 입력해주세요" value="{{ eval_plan_detail.t_eval_wght }}">
+                        <input id="tWght" name="tWght" type="text" class="form-control" placeholder="숫자 입력"
+                               value="{{ eval_plan_detail.t_eval_wght }}">
                     </div>
                     <div class="col-xs-2">
                         <label>개인평가 비중</label>
-                        <input name="pWght" type="text" class="form-control" placeholder="숫자를 입력해주세요" value="{{ eval_plan_detail.p_eval_wght }}">
+                        <input id="pWght" name="pWght" type="text" class="form-control" placeholder="숫자 입력"
+                               value="{{ eval_plan_detail.p_eval_wght }}">
                     </div>
                 </div>
             </div>
@@ -108,60 +121,57 @@
 </div>
 
 <script>
-    console.log("밖")
-
-    // 화면 로딩시 평가 비중 항목 변경
-    $(document).ready(function() {
-        if ( "{{ eval_plan_detail.eval_clss }}" === "CC010001" ) {
-                $('#kpiEvalWght').css("display", "block");
-                $('#abltEvalWght').css("display", "none");
-            } else if ( "{{ eval_plan_detail.eval_clss }}" === "CC010002" ) {
-                $('#abltEvalWght').css("display", "block");
-                $('#kpiEvalWght').css("display", "none");
-            }
-
-    });
-
-    // 평가 항목 변경시 평가 비중 항목 변경
     $(function () {
-        $('#evalClss').on('change', function() {
-            if ( $(this).val() === "CC010001" ) {
+        $('#evalDateRange').daterangepicker();
+
+        // 화면 로딩시 평가 비중 항목 변경
+        if ("{{ eval_plan_detail.eval_clss }}" === "CC010001") {
+            $('#kpiEvalWght').css("display", "block");
+            $('#abltEvalWght').css("display", "none");
+        } else if ("{{ eval_plan_detail.eval_clss }}" === "CC010002") {
+            $('#abltEvalWght').css("display", "block");
+            $('#kpiEvalWght').css("display", "none");
+        }
+
+        // 평가 항목 변경시 평가 비중 항목 변경
+        $('#evalClss').on('change', function () {
+            if ($(this).val() === "CC010001") {
                 $('#kpiEvalWght').css("display", "block");
                 $('#abltEvalWght').css("display", "none");
-            } else if ( $(this).val() === "CC010002" ) {
+            } else if ($(this).val() === "CC010002") {
                 $('#abltEvalWght').css("display", "block");
                 $('#kpiEvalWght').css("display", "none");
             }
         })
-    });
 
-    $( "#evalPlanSave" ).click( function() {
+        // 평가 계획 저장
+        $("#evalPlanSave").click(function () {
             console.log("저장 버튼 눌림")
-        $( "#evalPlanDetailForm" ).submit( function( event ) {
-            event.preventDefault()
-            let data = $(this).serializeArray()
+
+            let data = $("#evalPlanDetailForm").serializeArray();
             console.log(data)
 
             $.ajaxSetup({
-                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                headers: {'X-CSRFToken': '{{ csrf_token }}'}
             });
 
             $.ajax({
-            url: "{% url 'mdm:eplan_save' %}",
-            type: "PUT",
-            datatype: "json",
-            data: data
-            })
-            .done(function (html) {
-                $('#added_pjt_mem_ls').html(html)
-            })
-            .fail(function (xhr, status, errorThrown, html) {
-                $('#error_box').html(html)
-                }
-            )
-        });
-    } )
+                url: "{% url 'mdm:eplan_save' %}",
+                type: "POST",
+                datatype: "json",
+                data: data,
+                success: function (response) {
+                    console.log(response)
+                        $('#eplan_error').html(response)
+                    }
+                })
 
+                .fail(function (xhr, status, errorThrown, html) {
+                        $('#eplan_error').html(html)
+                    }
+                )
+            })
+        });
 
 
 </script>

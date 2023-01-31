@@ -2,7 +2,7 @@
 
     <div class="box-header">
         <h3 class="box-title">평가계획 목록</h3>
-        <button style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가</button>
+        <button onclick="addEvalPlan()" style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가</button>
     </div>
     <!-- /.box-header -->
     <div class="box-body table-responsive">
@@ -28,6 +28,34 @@
 </div>
 
 <script>
+    function addEvalPlan() {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{ csrf_token }}' }
+        })
+
+        $.ajax({
+            url: "{% url 'mdm:eplan_detail' %}",
+            type: "GET",
+            datatype: "json"
+            })
+            .done(function (html) {
+                $("#evalPlanDetail").html(html)
+                $("#evalDateRange").removeAttr("value");
+                $("#sfWght").val(0);
+                $("#sWght").val(0);
+                $("#mWght").val(0);
+                $("#jWght").val(0);
+                $("#tWght").val(0);
+                $("#pWght").val(0);
+            })
+            .fail(function (xhr, status, errorThrown) {
+                $('#evalPlanDetail').html("오류 발생. <br>")
+                    .append("오류명: " + errorThrown)
+                }
+            )
+    }
+
+
     function clickEvalPlan(planId){
         console.log("planId : ", planId);
         $.ajaxSetup({

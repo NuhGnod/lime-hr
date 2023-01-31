@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework import serializers
 
 from mdm.models import EvalPlan, EvalSheet
@@ -12,6 +13,8 @@ class GetEvalPlanSerializer(serializers.ModelSerializer):
 
 class GetEvalPlanDetailSerializer(serializers.ModelSerializer):
     eval_clss_nm = serializers.SerializerMethodField(read_only=True)
+    eval_strt_dt = serializers.SerializerMethodField(read_only=True)
+    eval_end_dt = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = EvalPlan
         fields = [
@@ -23,6 +26,14 @@ class GetEvalPlanDetailSerializer(serializers.ModelSerializer):
         eval_clss = obj.eval_clss
         eval_clss_qs = CommCd.objects.filter(comm_cd=eval_clss, del_yn='N').first()
         return str(eval_clss_qs.cd_nm)
+
+    def get_eval_strt_dt(self, obj):
+        eval_strt_dt = obj.eval_strt_dt.strftime("%m/%d/%Y")
+        return eval_strt_dt
+
+    def get_eval_end_dt(self, obj):
+        eval_end_dt = obj.eval_end_dt.strftime("%m/%d/%Y")
+        return eval_end_dt
 
 
 class GetEvalSheetSerializer(serializers.ModelSerializer):
