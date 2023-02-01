@@ -4,9 +4,9 @@ RUN apt-get update && \
     apt-get install -y gcc default-libmysqlclient-dev libjpeg-dev vim && \
     apt-get install -y python3-pip
 
-WORKDIR /lime_hrm
+WORKDIR /app
 
-COPY requirements.txt /lime_hrm
+COPY requirements.txt /app
 
 RUN pip install -r requirements.txt
 RUN pip install django-debug-toolbar
@@ -16,10 +16,10 @@ RUN pip install django-debug-toolbar
 # COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
 # WORKDIR /djangoproject
 
-COPY . /lime_hrm
-RUN python ./manage.py collectstatic
 ENV PYTHONUNBUFFERED=1
 
+COPY . /app
+RUN python manage.py collectstatic
 CMD gunicorn \
     --workers=1 \
     --timeout=1800 \

@@ -5,6 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - static_hrm:/static/
+      - media_hrm:/app/media/
+
     ports:
       - "8000:8000"
     stdin_open: true
