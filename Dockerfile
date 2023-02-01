@@ -17,19 +17,7 @@ RUN pip install django-debug-toolbar
 # WORKDIR /djangoproject
 
 ENV PYTHONUNBUFFERED=1
+COPY django_server_start.sh /
 
 COPY . /app
-RUN python manage.py collectstatic
-CMD gunicorn \
-    --workers=1 \
-    --timeout=1800 \
-    --access-logfile - \
-    --log-level - \
-    --error-logfile - \
-    config.wsgi:application \
-
-    --bind 0.0.0.0:8000 \
-
-    --max-requests 1000 \
-
-    --max-requests-jitter 50
+RUN chmod +x /django_server_start.sh

@@ -42,9 +42,8 @@ services:
 
 
 networks:
-  defalut:
-    external:
-      name: hrm_network
+  hrm_network:
+    driver: bridge
 
 volumes:
   static_hrm:
