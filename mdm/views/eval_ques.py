@@ -9,6 +9,7 @@ from management.serializers import CommCdSerializer
 from mdm.models import EvalItem, AbltQuesPool
 from mdm.serializers import EvalItemSerializer, QuesPoolSerializer, CreateQuesPoolSerializer
 
+
 # 역량평가대분류코드
 eval_item_clss = CommCd.objects.filter(hi_comm_cd='CC013000')
 eval_item_clss_serializer = CommCdSerializer(eval_item_clss, many=True)
@@ -16,11 +17,6 @@ eval_item_clss_serializer = CommCdSerializer(eval_item_clss, many=True)
 # 답변유형코드
 ans_type_list = CommCd.objects.filter(hi_comm_cd='CC012000')
 ans_type_list_serializer = CommCdSerializer(ans_type_list, many=True)
-
-# 문항선택지코드
-ques_opt_cd = CommCd.objects.filter(hi_comm_cd='CC015000')
-ques_opt_cd_serializer = CommCdSerializer(ques_opt_cd, many=True)
-
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -35,7 +31,6 @@ def get_all_question(request, **kwargs):
                   {'eval_item_clss': eval_item_clss_serializer.data,
                    'eval_item_list': eval_item_list_serializer.data,
                    'ans_type_list': ans_type_list_serializer.data,
-                   'ques_opt_cd': ques_opt_cd_serializer.data,
                    'ablt_ques_pool': ablt_ques_pool_serializer.data,
                    **kwargs})
 
@@ -66,9 +61,6 @@ def save_question(requests):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
 @api_view(['GET', 'DELETE'])
 @permission_classes([AllowAny])
 def get_question(request):
@@ -84,8 +76,7 @@ def get_question(request):
                       {'ablt_ques': question_serializer.data,
                        'eval_item_clss': eval_item_clss_serializer.data,
                        'eval_item_list': eval_item_list_serializer.data,
-                       'ans_type_list': ans_type_list_serializer.data,
-                       'ques_opt_cd': ques_opt_cd_serializer.data})
+                       'ans_type_list': ans_type_list_serializer.data})
 
     if request.method == 'DELETE':
         ablt_ques_no = request.data['ablt_ques_no']
@@ -106,7 +97,6 @@ def ajax_add_question(request):
     return render(request, 'eval_ques/eval_ques_detail.html',
                   {'eval_item_clss': eval_item_clss_serializer.data,
                    'ans_type_list': ans_type_list_serializer.data,
-                   'ques_opt_cd': ques_opt_cd_serializer.data,
                    'eval_item_list': eval_item_list_serializer.data})
 
 
