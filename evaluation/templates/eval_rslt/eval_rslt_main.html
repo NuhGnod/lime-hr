@@ -72,11 +72,41 @@
                                 <td class="text-center">{{ rslt.dept_nm }}</td>
                                 <td class="text-center">{{ rslt.posi_nm }}</td>
                                 <td class="text-center">{{ rslt.name }}</td>
-                                <td class="text-right">{{ rslt.CC009004|default:"" }}</td>
-                                <td class="text-right">{{ rslt.CC009002|default:"" }}</td>
-                                <td class="text-right">{{ rslt.CC009003|default:"" }}</td>
-                                <td class="text-right">{{ rslt.CC009001|default:"" }}</td>
-                                <td class="text-right">{{ rslt.tot_rslt|default:"" }}</td>
+                                <td class="text-right"
+                                        {% if fall_avg_cc009004 > rslt.CC009004 %}
+                                    style="background-color: red; color: white;"
+                                        {% endif %}
+
+                                >
+                                    {{ rslt.CC009004|floatformat }}
+                                </td>
+                                <td class="text-right"
+                                        {% if fall_avg_cc00902 > rslt.CC009002 %}
+                                    style="background-color: red; color: white;"
+                                        {% endif %}
+                                >
+                                    {{ rslt.CC009002|default:"" }}</td>
+                                <td class="text-right"
+                                        {% if fall_avg_cc009003 > rslt.CC009003 %}
+                                    style="background-color: red; color: white;"
+                                        {% endif %}
+                                >
+                                    {{ rslt.CC009003|default:"" }}
+                                </td>
+                                <td class="text-right"
+                                        {% if fall_avg_cc009001 > rslt.CC009001 %}
+                                    style="background-color: red; color: white;"
+                                        {% endif %}
+                                >
+                                    {{ rslt.CC009001|default:"" }}
+                                </td>
+                                <td class="text-right"
+                                        {% if fall_avg_tot_rslt > rslt.tot_rslt %}
+                                    style="background-color: red; color: white;"
+                                        {% endif %}
+                                >
+                                    {{ rslt.tot_rslt|default:"" }}
+                                </td>
                             </tr>
                         {% endfor %}
 
@@ -99,7 +129,7 @@
 
     <script>
         function onClickExcelDownload(id) {
-            location.href= '/eval/rslt/rslt_excel_download?id=' + id;
+            location.href = '/eval/rslt/rslt_excel_download?id=' + id;
 
         }
 
