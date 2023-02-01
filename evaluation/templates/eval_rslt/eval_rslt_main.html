@@ -9,8 +9,143 @@
                 </div>
                 <!-- User name -->
                 <div class="box-body">
+                    <div class="alert alert-info alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h4><i class="icon fa fa-info"></i> 평가결과</h4>
+                        - 각 평가 평균의 20% 미만자는 빨간색으로 표기됩니다.
+                    </div>
+                    <div class="row" style="margin-bottom: 10px;">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                {% if eval_plan_list %}
+                                    <select id="eval_plan_select" class="form-control">
+                                        {% for eval_plan in eval_plan_list %}
+                                            {% if eval_plan_detail.eval_plan_no == eval_plan.eval_plan_no %}
+                                                <option selected
+                                                        value="{{ eval_plan.eval_plan_no }}">{{ eval_plan.eval_plan_nm }}</option>
+                                            {% else %}
+                                                <option value="{{ eval_plan.eval_plan_no }}">{{ eval_plan.eval_plan_nm }}</option>
+                                            {% endif %}
+
+                                        {% endfor %}
+                                    </select>
+                                {% else %}
+                                    <h4 class="form-control">평가계획이 없습니다.</h4>
+                                {% endif %}
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button"
+                                    class="btn btn-primary pull-right"
+                                    {% if eval_plan_detail is not None %}
+                                    onclick="onClickExcelDownload({{ eval_plan_detail.eval_plan_no }})"
+                                    {% else %}
+                                    disabled
+                                    {% endif %}
+                            >
+                                엑셀다운로드
+                            </button>
+                        </div>
+
+                    </div>
+                    <table id="eval_rslt_table" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center">No</th>
+                            <th class="text-center">부서</th>
+                            <th class="text-center">직급</th>
+                            <th class="text-center">이름</th>
+                            <th class="text-center">자기평가 ({{ eval_plan.sf_eval_wght }} %)</th>
+                            <th class="text-center">상사평가 ({{ eval_plan.s_eval_wght }} %)</th>
+                            <th class="text-center">동료평가 ({{ eval_plan.j_eval_wght }} %)</th>
+                            <th class="text-center">부하평가 ({{ eval_plan.m_eval_wght }} %)</th>
+                            <th class="text-center">총 평점</th>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        {% for rslt in eval_rslt_list %}
+                            <tr>
+                                <td class="text-center">{{ forloop.counter }}</td>
+                                <td class="text-center">{{ rslt.dept_nm }}</td>
+                                <td class="text-center">{{ rslt.posi_nm }}</td>
+                                <td class="text-center">{{ rslt.name }}</td>
+                                <td class="text-right">{{ rslt.CC009004|default:"" }}</td>
+                                <td class="text-right">{{ rslt.CC009002|default:"" }}</td>
+                                <td class="text-right">{{ rslt.CC009003|default:"" }}</td>
+                                <td class="text-right">{{ rslt.CC009001|default:"" }}</td>
+                                <td class="text-right">{{ rslt.tot_rslt|default:"" }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="4" class="text-center" style="font-weight: bold"> 평 균</td>
+                            <td class="text-right" style="font-weight: bold">{{ avg_cc009004|default:"" }}</td>
+                            <td class="text-right" style="font-weight: bold">{{ avg_cc009002|default:"" }}</td>
+                            <td class="text-right" style="font-weight: bold">{{ avg_cc009003|default:"" }}</td>
+                            <td class="text-right" style="font-weight: bold">{{ avg_cc009001|default:"" }}</td>
+                            <td class="text-right" style="font-weight: bold">{{ avg_tot_rslt|default:"" }}</td>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function onClickExcelDownload(id) {
+            location.href= '/eval/rslt/rslt_excel_download?id=' + id;
+
+        }
+
+        $(function () {
+            $('#eval_plan_select').change(function () {
+                let eval_plan_no = $(this).val()
+                if (eval_plan_no) {
+                    location.replace('/eval/rslt?id=' + eval_plan_no);
+                }
+            })
+
+            $('#eval_rslt_table').DataTable({
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "표에서 사용할 수있는 데이터가 없습니다.",
+                    "info": "총 _TOTAL_명   _START_에서 _END_까지 표시",
+                    "infoEmpty": "0 개 항목 중 0 ~ 0 개 표시",
+                    "infoFiltered": "(_MAX_ 총 항목에서 필터링 됨)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "_MENU_",
+                    "loadingRecords": "로드 중 ...",
+                    "processing": "처리 중 ...",
+                    "search": "검색:",
+                    "zeroRecords": "일치하는 레코드가 없습니다.",
+                    "paginate": {
+                        "first": "처음",
+                        "last": "마지막",
+                        "next": "다음",
+                        "previous": "이전"
+                    },
+                    "aria": {
+                        "sortAscending": ": 오름차순으로 정렬",
+                        "sortDescending": ": 내림차순으로 정렬"
+                    }
+                },
+                {#lengthMenu: [20, 50, 100],#}
+                {#displayLength: 20,#}
+                {#order:[[0,"desc"]],#}
+                "lengthMenu": false,
+                "paging": false,
+                "searching": true,
+                "ordering": true,
+                "info": false,
+                "autoWidth": false,
+            });
+        });
+    </script>
 {% endblock %}

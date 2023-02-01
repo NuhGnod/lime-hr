@@ -1,17 +1,7 @@
 {% extends "_layout.html" %}
 
 {% block content %}
-    <script>
 
-
-        $(function () {
-
-            $('#eval-plan').change(function () {
-                console.log('value', this.value);
-            })
-
-        })
-    </script>
 
     <div class="row">
         <div class="col-md-12">
@@ -25,8 +15,7 @@
                         <label for="eval-plan" class="col-sm-2 col-form-label">평가계획</label>
                         <div class="col-sm-10">
                             {% if eval_plan_list %}
-                                <select id="eval-from" name="eval-plan" class="form-control">
-                                    <option value=null>평가계획을 선택해주세요</option>
+                                <select id="eval-plan" name="eval-plan" class="form-control">
                                     {% for eval_plan in eval_plan_list %}
                                         {% if eval_plan_detail.eval_plan_no == eval_plan.eval_plan_no %}
                                             <option selected
@@ -85,13 +74,13 @@
                                 <tr>
                                     <td class="text-center">2</td>
                                     <td class="text-center">부하역량평가</td>
-                                    <td class="text-center">{{ progress_dict.CC009003.comp_cnt }}
-                                        / {{ progress_dict.CC009003.tot_cnt }}</td>
+                                    <td class="text-center">{{ progress_dict.CC009001.comp_cnt }}
+                                        / {{ progress_dict.CC009001.tot_cnt }}</td>
                                     <td class="text-center">
-                                        {% if progress_dict.CC009003.eval_stat is None %}
+                                        {% if progress_dict.CC009001.eval_stat is None %}
                                             평가없음
                                         {% else %}
-                                            {% if progress_dict.CC009003.eval_stat == 'Y' %}
+                                            {% if progress_dict.CC009001.eval_stat == 'Y' %}
                                                 완료
                                             {% else %}
                                                 미완료
@@ -119,13 +108,13 @@
                                 <tr>
                                     <td class="text-center">4</td>
                                     <td class="text-center">동료역량평가</td>
-                                    <td class="text-center">{{ progress_dict.CC009001.comp_cnt }}
-                                        / {{ progress_dict.CC009001.tot_cnt }}</td>
+                                    <td class="text-center">{{ progress_dict.CC009003.comp_cnt }}
+                                        / {{ progress_dict.CC009003.tot_cnt }}</td>
                                     <td class="text-center">
-                                        {% if progress_dict.CC009001.eval_stat is None %}
+                                        {% if progress_dict.CC009003.eval_stat is None %}
                                             평가없음
                                         {% else %}
-                                            {% if progress_dict.CC009001.eval_stat == 'Y' %}
+                                            {% if progress_dict.CC009003.eval_stat == 'Y' %}
                                                 완료
                                             {% else %}
                                                 미완료
@@ -163,5 +152,18 @@
         </div>
     </div>
     {% include 'eval/eval_check_confirm_modal.html' %}
+    <script>
 
+
+        $(function () {
+
+            $('#eval-plan').change(function () {
+                let eval_plan_no = $(this).val()
+                if (eval_plan_no) {
+                    location.replace('/eval/desc?id=' + eval_plan_no);
+                }
+            })
+
+        })
+    </script>
 {% endblock %}

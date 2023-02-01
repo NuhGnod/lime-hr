@@ -27,7 +27,7 @@ def evaluation_main(request, *args, **kwargs):
     query_params = request.GET
     eval_plan_no = query_params.get('id')
     eval_plan_list = EvalPlan.objects.filter(del_yn='N', eval_strt_dt__lte=datetime.date.today(),
-                                             eval_end_dt__gte=datetime.date.today())
+                                             eval_end_dt__gte=datetime.date.today()).order_by('-eval_strt_dt')
 
     # 평가계획이 선택된게 없을때 제일 첫번째 평가계획이 선택되도록 redirect
     if eval_plan_no is None:
@@ -107,17 +107,17 @@ def calc_eval_progress(mem_no, eval_plan_no):
             sub_stat = None
 
     if tot_superior_cnt == superior_cnt:
-        if tot_sub_cnt != 0:
+        if tot_superior_cnt != 0:
             superior_stat = 'Y'
         else:
             superior_stat = None
     if tot_colleague_cnt == colleague_cnt:
-        if tot_sub_cnt != 0:
+        if tot_colleague_cnt != 0:
             colleague_stat = 'Y'
         else:
             colleague_stat = None
     if tot_self_cnt == self_cnt:
-        if tot_sub_cnt != 0:
+        if tot_self_cnt != 0:
             self_stat = 'Y'
         else:
             self_stat = None
