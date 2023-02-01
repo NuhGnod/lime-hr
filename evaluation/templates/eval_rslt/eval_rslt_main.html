@@ -105,7 +105,9 @@
                                     style="background-color: red; color: white;"
                                         {% endif %}
                                 >
-                                    {{ rslt.tot_rslt|default:"" }}
+                                    <strong>
+                                        {{ rslt.tot_rslt|default:"" }}
+                                    </strong>
                                 </td>
                             </tr>
                         {% endfor %}

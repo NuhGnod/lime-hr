@@ -168,7 +168,7 @@ def get_all_evaluation(request, pk, *args, **kwargs):
                                           eval_plan_no=eval_plan_no)
 
     max_stat_cd = eval_qs.aggregate(Max('eval_stat_cd'))
-    print(max_stat_cd)
+
     # 평가항목 결과가 저장되어있지않으면 insert
     if len(eval_qs) <= 0:
         insert_sql = render_to_string('sql/eval/insert_ablt_eval_item.sql',
@@ -176,6 +176,7 @@ def get_all_evaluation(request, pk, *args, **kwargs):
                                        "eval_trgt_clss": eval_trgt_clss, "eval_plan_no": eval_plan_no})
 
         insert_cnt = count_fetchall(insert_sql)
+
         print("-----------------------------------")
         print("insert : ", insert_cnt)
         print("-----------------------------------")
