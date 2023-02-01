@@ -327,7 +327,6 @@
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         activeTab = $(e.target)[0].id;
-        console.log(activeTab)
     })
     $.ajaxSetup({
         headers: {"X-CSRFToken": '{{csrf_token}}'}
@@ -335,7 +334,6 @@
     $(".delete_eval_ques_ajax").on("click", delete_eval_ques_ajax)
  function delete_eval_ques_ajax() {
 
-        console.log($(this)[0].id)
         $.ajax({
            url: "{% url 'mdm:eval_ques_delete' %}",
            type:"DELETE",
@@ -368,7 +366,6 @@
                'del_yn' : 'Y'
            },
            success:function (data){
-           console.log(data)
            if (data.status == 405){
                alert(`삭제 할 수 없는 평가지입니다. \n (이미 평가된 기록이 있습니다.)`)
            }else if(data.status == 204) {
@@ -385,18 +382,14 @@
     }
 
     function save_ajax() {
-        console.log(activeTab)
         targetTab = "tab"+activeTab
         if (targetTab === "tabCC009004") {
             console.log(`###############################################`)
         }
-        console.log($("#eval_clss option:selected")[0].id);
-        console.log($(`#${targetTab} .ques_tbody`).children().eq(0).children()); // pk값.
         var rowdata = []
         var rowarr = []
 
         rownum = $(`#${targetTab} .ques_tbody`).children().length;
-        console.log(rownum)
         for (let i = 0; i < rownum; i++) {
             rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children()[0].innerText)
             rowdata.push(activeTab) // 평가대상
@@ -404,7 +397,6 @@
             rowarr.push(rowdata)
             rowdata = []
         }
-        console.log(rowarr)
 
         $.ajax({
             url: "{% url 'mdm:eval_sheet' %}",
@@ -421,7 +413,6 @@
             success: function (data) {
                 window.location.reload();
 
-                console.log("data : ", data)
 
             }
         })

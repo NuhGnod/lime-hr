@@ -39,25 +39,7 @@
     $(".ctr").on("click", row_select);
 
     function add_ques_pool() {
-        console.log(activeTab)
 
-        {#$.ajax({#}
-        {#    url: "{% url 'mdm:modal'%}",#}
-        {#    type: "POST",#}
-        {#    datatype: "json",#}
-        {#    data: {#}
-        {#        'eval_ques_no': $(".add_for").children()[0].innerText,#}
-        {#        'cd_nm': $(".add_for").children()[1].innerText,#}
-        {#        'item_nm': $(".add_for").children()[2].innerText,#}
-        {#        'question': $(".add_for").children()[3].innerText,#}
-        {#        'ans_type_nm': $(".add_for").children()[4].innerText,#}
-        {#    },#}
-        {#    success: function (data) {#}
-        {##}
-        {#        console.log(data)#}
-        {##}
-        {#    }#}
-        //  })
         var insertTr = ""
         insertTr += "<tr class='text-center ques_row'>";
         insertTr += "<td>" + $(".add_for").children()[0].innerText + "</td>";
@@ -74,9 +56,7 @@
         flag = true
 
         for(let i=0; i<$(`#${targetTab} tbody`).children().length; i++){
-                    console.log($(`#${targetTab} tbody`).children().eq(i).children()[0].innerText)
                     if($(".add_for").children()[0].innerText == $(`#${targetTab} tbody`).children().eq(i).children()[0].innerText){
-                        console.log(`discorrect!!!`)
                         flag=false
                     }
 
@@ -102,9 +82,7 @@
     $("#add_for_btn").on("click", add_ques_pool);
 
     function row_select() {
-        console.log($(this).html())
         {#target_id = ($(this).children()[1].id)#}
-        console.log($(this).children()[0].innerText)
         $(this).css("background-color", "silver");
         $(".add_for").html($(this).html())
         $(".add_for").attr('id', $(this).children()[0].innerText)

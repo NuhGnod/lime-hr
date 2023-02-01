@@ -91,11 +91,6 @@ class AbltQuesPoolSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class EvalItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EvalItem
-        fields = '__all__'
-
 
 class joinEvalItemSerializer(serializers.ModelSerializer):
     cd_nm = serializers.SerializerMethodField(read_only=True)

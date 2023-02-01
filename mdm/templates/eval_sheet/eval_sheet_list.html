@@ -48,14 +48,12 @@
     $('#add').on("click", add_eval_sheet_cd);
 
     function add_eval_sheet_cd() {
-        console.log("asdadasdsadsadad")
         $.ajax({
             url: "{% url 'mdm:eval_sheet_add' %}",
             type: "GET",
             datatype: "json",
 
             success: function (data) {
-                {#console.log(data)#}
                 $(".eval_sheet_box").html(data)
             }
         })
@@ -63,7 +61,6 @@
 
     function row_select() {
         target_id = ($(this).children()[1].id)
-        {#console.log("{% url 'mdm:eval_sheet_detail' 'eval_clss'%}"+target_id)#}
         $.ajax({
             url: "{% url 'mdm:eval_sheet'%}",
             type: "GET",
@@ -72,11 +69,8 @@
                 'eval_sheet_no': ($(this).children()[1].id)
             },
             success: function (data) {
-                {#console.log(data)#}
                 $(".eval_sheet_box").html(data)
-                {#window.location.reload()#}
-                {##}
-                {#window.location.reload();#}
+
 
             }
         })

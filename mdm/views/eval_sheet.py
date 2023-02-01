@@ -11,9 +11,8 @@ from rest_framework.response import Response
 from config.utils import dict_fetchall
 from management.models import CommCd
 from management.serializers import CommCdSerializer
-from mdm.models import EvalSheet, AbltEvalQues, AbltQuesPool, EvalItem, AbltEvalRslt
-from mdm.serializers import EvalSheetSerializer, AbltQuesPoolSerializer, EvalItemSerializer, joinSerializer, \
-    AbltEvalQuesSerializer, createAbltEvalQuesSerializer, getAbltEvalQuesSerializer
+from mdm.models import EvalSheet, AbltEvalQues, AbltQuesPool, AbltEvalRslt
+from mdm.serializers import EvalSheetSerializer, joinSerializer, AbltEvalQuesSerializer
 
 
 # 평가지 view
@@ -26,14 +25,12 @@ def sheet(request, *args, **kwargs):
     reqdata['modf_mem_no'] = request.user.id
     if request.method == 'GET':
         eval_sheet_no = request.GET.get('eval_sheet_no')
-        print("eval_sheet_no", eval_sheet_no)
         data = {
             'sheet_nm': ""
         }
 
         objects_all = EvalSheet.objects.filter(del_yn='N')  # 평가지 데이터 리스트
         eval_sheet_serializer = EvalSheetSerializer(objects_all, many=True)
-        print(eval_sheet_serializer.data)
 
         objects_filter = CommCd.objects.filter(hi_comm_cd="CC010000")  # 평가 구분 코드
         eval_clss_list = CommCdSerializer(objects_filter, many=True)
@@ -58,7 +55,6 @@ def sheet(request, *args, **kwargs):
         # 평가지 저장 로직
 
         reqdata['reg_mem_no'] = request.user.id
-        print(request.data)
 
         if int(reqdata['origin_eval_sheet_no']) < 1:
             # 새로운 평가지가 생성되어야 하는 경우.
@@ -83,9 +79,7 @@ def sheet(request, *args, **kwargs):
                                            "reg_mem_no": reqdata.get('reg_mem_no'),
                                            "modf_mem_no": reqdata.get('modf_mem_no')})
                 fetchall = dict_fetchall(string)
-                print('-' * 50)
-                print(fetchall)
-                print('-' * 50)
+
 
         else:
             # 기존에 존재하는 평가지에서 저장버튼이 눌린 경우.
@@ -110,10 +104,7 @@ def sheet(request, *args, **kwargs):
                                            "reg_mem_no": reqdata.get('reg_mem_no'),
                                            "modf_mem_no": reqdata.get('modf_mem_no')})
                 fetchall = dict_fetchall(string)
-                print('-' * 50)
-                print(fetchall)
-                print('-' * 50)
-        list = []
+
         return Response(status=status.HTTP_200_OK)
 
     if request.method == 'DELETE':
@@ -127,13 +118,10 @@ def sheet(request, *args, **kwargs):
                                  })
 
         reqdata['eval_sheet_no'] = int(request.data.get('eval_sheet_no'))
-        print(request.data.get('eval_sheet_no'))
-        print(reqdata)
         q = EvalSheet.objects.filter(eval_sheet_no=int(request.data.get('eval_sheet_no'))).first()
         serializer1 = EvalSheetSerializer(q, data=reqdata, partial=True)
         serializer1.is_valid()
         serializer1.save()
-        print(serializer1.data, "###############")
         return JsonResponse({"status": status.HTTP_204_NO_CONTENT,
                              })
 
@@ -147,7 +135,6 @@ def modal(req):
 
         return render(req, 'eval_sheet/eval_ques_pool_list.html', {'full_data': serializers.data})
     if req.method == 'POST':
-        print(req.data, '########')
         dict(ablt_ques_no=req.data.get('ablt_ques_no'))
 
 
@@ -163,7 +150,6 @@ def eval_ques_delete(req):
         return JsonResponse({"status": status.HTTP_405_METHOD_NOT_ALLOWED,
                              })
 
-    print(reqdata)
     reqdata['eval_sheet_no'] = int(reqdata.get('eval_sheet_no'))
     reqdata['ablt_ques_no'] = int(reqdata.get('ablt_ques_no'))
 
@@ -177,21 +163,7 @@ def eval_ques_delete(req):
                                       "eval_trgt_clss": reqdata['eval_trgt_clss']
                                       })
     eval_ques = dict_fetchall(eval_ques_sql)
-    print(eval_ques)
 
-    #
-    # objects_filter = AbltEvalQues.objects.filter(eval_sheet_no=(reqdata.get('eval_sheet_no')),
-    #                                              ablt_ques_no=(reqdata.get('ablt_ques_no')),
-    #                                              eval_trgt_clss=reqdata.get('eval_trgt_clss')).first()
-    # print("="*50, "objects_filter")
-    # print(objects_filter)
-    # print("=" * 50)
-    # serializer = getAbltEvalQuesSerializer(objects_filter,data=reqdata, partial=True)
-    # print("=" * 50, "serializer")
-    # print(serializer)
-    # print("=" * 50)
-    # serializer.is_valid()
-    # serializer.save()
     return JsonResponse({"status": status.HTTP_204_NO_CONTENT,
                          })
 
