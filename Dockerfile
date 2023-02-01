@@ -17,7 +17,7 @@ RUN pip install django-debug-toolbar
 # WORKDIR /djangoproject
 
 ENV PYTHONUNBUFFERED=1
-COPY django_server_start.sh /
+COPY server_start.sh /
 
 COPY . /app
-RUN chmod +x /django_server_start.sh
+RUN chmod +x /server_start.sh
