@@ -39,26 +39,29 @@ def get_all_question(request, **kwargs):
 @permission_classes([AllowAny])
 def save_question(requests):
     req = requests.data
-    ques_dict = {
-        "eval_item_no": int(req["eval_item_no"]),
-        "question": req["question"],
-        "rslt_msr_type": req["rslt_msr_type"],
-        "ans_type": req["ans_type"],
-        "reg_mem_no": requests.user.id,
-        "modf_mem_no": requests.user.id
-    }
-    # if: 평가문항 저장 / else: 평가문항 수정
-    if req["ablt_ques_no"] == "":
-        serializer = CreateQuesPoolSerializer(data=ques_dict)
-    else:
-        ablt_ques_no = int(req["ablt_ques_no"])
-        update_question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
-        serializer = CreateQuesPoolSerializer(update_question, data=ques_dict)
+    try:
+        ques_dict = {
+            "eval_item_no": int(req["eval_item_no"]),
+            "question": req["question"],
+            "rslt_msr_type": req["rslt_msr_type"],
+            "ans_type": req["ans_type"],
+            "reg_mem_no": requests.user.id,
+            "modf_mem_no": requests.user.id
+        }
+        # if: 평가문항 저장 / else: 평가문항 수정
+        if req["ablt_ques_no"] == "":
+            serializer = CreateQuesPoolSerializer(data=ques_dict)
+        else:
+            ablt_ques_no = int(req["ablt_ques_no"])
+            update_question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
+            serializer = CreateQuesPoolSerializer(update_question, data=ques_dict)
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    except ValueError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'DELETE'])
@@ -79,13 +82,14 @@ def get_question(request):
                        'ans_type_list': ans_type_list_serializer.data})
 
     if request.method == 'DELETE':
-        ablt_ques_no = request.data['ablt_ques_no']
-        question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
-        question.del_yn = 'Y'
-        question.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            ablt_ques_no = request.data['ablt_ques_no']
+            question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
+            question.del_yn = 'Y'
+            question.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ValueError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

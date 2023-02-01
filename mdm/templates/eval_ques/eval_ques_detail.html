@@ -113,23 +113,33 @@
                 'rslt_msr_type' : document.getElementById("result_measure").value,
                 'ans_type': answerFormat.value,
             },
-            success: function(res){
+            success: function(){
                 window.location.href = '{% url 'mdm:eval_ques' %}'
+            },
+            error: function(res){
+                if(res.status == 400) {
+                    alert("소분류를 선택해주세요")
+                }
             }
         })
     }
 
     function deleteQuestion() {
         $.ajax({
-                url: "{% url 'mdm:get_question' %}",
-                type: "DELETE",
-                datatype: "json",
-                data: {
-                    'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}'
-                },
-                success: function(res){
-                    window.location.href = '{% url 'mdm:eval_ques' %}'
+            url: "{% url 'mdm:get_question' %}",
+            type: "DELETE",
+            datatype: "json",
+            data: {
+                'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}'
+            },
+            success: function(){
+                window.location.href = '{% url 'mdm:eval_ques' %}'
+            },
+            error: function(res) {
+                if (res.status == 400) {
+                    alert("삭제할 문항이 없습니다")
                 }
+            }
         })
     }
 
