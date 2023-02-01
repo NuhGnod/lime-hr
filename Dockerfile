@@ -17,7 +17,7 @@ RUN pip install django-debug-toolbar
 # WORKDIR /djangoproject
 
 COPY . /lime_hrm
-
+RUN python ./manage.py collectstatic
 ENV PYTHONUNBUFFERED=1
 
 CMD gunicorn \
