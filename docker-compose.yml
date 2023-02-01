@@ -5,7 +5,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    network_mode: "host"
+    ports:
+      - "8000:8000"
     stdin_open: true
     tty: true
     restart: always
+networks:
+  defalut:
+    external:
+      name: hrm_network
