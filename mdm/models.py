@@ -102,7 +102,7 @@ class AbltQuesPool(models.Model):
     modf_mem_no = models.IntegerField(blank=True, null=True)
     reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
-    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
+    del_yn = models.CharField(max_length=1, blank=True, null=True, default='N')
 
     class Meta:
         managed = True

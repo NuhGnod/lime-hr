@@ -14,7 +14,7 @@ urlpatterns = [
     # 평가항목 관리 메인 이동
     path('eitem/', get_all_evaluation_item, name='eval_item',
          kwargs={'app_name': app_name, 'app_category_name': app_category_name, 'page_name': '평가항목관리'}),
-    
+
     # 평가계획 관리 메인 이동
     path('eplan/', get_all_evaluation_plan, name='eval_plan',
          kwargs={'app_name': app_name, 'app_category_name': app_category_name, 'page_name': '평가계획관리'}),
@@ -22,5 +22,14 @@ urlpatterns = [
     # 비동기 요청
     path('ajax/test', ajax_sample, name='ajax_sample'),
     path('eplan/detail/', get_detail_eval_plan, name='eplan_detail'),
-    path('eplan/save', save_eval_plan, name='eplan_save')
+    path('eplan/save', save_eval_plan, name='eplan_save'),
+
+
+    # 평가문항 관리 메인 이동
+    path('eques/', get_all_question, name='eval_ques', kwargs={'app_name': app_name, 'app_category_name': app_category_name, 'page_name': '평가문항관리'}),
+    path('eques/add', ajax_add_question, name='add_question'),
+    path('eques/ques', get_question, name='get_question'),
+    path('eques/save', save_question, name='save_question'),
+    path('eques/eitem', ajax_get_eval_item, name='get_eval_item'),
+
 ]

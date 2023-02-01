@@ -1,0 +1,13 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-5">
+            {% include 'eval_ques/eval_ques_list.html' %}
+        </div>
+        <div class="col-md-7">
+            {% include 'eval_ques/eval_ques_detail.html' %}
+        </div>
+
+    </div>
+{% endblock %}
