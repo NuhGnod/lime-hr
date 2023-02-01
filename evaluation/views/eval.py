@@ -13,7 +13,7 @@ from config.utils import dict_fetchall, count_fetchall
 from management.models import CommCd
 from accounts.models import EusoMem
 from django.db import transaction
-
+from django.db.models import Max
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -146,7 +146,7 @@ def get_all_evaluation(request, pk, *args, **kwargs):
                            {"mem_no": request.user.id, "eval_plan_no": eval_plan_no})
     eval_list = dict_fetchall(sql)
     if len(eval_list) <= 0:
-        return HttpResponseRedirect(reverse('evaluation:eval_complete', kwargs={**kwargs}))
+        return HttpResponseRedirect(reverse('evaluation:eval_complete'))
 
     # 평가대상
     eval_target = eval_list[0]
@@ -167,11 +167,14 @@ def get_all_evaluation(request, pk, *args, **kwargs):
                                           eval_sheet_no=eval_sheet_no,
                                           eval_plan_no=eval_plan_no)
 
+    max_stat_cd = eval_qs.aggregate(Max('eval_stat_cd'))
+    print(max_stat_cd)
     # 평가항목 결과가 저장되어있지않으면 insert
     if len(eval_qs) <= 0:
         insert_sql = render_to_string('sql/eval/insert_ablt_eval_item.sql',
                                       {"mem_no": request.user.id, "eval_rel_no": eval_rel_no,
                                        "eval_trgt_clss": eval_trgt_clss, "eval_plan_no": eval_plan_no})
+
         insert_cnt = count_fetchall(insert_sql)
         print("-----------------------------------")
         print("insert : ", insert_cnt)

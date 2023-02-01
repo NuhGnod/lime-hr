@@ -73,6 +73,7 @@ class EvalRel(models.Model):
         managed = False
         db_table = 'eval_rel'
 
+
 class AbltEvalQues(models.Model):
     eval_sheet_no = models.OneToOneField('EvalSheet', models.DO_NOTHING, db_column='eval_sheet_no', primary_key=True)
     ablt_ques_no = models.ForeignKey('AbltQuesPool', models.DO_NOTHING, db_column='ablt_ques_no')
@@ -122,6 +123,7 @@ class AbltEvalRslt(models.Model):
     reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
     del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
+    eval_stat_cd = models.CharField(max_length=10)
 
     class Meta:
         managed = True
