@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from mdm.models import EvalPlan, EvalSheet
 from management.models import CommCd
+from mdm.models import AbltEvalQues, AbltQuesPool, EvalItem
 
 
 
@@ -51,12 +52,6 @@ class CreateEvalPlanSerializer(serializers.ModelSerializer):
                   'sf_eval_wght', 's_eval_wght', 'm_eval_wght', 'j_eval_wght', 't_eval_wght', 'p_eval_wght',
                   'reg_mem_no', 'modf_mem_no'
             ]
-
-from rest_framework import serializers
-
-from management.models import CommCd
-from management.serializers import CommCdSerializer
-from mdm.models import EvalSheet, AbltEvalQues, AbltQuesPool, EvalItem
 
 
 class EvalSheetSerializer(serializers.ModelSerializer):
