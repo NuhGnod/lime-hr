@@ -13,7 +13,7 @@ from config.utils import dict_fetchall, count_fetchall
 from management.models import CommCd
 from accounts.models import EusoMem
 from django.db import transaction
-
+from django.db.models import Max
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -27,7 +27,7 @@ def evaluation_main(request, *args, **kwargs):
     query_params = request.GET
     eval_plan_no = query_params.get('id')
     eval_plan_list = EvalPlan.objects.filter(del_yn='N', eval_strt_dt__lte=datetime.date.today(),
-                                             eval_end_dt__gte=datetime.date.today())
+                                             eval_end_dt__gte=datetime.date.today()).order_by('-eval_strt_dt')
 
     # 평가계획이 선택된게 없을때 제일 첫번째 평가계획이 선택되도록 redirect
     if eval_plan_no is None:
@@ -107,17 +107,17 @@ def calc_eval_progress(mem_no, eval_plan_no):
             sub_stat = None
 
     if tot_superior_cnt == superior_cnt:
-        if tot_sub_cnt != 0:
+        if tot_superior_cnt != 0:
             superior_stat = 'Y'
         else:
             superior_stat = None
     if tot_colleague_cnt == colleague_cnt:
-        if tot_sub_cnt != 0:
+        if tot_colleague_cnt != 0:
             colleague_stat = 'Y'
         else:
             colleague_stat = None
     if tot_self_cnt == self_cnt:
-        if tot_sub_cnt != 0:
+        if tot_self_cnt != 0:
             self_stat = 'Y'
         else:
             self_stat = None
@@ -146,7 +146,7 @@ def get_all_evaluation(request, pk, *args, **kwargs):
                            {"mem_no": request.user.id, "eval_plan_no": eval_plan_no})
     eval_list = dict_fetchall(sql)
     if len(eval_list) <= 0:
-        return HttpResponseRedirect(reverse('evaluation:eval_complete', kwargs={**kwargs}))
+        return HttpResponseRedirect(reverse('evaluation:eval_complete'))
 
     # 평가대상
     eval_target = eval_list[0]
@@ -167,12 +167,16 @@ def get_all_evaluation(request, pk, *args, **kwargs):
                                           eval_sheet_no=eval_sheet_no,
                                           eval_plan_no=eval_plan_no)
 
+    max_stat_cd = eval_qs.aggregate(Max('eval_stat_cd'))
+
     # 평가항목 결과가 저장되어있지않으면 insert
     if len(eval_qs) <= 0:
         insert_sql = render_to_string('sql/eval/insert_ablt_eval_item.sql',
                                       {"mem_no": request.user.id, "eval_rel_no": eval_rel_no,
                                        "eval_trgt_clss": eval_trgt_clss, "eval_plan_no": eval_plan_no})
+
         insert_cnt = count_fetchall(insert_sql)
+
         print("-----------------------------------")
         print("insert : ", insert_cnt)
         print("-----------------------------------")

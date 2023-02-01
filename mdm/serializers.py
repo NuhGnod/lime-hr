@@ -100,6 +100,23 @@ class joinEvalItemSerializer(serializers.ModelSerializer):
                   'modf_mem_no',
                   'del_yn',
                   'cd_nm']
+class EvalItemSerializer(serializers.ModelSerializer):
+    cd_nm = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = EvalItem
+        fields = [
+            'eval_item_no',
+            'eval_item_clss',
+            'item_nm',
+            'item_desc',
+            'reg_dt',
+            'modf_dt',
+            'reg_mem_no',
+            'modf_mem_no',
+            'del_yn',
+            'cd_nm'
+        ]
 
     def get_cd_nm(self, obj):
         eval_item_clss = obj.eval_item_clss
@@ -170,3 +187,23 @@ class AbltEvalQuesSerializer(serializers.ModelSerializer):
         trgt = obj.eval_trgt_clss
         first = CommCd.objects.filter(comm_cd=trgt).first()
         return str(first.cd_nm)
+class QuesPoolSerializer(serializers.ModelSerializer):
+    eval_item_no = EvalItemSerializer(read_only=True)
+
+    class Meta:
+        model = AbltQuesPool
+        fields = '__all__'
+
+
+class CreateQuesPoolSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AbltQuesPool
+        fields = [
+            'eval_item_no',
+            'question',
+            'rslt_msr_type',
+            'ans_type',
+            'reg_mem_no',
+            'modf_mem_no',
+        ]

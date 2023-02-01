@@ -1,0 +1,4 @@
+<option value="선택">=========선택=========</option>
+{% for eval_item in eval_item_list %}
+    <option value="{{ eval_item.eval_item_no }}">{{ eval_item.item_nm }}</option>
+{% endfor %}

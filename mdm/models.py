@@ -104,7 +104,7 @@ class AbltQuesPool(models.Model):
     modf_mem_no = models.IntegerField(blank=True, null=True)
     reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
-    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
+    del_yn = models.CharField(max_length=1, blank=True, null=True, default='N')
 
     class Meta:
         managed = True
@@ -124,6 +124,7 @@ class AbltEvalRslt(models.Model):
     reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
     del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
+    eval_stat_cd = models.CharField(max_length=10)
 
     class Meta:
         managed = True

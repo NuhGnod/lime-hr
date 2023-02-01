@@ -11,6 +11,7 @@ urlpatterns = [
     path('form/complete', complete_evaluation, name='eval_complete', kwargs={'app_name': app_name, 'app_category_name': app_category_name, 'page_name': '역량평가'}),
     
     #평가 결과관리
-    path('rslt', get_evaluation_rslt, name='eval_rslt', kwargs={'app_name': app_name, 'app_category_name': app_category_name, 'page_name': '평가결과관리'})
+    path('rslt', get_evaluation_rslt, name='eval_rslt', kwargs={'app_name': app_name, 'app_category_name': app_category_name, 'page_name': '평가결과관리'}),
+    path('rslt/rslt_excel_download', excel_download, name='rslt_excel_download')
 
 ]

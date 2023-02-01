@@ -1,0 +1,164 @@
+<div id="ques_pool_detail">
+<div class="box" id="detail">
+
+    <div class="box-header">
+        <h3 class="box-title">평가문항 상세정보</h3>
+        <div class="pull-right">
+            <button type="button" class="btn btn-primary btn-sm" id="saveButton">저장</button>
+            <button type="button" class="btn btn-danger btn-sm " id="deleteButton">삭제</button>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body" style="margin:auto; width: 95%">
+        <form>
+            <div class="form-group">
+                <label>문항분류</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                <select class="form-control" style="width:24%; display:inline-block" id="main-category">
+                    <option value="선택">=========선택=========</option>
+                    {% for i in eval_item_clss %}
+                        {% if i.cd_nm == ablt_ques.eval_item_no.cd_nm %}
+                            <option selected>{{ i.cd_nm }}</option>
+                        {% else %}
+                            <option>{{ i.cd_nm }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                <select class="form-control" style="width:24%; display:inline-block" id="detail-category">
+                    <option value="선택">=========선택=========</option>
+                    {% for i in eval_item_list %}
+                        {% if i.eval_item_no == ablt_ques.eval_item_no.eval_item_no %}
+                            <option selected value="{{ i.eval_item_no }}">{{ i.item_nm }}</option>
+                        {% else %}
+                            <option value="{{ i.eval_item_no }}">{{ i.item_nm }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>평가문항</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="text" class="form-control" id="question" placeholder="문항 입력" style="width:50%; display:inline-block" value = "{{ ablt_ques.question }}">
+            </div>
+
+            <div class="form-group">
+                <label>결과단위</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="text" class="form-control" id="result_measure" placeholder="문항 입력"
+                       style="width:50%; display:inline-block" value= "{{ ablt_ques.rslt_msr_type|default:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label>선택지</label>
+                <div class="box">
+                    <div class="box-header with-border" style="margin:auto; width: 95%">
+                        <div class="form-group">
+                            <label>답변형식</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <select class="form-control" style="width:20%; display:inline-block" id="answerFormat">
+                                {% for i in ans_type_list %}
+                                    {% if i.comm_cd == ablt_ques.ans_type %}
+                                        <option selected value="{{ i.comm_cd }}">{{ i.cd_nm }}</option>
+                                    {% else %}
+                                        <option value="{{ i.comm_cd }}">{{ i.cd_nm }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div id="answer">
+                            <table id='answer' class='table table-bordered table-hover'>
+                                <thead>
+                                <tr>
+                                    <th>번호</th>
+                                    <th>답변</th></tr>
+                                </thead>
+                                <tbody id='tableBody'>
+                                {% for i in ques_opt_cd %}
+                                    <tr style="cursor:pointer;">
+                                        <td></td>
+                                        <td>{{ i.cd_nm }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right" id="addButton">추가</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+</div>
+
+<script>
+    $.ajaxSetup({
+        headers: {"X-CSRFToken": '{{csrf_token}}'}
+    });
+
+    let answer = document.getElementById("answer");
+    let answerFormat = document.getElementById("answerFormat");
+
+    function saveQuestion() {
+        $.ajax({
+            url: "{% url 'mdm:save_question' %}",
+            type: 'POST',
+            dataType: "json",
+            data: {
+                'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}',
+                'eval_item_no': document.getElementById("detail-category").value,
+                'question': document.getElementById("question").value,
+                'rslt_msr_type' : document.getElementById("result_measure").value,
+                'ans_type': answerFormat.value,
+            },
+            success: function(){
+                window.location.href = '{% url 'mdm:eval_ques' %}'
+            },
+            error: function(res){
+                if(res.status == 400) {
+                    alert("소분류를 선택해주세요")
+                }
+            }
+        })
+    }
+
+    function deleteQuestion() {
+        $.ajax({
+            url: "{% url 'mdm:get_question' %}",
+            type: "DELETE",
+            datatype: "json",
+            data: {
+                'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}'
+            },
+            success: function(){
+                window.location.href = '{% url 'mdm:eval_ques' %}'
+            },
+            error: function(res) {
+                if (res.status == 400) {
+                    alert("삭제할 문항이 없습니다")
+                }
+            }
+        })
+    }
+
+    function selectMainCategory() {
+        $.ajax({
+                url: "{% url 'mdm:get_eval_item' %}",
+                type: 'GET',
+                datatype: "json",
+                data: {
+                    'cd_nm': $('#main-category').val()
+                },
+                success: function(res){
+                    $('#detail-category').html(res)
+                }
+        })
+    }
+
+    $("#saveButton").on("click", saveQuestion);
+    $("#deleteButton").on("click", deleteQuestion);
+    $('#main-category').on("change", selectMainCategory);
+</script>
+
