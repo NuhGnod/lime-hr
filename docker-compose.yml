@@ -37,6 +37,10 @@ services:
     stdin_open: true
     tty: true
     restart: always
+    networks:
+      - hrm_network
+
+
 networks:
   defalut:
     external:
