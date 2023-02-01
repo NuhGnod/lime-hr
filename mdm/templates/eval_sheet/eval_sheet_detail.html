@@ -6,21 +6,43 @@
         <div class="box-tools pull-right">
             <div class="btn-group">
 
-                <button type="button" class="btn btn-default btn-sm" onclick="test_ajax()">수정</button>
-                <button type="button" class="btn btn-danger btn-sm" >삭제</button>
+                <button type="button" class="btn btn-default btn-sm" onclick="save_ajax()">저장</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="delete_ajax()">삭제</button>
             </div>
         </div>
         <!-- /.box-tools -->
         <form role="form">
             <div class="box-body">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">평가지 명</label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="평가지명을 입력">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">비 고</label>
-                    <textarea class="form-control" rows="3" placeholder="비고 입력"></textarea>
-                </div>
+                {% for sheet in eval_sheet %}
+                    <div class="form-group">
+                        <label class="eval_sheet_no_pk" id="{{ sheet.eval_sheet_no }}" for="sheet_nm">평가지 명</label>
+                        <input type="text" class="form-control" id="sheet_nm" placeholder="평가지명을 입력"
+                               value="{{ sheet.sheet_nm }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="sheet_desc">평가지 설명</label>
+                        <textarea id="sheet_desc" class="form-control" rows="3"
+                                  placeholder="평가지 설명">{{ sheet.sheet_desc }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="eval_clss">평가 구분</label>
+
+                        <select class="eval_clss_select" id="eval_clss" class="" placeholder="평가 구분">
+                            {% for i in eval_clss_list %}
+                                {% if sheet.eval_clss == i.comm_cd %}
+
+                                    <option selected="selected" class="{{ i.hi_comm_cd }}"
+                                            id="{{ i.comm_cd }}">{{ i.cd_nm }}</option>
+                                {% else %}
+                                    <option class="{{ i.hi_comm_cd }} " id="{{ i.comm_cd }}">{{ i.cd_nm }}</option>
+
+                                {% endif %}
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                {% endfor %}
 
             </div>
 
@@ -30,46 +52,267 @@
     </div>
     <!-- /.box-header -->
     <div class="nav-tabs-custom">
+
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab_1" data-toggle="tab">자기역량평가</a></li>
-            <li><a href="#tab_2" data-toggle="tab">동료역량평가</a></li>
-            <li><a href="#tab_3" data-toggle="tab">상사역량평가</a></li>
+            <li class="active"><a id="CC009004" href="#tabCC009004" data-toggle="tab">자기역량평가</a></li>
+            <li><a id="CC009003" href="#tabCC009003" data-toggle="tab">동료역량평가</a></li>
+            <li><a id="CC009002" href="#tabCC009002" data-toggle="tab">상사역량평가</a></li>
+            <li><a id="CC009001" href="#tabCC009001" data-toggle="tab">부하역량평가</a></li>
 
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="tab_1">
-                <b>How to use:</b>
+            <div class="tab-pane active" id="tabCC009004">
 
-                <p>Exactly like the original bootstrap tabs except you should use
-                    the custom wrapper <code>.nav-tabs-custom</code> to achieve this style.</p>
-                A wonderful serenity has taken possession of my entire soul,
-                like these sweet mornings of spring which I enjoy with my whole heart.
-                I am alone, and feel the charm of existence in this spot,
-                which was created for the bliss of souls like mine. I am so happy,
-                my dear friend, so absorbed in the exquisite sense of mere tranquil existence,
-                that I neglect my talents. I should be incapable of drawing a single stroke
-                at the present moment; and yet I feel that I never was a greater artist than now.
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">평가 문항</h3>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#create-eval-sheet-modal">추가
+                            </button>
+
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover eval_sheet_detail_ques_list">
+                            <thead>
+                            <tr style="cursor:pointer">
+                                <th class="text-center" style="width: 15%">No</th>
+                                <th class="text-center">분류</th>
+                                <th class="text-center">소분류</th>
+                                <th class="text-center">항목</th>
+                                <th class="text-center">답변형식</th>
+                                <th class="text-center">답 갯수</th>
+                                <th class="text-center">순서</th>
+{#                                <th class="text-center">평가대상</th>#}
+                                <th class="text-center">/</th>
+                            </tr>
+                            </thead>
+                            <tbody class="ques_tbody">
+                            {% for i in ablt_ques_no_list %}
+                                {% if i.eval_trgt_clss == "CC009004" %}
+                                    <tr class="text-center">
+                                        <td id="{{ i.ablt_ques_no.ablt_ques_no }}"> {{ i.ablt_ques_no.ablt_ques_no }}</td>
+                                        <td> {{ i.ablt_ques_no.eval_item_no.cd_nm }}</td>
+                                        <td> {{ i.ablt_ques_no.eval_item_no.item_nm }}</td>
+                                        <td> {{ i.ablt_ques_no.question }}</td>
+                                        <td> {{ i.ablt_ques_no.ans_type_nm }}</td>
+                                        <td><input></td>
+                                        <td><input></td>
+{#                                        <td id="CC009004">자기</td>#}
+
+                                        <td>
+                                            <button id="{{ i.ablt_ques_no.ablt_ques_no }}" type="button" class="btn btn-danger btn-sm delete_eval_ques_ajax">
+                                                삭제
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                {% endif %}
+
+                            {% endfor %}
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+
+                </div>
             </div>
             <!-- /.tab-pane -->
-            <div class="tab-pane" id="tab_2">
-                The European languages are members of the same family. Their separate existence is a myth.
-                For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ
-                in their grammar, their pronunciation and their most common words. Everyone realizes why a
-                new common language would be desirable: one could refuse to pay expensive translators. To
-                achieve this, it would be necessary to have uniform grammar, pronunciation and more common
-                words. If several languages coalesce, the grammar of the resulting language is more simple
-                and regular than that of the individual languages.
+            <div class="tab-pane" id="tabCC009003">
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">평가 문항</h3>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#create-eval-sheet-modal">추가
+                            </button>
+
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover eval_sheet_detail_ques_list">
+                            <thead>
+                            <tr style="cursor:pointer">
+                                <th class="text-center" style="width: 15%">No</th>
+                                <th class="text-center">분류</th>
+                                <th class="text-center">소분류</th>
+
+                                <th class="text-center">항목</th>
+                                <th class="text-center">답변형식</th>
+                                <th class="text-center">답 갯수</th>
+
+                                <th class="text-center">순서</th>
+
+
+                                <th class="text-center">/</th>
+                            </tr>
+                            </thead>
+                            <tbody class="ques_tbody">
+                            {% for i in ablt_ques_no_list %}
+                                {% if i.eval_trgt_clss == "CC009003" %}
+                                    <tr class="text-center">
+                                        <td> {{ i.ablt_ques_no.ablt_ques_no }}</td>
+                                        <td> {{ i.ablt_ques_no.eval_item_no.cd_nm }}</td>
+                                        <td> {{ i.ablt_ques_no.eval_item_no.item_nm }}</td>
+                                        <td> {{ i.ablt_ques_no.question }}</td>
+                                        <td> {{ i.ablt_ques_no.ans_type_nm }}</td>
+                                        <td><input></td>
+                                        <td><input></td>
+{#                                        <td id="CC009003">동료</td>#}
+
+                                        <td>
+                                            <button id="{{ i.ablt_ques_no.ablt_ques_no }}" type="button" class="btn btn-danger btn-sm delete_eval_ques_ajax" >
+                                                삭제
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                {% endif %}
+
+                            {% endfor %}
+
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+
+                </div>
             </div>
             <!-- /.tab-pane -->
-            <div class="tab-pane" id="tab_3">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                It has survived not only five centuries, but also the leap into electronic typesetting,
-                remaining essentially unchanged. It was popularised in the 1960s with the release of
-                Letraset
-                sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
-                like Aldus PageMaker including versions of Lorem Ipsum.
+            <div class="tab-pane" id="tabCC009002">
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">평가 문항</h3>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#create-eval-sheet-modal">추가
+                            </button>
+
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover eval_sheet_detail_ques_list">
+                            <thead>
+                            <tr style="cursor:pointer">
+                                <th class="text-center" style="width: 15%">No</th>
+                                <th class="text-center">분류</th>
+                                <th class="text-center">소분류</th>
+                                <th class="text-center">항목</th>
+                                <th class="text-center">답변형식</th>
+                                <th class="text-center">답 갯수</th>
+
+                                <th class="text-center">순서</th>
+
+
+                                <th class="text-center">/</th>
+                            </tr>
+                            </thead>
+                            <tbody class="ques_tbody">
+                            {% for i in ablt_ques_no_list %}
+                                {% if i.eval_trgt_clss == "CC009002" %}
+                                    <tr class="text-center">
+                                        <td> {{ i.ablt_ques_no.ablt_ques_no }}</td>
+                                        <td> {{ i.ablt_ques_no.eval_item_no.cd_nm }}</td>
+                                        <td> {{ i.ablt_ques_no.eval_item_no.item_nm }}</td>
+                                        <td> {{ i.ablt_ques_no.question }}</td>
+                                        <td> {{ i.ablt_ques_no.ans_type_nm }}</td>
+                                        <td><input></td>
+                                        <td><input></td>
+{#                                        <td id="CC009002">상사</td>#}
+
+                                        <td>
+                                            <button id="{{ i.ablt_ques_no.ablt_ques_no }}" type="button" class="btn btn-danger btn-sm delete_eval_ques_ajax" >
+                                                삭제
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                {% endif %}
+
+                            {% endfor %}
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+
+                </div>
+            </div>
+            <div class="tab-pane" id="tabCC009001">
+
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">평가 문항</h3>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#create-eval-sheet-modal">추가
+                            </button>
+
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover eval_sheet_detail_ques_list">
+                            <thead>
+                            <tr style="cursor:pointer">
+                                <th class="text-center" style="width: 15%">No</th>
+                                <th class="text-center">분류</th>
+                                <th class="text-center">소분류</th>
+                                <th class="text-center">항목</th>
+                                <th class="text-center">답변형식</th>
+                                <th class="text-center">답 갯수</th>
+
+                                <th class="text-center">순서</th>
+
+
+                                <th class="text-center">/</th>
+                            </tr>
+                            </thead>
+                            <tbody class="ques_tbody">
+                            {% for i in ablt_ques_no_list %}
+
+
+                                {% if i.eval_trgt_clss == "CC009001" %}
+                                    <tr class="text-center">
+                                        <td> {{ i.ablt_ques_no.ablt_ques_no }}</td>
+                                        <td> {{ i.ablt_ques_no.eval_item_no.cd_nm }}</td>
+                                        <td> {{ i.ablt_ques_no.eval_item_no.item_nm }}</td>
+                                        <td> {{ i.ablt_ques_no.question }}</td>
+                                        <td> {{ i.ablt_ques_no.ans_type_nm }}</td>
+                                        <td><input></td>
+                                        <td><input></td>
+{#                                        <td id="CC009001">부하</td>#}
+
+                                        <td>
+
+                                            <button id="{{ i.ablt_ques_no.ablt_ques_no }}" type="button" class="btn btn-danger btn-sm delete_eval_ques_ajax">
+                                                삭제
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                {% endif %}
+
+                            {% endfor %}
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+
+                </div>
             </div>
             <!-- /.tab-pane -->
         </div>
@@ -80,16 +323,97 @@
 </div>
 
 <script>
-    function test_ajax(){
+    var activeTab = "CC009004"
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        activeTab = $(e.target)[0].id;
+    })
+    $.ajaxSetup({
+        headers: {"X-CSRFToken": '{{csrf_token}}'}
+    });
+    $(".delete_eval_ques_ajax").on("click", delete_eval_ques_ajax)
+ function delete_eval_ques_ajax() {
+
         $.ajax({
-            url: "{% url 'mdm:ajax_sample' %}",
-            type: "GET",
+           url: "{% url 'mdm:eval_ques_delete' %}",
+           type:"DELETE",
+           datatype: "json",
+           data: {
+                'eval_trgt_clss':activeTab,
+                'ablt_ques_no' : $(this)[0].id,
+               'eval_sheet_no' :$(".eval_sheet_no_pk")[0].id,
+               'del_yn' : 'Y'
+           },
+           success:function (data){
+                if (data.status == 405){
+                        alert(`삭제 할 수 없는 평가지입니다. \n (이미 평가된 기록이 있습니다.)`)
+                }else if(data.status == 204) {
+                    alert(`평가항목이 삭제되었습니다.`)
+                }
+           },
+       })
+
+    }
+    function delete_ajax() {
+
+        $.ajax({
+           url: "{% url 'mdm:eval_sheet' %}",
+           type:"DELETE",
+           datatype: "json",
+           data: {
+
+               'eval_sheet_no' :$(".eval_sheet_no_pk")[0].id,
+               'del_yn' : 'Y'
+           },
+           success:function (data){
+           if (data.status == 405){
+               alert(`삭제 할 수 없는 평가지입니다. \n (이미 평가된 기록이 있습니다.)`)
+           }else if(data.status == 204) {
+                    alert(`평가지가 삭제되었습니다.`)
+                    window.location.reload()
+                }
+           else{
+               alert(`알수없는 에러?`)
+           }
+
+
+           },
+       })
+    }
+
+    function save_ajax() {
+        targetTab = "tab"+activeTab
+        if (targetTab === "tabCC009004") {
+            console.log(`###############################################`)
+        }
+        var rowdata = []
+        var rowarr = []
+
+        rownum = $(`#${targetTab} .ques_tbody`).children().length;
+        for (let i = 0; i < rownum; i++) {
+            rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children()[0].innerText)
+            rowdata.push(activeTab) // 평가대상
+
+            rowarr.push(rowdata)
+            rowdata = []
+        }
+
+        $.ajax({
+            url: "{% url 'mdm:eval_sheet' %}",
+            type: "POST",
             datatype: "json",
             data: {
-                'value': "테스트 데이터"
+                'origin_eval_sheet_no' :Number($(".eval_sheet_no_pk")[0].id),
+                'eval_clss': $("#eval_clss option:selected")[0].id,
+                'sheet_nm': $("#sheet_nm").val(),
+                'sheet_desc': $("#sheet_desc").val(),
+                'ablt_ques_no': rowarr,
+
             },
-            success: function(data){
-                console.log("data : ", data.test)
+            success: function (data) {
+                window.location.reload();
+
+
             }
         })
     }

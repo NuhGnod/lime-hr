@@ -3,6 +3,9 @@ from rest_framework import serializers
 
 from mdm.models import EvalPlan, EvalSheet, EvalItem, AbltQuesPool
 from management.models import CommCd
+from mdm.models import AbltEvalQues
+
+
 
 
 class GetEvalPlanSerializer(serializers.ModelSerializer):
@@ -51,6 +54,52 @@ class CreateEvalPlanSerializer(serializers.ModelSerializer):
             ]
 
 
+class EvalSheetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EvalSheet
+        fields = ['eval_sheet_no',
+                  'eval_clss',
+                  'sheet_nm',
+                  'sheet_desc',
+                  'reg_mem_no',
+                  'modf_mem_no',
+                  'reg_dt',
+                  'modf_dt',
+                  'del_yn']
+
+
+class getQues(serializers.ModelSerializer):
+    class Meta:
+        model = EvalSheet
+        fields = ['eval_sheet_no',
+                  'eval_clss',
+                  'sheet_nm',
+                  'sheet_desc',
+                  'reg_mem_no',
+                  'modf_mem_no',
+                  'del_yn']
+
+
+class AbltQuesPoolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbltQuesPool
+        fields = '__all__'
+
+
+
+class joinEvalItemSerializer(serializers.ModelSerializer):
+    cd_nm = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = EvalItem
+        fields = ['eval_item_no',
+                  'eval_item_clss',
+                  'item_nm',
+                  'item_desc',
+                  'reg_mem_no',
+                  'modf_mem_no',
+                  'del_yn',
+                  'cd_nm']
 class EvalItemSerializer(serializers.ModelSerializer):
     cd_nm = serializers.SerializerMethodField(read_only=True)
 
@@ -75,6 +124,69 @@ class EvalItemSerializer(serializers.ModelSerializer):
         return str(comm_cd.cd_nm)
 
 
+class joinSerializer(serializers.ModelSerializer):
+    eval_item_no = joinEvalItemSerializer(allow_null=True)
+    ans_type_nm = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = AbltQuesPool
+        fields = ['ablt_ques_no',
+                  'eval_item_no',
+                  'question',
+                  'rslt_msr_type',
+                  'reg_mem_no',
+                  'modf_mem_no',
+                  'del_yn',
+                  'ans_type',
+                  'ans_type_nm']
+
+    def get_ans_type_nm(self, obj):
+        ans_type = obj.ans_type
+        type = CommCd.objects.filter(comm_cd=ans_type).first()
+        return str(type.cd_nm)
+
+
+class createAbltEvalQuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbltEvalQues
+        fields = '__all__'
+
+
+class getAbltEvalQuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AbltEvalQues
+        fields = ['eval_sheet_no',
+                  'ablt_ques_no',
+                  'eval_trgt_clss',
+                  'required_yn',
+                  'otpt_order',
+                  'del_yn',
+                  'ans_nmbr',
+                  'modf_mem_no',
+                  'reg_mem_no',
+                  ]
+class AbltEvalQuesSerializer(serializers.ModelSerializer):
+    ablt_ques_no = joinSerializer(allow_null=True)
+    eval_trgt_clss_nm = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = AbltEvalQues
+        fields = ['eval_sheet_no',
+                  'ablt_ques_no',
+                  'eval_trgt_clss',
+                  'required_yn',
+                  'otpt_order',
+                  'del_yn',
+                  'ans_nmbr',
+                  'modf_mem_no',
+                  'reg_mem_no',
+                  'eval_trgt_clss_nm'
+                  ]
+
+    def get_eval_trgt_clss_nm(self, obj):
+        trgt = obj.eval_trgt_clss
+        first = CommCd.objects.filter(comm_cd=trgt).first()
+        return str(first.cd_nm)
 class QuesPoolSerializer(serializers.ModelSerializer):
     eval_item_no = EvalItemSerializer(read_only=True)
 
@@ -95,3 +207,10 @@ class CreateQuesPoolSerializer(serializers.ModelSerializer):
             'reg_mem_no',
             'modf_mem_no',
         ]
+
+
+class DelEvalPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EvalPlan
+        fields = ["eval_plan_no", "modf_mem_no", "del_yn"]
+

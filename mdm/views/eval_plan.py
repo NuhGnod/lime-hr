@@ -1,13 +1,14 @@
 from datetime import datetime
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from management.models import CommCd
-from mdm.models import EvalPlan, EvalSheet
-
+from mdm.models import EvalPlan, EvalSheet, AbltEvalRslt
 from mdm.serializers import (
-    GetEvalPlanSerializer, GetEvalPlanDetailSerializer, GetEvalSheetSerializer, CreateEvalPlanSerializer
+    GetEvalPlanSerializer, GetEvalPlanDetailSerializer, GetEvalSheetSerializer, CreateEvalPlanSerializer, DelEvalPlanSerializer
     )
 from management.serializers import CommCdMapperSerializer
 # 평가지 view
@@ -96,6 +97,7 @@ def save_eval_plan(request):
     }
 
     if req['eval_plan_no']:
+        # TODO: 평가가 일어난 평가계획에 한해서는 수정을 할 수 없도록 해야함
         save_data["eval_plan_no"] = req['eval_plan_no']
         eval_plan_qs = EvalPlan.objects.get(pk=req['eval_plan_no'])
         eval_plan_serializer = CreateEvalPlanSerializer(eval_plan_qs, data=save_data, partial=True)
@@ -110,10 +112,34 @@ def save_eval_plan(request):
         eval_plan_serializer.save()
         return redirect('mdm:eval_plan')
     else:
-        return render(request, 'eval_plan/eplan_error_form.html', {'error': eval_plan_serializer.errors})
+        return render(request, 'eval_plan/eplan_error_form.html', {'error': eval_plan_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def del_eval_plan(request):
-    pass
+    req = request.data
+
+    if req["eval_clss"] == 'CC010002':
+        ablt_rslt_qs = AbltEvalRslt.objects.filter(eval_plan_no=req["eval_plan_no"])
+        if ablt_rslt_qs.exists():
+            return render(request, 'eval_plan/eplan_error_form.html', {'error': "이미 평가가 시작된 문항입니다. 삭제할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # TODO: t, p kpi 평가 결과 확인 조건 생성해야 함
+
+    save_data = {
+        "eval_plan_no": req["eval_plan_no"],
+        "modf_mem_no": request.user.id,
+        "del_yn": "Y"
+    }
+
+    eval_plan_qs = EvalPlan.objects.filter(pk=req["eval_plan_no"]).first()
+    eval_plan_serializer = DelEvalPlanSerializer(eval_plan_qs, data=save_data, partial=True)
+
+    if eval_plan_serializer.is_valid():
+        eval_plan_serializer.save()
+        return redirect(reverse('mdm:eval_plan'))
+    else:
+        return render(request, 'eval_plan/eplan_error_form.html', {'error': eval_plan_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    # TODO: 평가가 진행되지 않은 계획이라면 del_yn으로 논리적 삭제 진행

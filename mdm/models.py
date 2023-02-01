@@ -90,6 +90,7 @@ class AbltEvalQues(models.Model):
     class Meta:
         managed = True
         db_table = 'ablt_eval_ques'
+
         unique_together = (('eval_sheet_no', 'ablt_ques_no', 'eval_trgt_clss'),)
 
 

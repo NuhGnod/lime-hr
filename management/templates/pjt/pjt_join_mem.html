@@ -6,7 +6,6 @@
                 </h3>
             </div>
 
-
             <form class="form-horizontal" id="join_pjt_form">
                 {% csrf_token %}
                 <div class="box-body">
@@ -41,7 +40,7 @@
 
                     <!-- 참여 시작 및 종료일 입력 -->
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">참여시작 및 종료일</label>
+                        <label class="col-sm-2 control-label">참여 시작 및 종료일</label>
 
                         <div class="input-group col-sm-8">
                             <div class="input-group-addon">
@@ -60,6 +59,7 @@
         </div>
 
         <div id="error_box"></div>
+
 
         <div class="box" id="added_pjt_mem_ls">
             {% include 'pjt/pjt_mem_ls_form.html' %}

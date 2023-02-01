@@ -23,7 +23,7 @@
                         </tr>
                         {% for pjt in pjt_list %}
                         <tr onclick="doJoinPjtDisplay({{ pjt.pjt_no }})" style="cursor: pointer">
-                            <td>{{ pjt.pjt_no }}</td>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ pjt.pjt_nm }}</td>
                             <td>{{ pjt.start_dt }} ~ {{ pjt.end_dt }}</td>
                         </tr>
@@ -81,7 +81,7 @@
                     $('#join_pjt').html(html)
             })
             .fail(function (xhr, status, errorThrown) {
-                $('#join_pjt').html("오류 발생. <br>")
+                $('#error_box').html("오류 발생. <br>")
                     .append("오류명: " + errorThrown)
                 }
             )
