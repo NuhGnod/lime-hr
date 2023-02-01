@@ -207,3 +207,10 @@ class CreateQuesPoolSerializer(serializers.ModelSerializer):
             'reg_mem_no',
             'modf_mem_no',
         ]
+
+
+class DelEvalPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EvalPlan
+        fields = ["eval_plan_no", "modf_mem_no", "del_yn"]
+
