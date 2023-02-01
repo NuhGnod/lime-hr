@@ -6,7 +6,7 @@
         </button>
     </div>
     <!-- /.box-header -->
-    <div class="box-body table-responsive">
+    <div class="box-body table-responsive table-wrapper">
         <table class="table table table-hover">
             <thead>
             <tr>
@@ -35,6 +35,12 @@
         </table>
     </div>
 </div>
+<style>
+.table-wrapper{
+ height:700px;
+  overflow: auto;
+}
+</style>
 <script>
     $(".ctr").on("click", row_select);
 
