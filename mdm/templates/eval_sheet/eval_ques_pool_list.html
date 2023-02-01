@@ -1,0 +1,115 @@
+<div class="box box-primary">
+
+    <div class="box-header">
+        <h3 class="box-title">평가문항 목록</h3>
+        <button id="add_for_btn" style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가
+        </button>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive">
+        <table class="table table table-hover">
+            <thead>
+            <tr>
+                <th>No</th>
+                <th>대분류</th>
+                <th>소분류</th>
+                <th>항목</th>
+                <th>답변형식</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in full_data %}
+
+                <tr class="ques ctr">
+                    <td>            {{ i.ablt_ques_no }}
+                    </td>
+                    <td>{{ i.eval_item_no.cd_nm }}</td>
+
+                    <td>{{ i.eval_item_no.item_nm }}</td>
+                    <td>{{ i.question }}</td>
+                    <td>{{ i.ans_type_nm }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(".ctr").on("click", row_select);
+
+    function add_ques_pool() {
+        console.log(activeTab)
+
+        {#$.ajax({#}
+        {#    url: "{% url 'mdm:modal'%}",#}
+        {#    type: "POST",#}
+        {#    datatype: "json",#}
+        {#    data: {#}
+        {#        'eval_ques_no': $(".add_for").children()[0].innerText,#}
+        {#        'cd_nm': $(".add_for").children()[1].innerText,#}
+        {#        'item_nm': $(".add_for").children()[2].innerText,#}
+        {#        'question': $(".add_for").children()[3].innerText,#}
+        {#        'ans_type_nm': $(".add_for").children()[4].innerText,#}
+        {#    },#}
+        {#    success: function (data) {#}
+        {##}
+        {#        console.log(data)#}
+        {##}
+        {#    }#}
+        //  })
+        var insertTr = ""
+        insertTr += "<tr class='text-center ques_row'>";
+        insertTr += "<td>" + $(".add_for").children()[0].innerText + "</td>";
+        insertTr += "<td>" + $(".add_for").children()[1].innerText + "</td>";
+        insertTr += "<td>" + $(".add_for").children()[2].innerText + "</td>";
+        insertTr += "<td>" + $(".add_for").children()[3].innerText + "</td>";
+        insertTr += "<td>" + $(".add_for").children()[4].innerText + "</td>";
+        insertTr += "<td><input></input></td>";
+        insertTr += "<td><input></input></td>";
+        insertTr += "<td><button type='button' class='btn btn-danger btn-sm' onclick='delete_ajax()'>삭제</button></td>";
+
+        insertTr += "</tr>";
+        targetTab = "tab" + activeTab
+        flag = true
+
+        for(let i=0; i<$(`#${targetTab} tbody`).children().length; i++){
+                    console.log($(`#${targetTab} tbody`).children().eq(i).children()[0].innerText)
+                    if($(".add_for").children()[0].innerText == $(`#${targetTab} tbody`).children().eq(i).children()[0].innerText){
+                        console.log(`discorrect!!!`)
+                        flag=false
+                    }
+
+
+
+        }
+        if(flag == true){
+                        if (targetTab == "tabCC009004") {
+                            $("div[id=tabCC009004] .ques_tbody").append(insertTr);
+                        }
+                        if (targetTab == "tabCC009003") {
+                            $("div[id=tabCC009003] .ques_tbody").append(insertTr);
+                        }
+                        if (targetTab == "tabCC009002") {
+                            $("div[id=tabCC009002] .ques_tbody").append(insertTr);
+                        }
+                        if (targetTab == "tabCC009001") {
+                            $("div[id=tabCC009001] .ques_tbody").append(insertTr);
+                        }
+                    }
+    }
+
+    $("#add_for_btn").on("click", add_ques_pool);
+
+    function row_select() {
+        console.log($(this).html())
+        {#target_id = ($(this).children()[1].id)#}
+        console.log($(this).children()[0].innerText)
+        $(this).css("background-color", "silver");
+        $(".add_for").html($(this).html())
+        $(".add_for").attr('id', $(this).children()[0].innerText)
+
+    }
+
+
+</script>

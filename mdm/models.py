@@ -73,6 +73,7 @@ class EvalRel(models.Model):
         managed = False
         db_table = 'eval_rel'
 
+
 class AbltEvalQues(models.Model):
     eval_sheet_no = models.OneToOneField('EvalSheet', models.DO_NOTHING, db_column='eval_sheet_no', primary_key=True)
     ablt_ques_no = models.ForeignKey('AbltQuesPool', models.DO_NOTHING, db_column='ablt_ques_no')
@@ -89,6 +90,7 @@ class AbltEvalQues(models.Model):
     class Meta:
         managed = True
         db_table = 'ablt_eval_ques'
+
         unique_together = (('eval_sheet_no', 'ablt_ques_no', 'eval_trgt_clss'),)
 
 

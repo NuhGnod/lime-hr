@@ -24,6 +24,7 @@ def code(req):
     if req.method == 'DELETE':
         try:
             old_id = test['comm_cd']
+            print(test)
             obj = CommCd.objects.get(comm_cd=old_id)
             serializer = CommCdSerializer(obj, data=test, partial=True)
             serializer.is_valid()

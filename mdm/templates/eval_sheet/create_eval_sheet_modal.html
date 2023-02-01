@@ -8,11 +8,38 @@
                     <h4 class="modal-title">Default Modal</h4>
                 </div>
                 <div class="modal-body">
-                    <p>One fine body&hellip;</p>
+
+                    {#                    {% include 'eval_sheet/eval_ques_pool_list.html' %}#}
+                    {#                    <a href="{% url 'mdm:modal' %}"></a>#}
+                    <script>
+                        $.ajax({
+                            url: "{% url 'mdm:modal' %}",
+                            type: "GET",
+                            datatype: "json",
+
+                            success: function (data) {
+                                $(".modal-body").html(data)
+
+                            }
+                        })
+                    </script>
+                </div>
+                <div>
+                    <div><h3>선택된 문항</h3></div>
+                    <div>
+                        <table>
+
+                            <tbody>
+                            <tr class="add_for">
+
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
             <!-- /.modal-content -->

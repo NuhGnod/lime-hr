@@ -8,9 +8,11 @@ app_category_name = '기준정보 관리'
 
 urlpatterns = [
     # 평가지 관리 메인 이동
-    path('esheet/', get_all_evaluation_sheet, name='eval_sheet',
+    path('esheet/', sheet, name='eval_sheet',
          kwargs={'app_name': app_name, 'app_category_name': app_category_name, 'page_name': '평가지관리'}),
-    
+    path('esheet/modal', modal, name="modal"),
+    path('esheet/eval_ques', eval_ques_delete, name="eval_ques_delete"),
+    path('esheet/eval_sheet', create_eval_sheet, name="eval_sheet_add"),
     # 평가항목 관리 메인 이동
     path('eitem/', get_all_evaluation_item, name='eval_item',
          kwargs={'app_name': app_name, 'app_category_name': app_category_name, 'page_name': '평가항목관리'}),
@@ -23,4 +25,5 @@ urlpatterns = [
     path('ajax/test', ajax_sample, name='ajax_sample'),
     path('eplan/detail/', get_detail_eval_plan, name='eplan_detail'),
     path('eplan/save', save_eval_plan, name='eplan_save')
+
 ]
