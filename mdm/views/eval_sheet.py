@@ -70,6 +70,12 @@ def sheet(request, *args, **kwargs):
             sheet_serializer.save()
 
         else:
+            # 평가지 설문 결과 테이블을 참조하여 관련된 데이터가 존재할 시, 수정 불가
+            rslt_objects_filter = AbltEvalRslt.objects.filter(eval_sheet_no=reqdata['origin_eval_sheet_no'])
+            if len(rslt_objects_filter) > 0:
+                return JsonResponse({"status": status.HTTP_405_METHOD_NOT_ALLOWED,
+                                     })
+
             # 기존에 존재하는 평가지에서 저장버튼이 눌린 경우.
             # 무언가 수정되는 로직이다.
 
@@ -93,7 +99,9 @@ def sheet(request, *args, **kwargs):
                                            "modf_mem_no": reqdata.get('modf_mem_no')})
                 fetchall = dict_fetchall(string)
 
-        return Response(status=status.HTTP_200_OK)
+        return JsonResponse({
+            "status" : status.HTTP_200_OK
+        })
 
     if request.method == 'DELETE':
         # 평가지 삭제 로직
@@ -122,7 +130,6 @@ def modal(req):
         serializers = joinSerializer(related, many=True)
 
         return render(req, 'eval_sheet/eval_ques_pool_list.html', {'full_data': serializers.data})
-
 
 
 @api_view(['DELETE'])
