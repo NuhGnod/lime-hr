@@ -7,6 +7,10 @@ env = environ.Env(DEBUG=(bool, False))
 
 # 프로젝트 기본 경로 지정
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+ROOT_DIR = os.path.dirname(BASE_DIR)
+print("=======================")
+print(ROOT_DIR)
+print("=======================x")
 
 # env 파일 경로 지정
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
@@ -15,6 +19,7 @@ environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env('DEBUG')
 
 
 LOGIN_URL = reverse_lazy('accounts:login')
@@ -149,6 +154,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(ROOT_DIR, 'static')
 STATIC_URL = '/static/'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
