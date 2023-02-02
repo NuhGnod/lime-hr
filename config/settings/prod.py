@@ -6,7 +6,7 @@ ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': env.db_url(
-        'DEV_DATABASE_URL',
+        'DATABASE_URL',
         default='mysql://root:1q2w3e4r@172.7.0.251:3306/lime_hr_dev'
     ),
 }
