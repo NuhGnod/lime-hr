@@ -62,7 +62,7 @@
         flag = true
 
         for(let i=0; i<$(`#${targetTab} tbody`).children().length; i++){
-                    if($(".add_for").children()[0].innerText == $(`#${targetTab} tbody`).children().eq(i).children()[0].innerText){
+                    if($(".add_for").children()[0].innerText.trim() == $(`#${targetTab} tbody`).children().eq(i).children()[0].innerText.trim()){
                         flag=false
                     }
 
