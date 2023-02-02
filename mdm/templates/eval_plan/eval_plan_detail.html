@@ -2,7 +2,7 @@
 
 <div class="box">
     <div class="box-header">
-        <h3 class="box-title">평가계획 상세정보</h3>
+        <h3 class="box-title" id="detailHeader"><strong>평가계획 상세정보</strong></h3>
         <div class="form-group pull-right">
             <button id="evalPlanSave" type="submit" class="btn btn-primary btn-sm">저장</button>
             {% if eval_plan_detail.eval_plan_no %}
@@ -119,7 +119,7 @@
                         <label for="abltWghtSum">비중 합계</label>
                         <input id="abltWghtSum" type="text" class="form-control"
                                value="" disabled>
-                        <span class='help-block' style="display: none;">가중치 합이 100이 되도록 해주세요</span>
+                        <span class='help-block' style="display: none;"><small>가중치 합이 100이 되도록 해주세요</small></span>
                     </div>
                 </div>
             </div>
@@ -141,7 +141,7 @@
                         <label for="kpiWghtSum">비중 합계</label>
                         <input id="kpiWghtSum" type="text" class="form-control"
                                value="" disabled>
-                        <span class='help-block' style="display: none;">가중치 합이 100이 되도록 해주세요</span>
+                        <span class='help-block' style="display: none;"><small>가중치 합이 100이 되도록 해주세요</small></span>
                     </div>
                 </div>
             </div>
@@ -298,10 +298,6 @@
                     validate = true;
                 } else {
                     validate = false;
-                    swal({
-                        text: "역량평가 대상별 가중치의 합이 100이어야 합니다.",
-                        icon: "warning"
-                    })
                 }
             } else if ($("#evalClss").val() === "CC010001") {
                 let kpiWghtTot = kpiWghtSum();
@@ -309,10 +305,6 @@
                     validate = true;
                 } else {
                     validate = false;
-                    swal({
-                        text: "KPI 평가 대상별 가중치의 합이 100이어야 합니다.",
-                        icon: "warning"
-                    })
                 }
             }
 
@@ -339,7 +331,6 @@
                             $("#eplan_error").html(html)
                         } else {
                             $(window).prop("location", "{% url 'mdm:eval_plan' %}")
-
                         }
 
                     },
@@ -351,7 +342,7 @@
             } else {
                 swal({
                     text: "값을 확인해주세요",
-                    icon: "warning"
+                    icon: "warning",
                 })
             }
         })
@@ -359,40 +350,49 @@
         // 평가 계획 삭제
         {% if eval_plan_detail.eval_plan_no %}
             $("#evalPlanDel").click(function () {
-                $.ajaxSetup({
-                    headers: {'X-CSRFToken': '{{ csrf_token }}'}
-                });
+                swal({
+                    text: "{{ eval_plan_detail.eval_plan_nm }}을/를 삭제하시겠습니까?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true
+                }).then((value) => {
+                    console.log(value)
+                    if (value) {
 
-                $.ajax({
-                    url: "{% url 'mdm:eplan_del' %}",
-                    type: "POST",
-                    datatype: "json",
-                    data: {
-                        eval_plan_no: {{ eval_plan_detail.eval_plan_no }},
-                        eval_clss: $('#evalClss').val()
-                        },
-                    success : function (html, status, xhr) {
-                        if (xhr.statusText === "IM Used") {
-                            console.log(xhr)
-                            swal({
-                                text: "이미 진행중인 평가 계획입니다. 수정이나 삭제할 수 없습니다.",
-                                icon: "warning"
-                            }).then((value) => {
-                                $("#eplan_error").html(html);
-                                console.log(value)
-                            })
+                        $.ajaxSetup({
+                            headers: {'X-CSRFToken': '{{ csrf_token }}'}
+                        });
 
-                        } else {
-                            swal({
-                                text: "평가 계획이 삭제되었습니다.",
-                                icon: "success"
-                            }).then((value) => {
-                                $(window).prop("location", "{% url 'mdm:eval_plan' %}")
-                            })
-                        }
+                        $.ajax({
+                            url: "{% url 'mdm:eplan_del' %}",
+                            type: "POST",
+                            datatype: "json",
+                            data: {
+                                eval_plan_no: {{ eval_plan_detail.eval_plan_no }},
+                                eval_clss: $('#evalClss').val()
+                                },
+                            success : function (html, status, xhr) {
+                                if (xhr.statusText === "IM Used") {
+                                    swal({
+                                        text: "이미 진행중인 평가 계획입니다. 수정이나 삭제할 수 없습니다.",
+                                        icon: "warning"
+                                    }).then((value) => {
+                                        $("#eplan_error").html(html);
+                                    })
+
+                                } else {
+                                    swal({
+                                        text: "평가 계획이 삭제되었습니다.",
+                                        icon: "success"
+                                    }).then((value) => {
+                                        $(window).prop("location", "{% url 'mdm:eval_plan' %}")
+                                    })
+                                }
+                            }
+                        })
                     }
-                }
-            )
+                })
+
             })
         {% endif %}
 

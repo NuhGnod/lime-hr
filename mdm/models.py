@@ -2,15 +2,15 @@ from django.db import models
 
 
 class EvalItem(models.Model):
-    eval_item_no = models.AutoField(primary_key=True)
-    eval_item_clss = models.CharField(max_length=10, blank=True, null=True)
-    item_nm = models.CharField(max_length=100, blank=True, null=True)
-    item_desc = models.CharField(max_length=200, blank=True, null=True)
+    eval_item_no = models.AutoField(primary_key=True, verbose_name="ID")
+    eval_item_clss = models.CharField(max_length=10, blank=True, null=True, verbose_name="평가항목분류코드")
+    item_nm = models.CharField(max_length=100, blank=True, null=True, verbose_name="평가항목이름")
+    item_desc = models.CharField(max_length=200, blank=True, null=True, verbose_name="평가항목설명")
     reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
-    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
+    modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True, verbose_name="최종수정일")
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
-    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True)
+    del_yn = models.CharField(max_length=1, default='N', blank=True, null=True, verbose_name="삭제여부")
 
     class Meta:
         managed = True
