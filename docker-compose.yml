@@ -8,7 +8,6 @@ services:
       - ./static:/static
       - ./media:/media
       - ./.conf/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      - /data/log/nginx/error.log:/var/log/nginx/error.log
     ports:
       - "80:80"
       - "443:443"
