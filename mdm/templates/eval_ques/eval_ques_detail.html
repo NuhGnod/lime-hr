@@ -99,28 +99,68 @@
 
     let answer = document.getElementById("answer");
     let answerFormat = document.getElementById("answerFormat");
+    let question = document.getElementById("question");
+    let resultMeasureType = document.getElementById("result_measure");
 
     function saveQuestion() {
-        $.ajax({
-            url: "{% url 'mdm:save_question' %}",
-            type: 'POST',
-            dataType: "json",
-            data: {
-                'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}',
-                'eval_item_no': document.getElementById("detail-category").value,
-                'question': document.getElementById("question").value,
-                'rslt_msr_type' : document.getElementById("result_measure").value,
-                'ans_type': answerFormat.value,
-            },
-            success: function(){
-                window.location.href = '{% url 'mdm:eval_ques' %}'
-            },
-            error: function(res){
-                if(res.status == 400) {
-                    alert("소분류를 선택해주세요")
+        if (validInput()) {
+            $.ajax({
+                url: "{% url 'mdm:save_question' %}",
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}',
+                    'eval_item_no': document.getElementById("detail-category").value,
+                    'question': question.value,
+                    'rslt_msr_type': resultMeasureType.value,
+                    'ans_type': answerFormat.value
+                },
+                success: function (res) {
+                    if (res.status === 201) {
+                        swal({
+                            text: "저장되었습니다",
+                            icon: "success",
+                        }).then(() => {
+                            window.location.href = '{% url 'mdm:eval_ques' %}'
+                        })
+                    }
+                    if (res.status === 200) {
+                        swal({
+                            text: "수정되었습니다",
+                            icon: "success",
+                        }).then(() => {
+                            window.location.href = '{% url 'mdm:eval_ques' %}'
+                        })
+                    }
+                },
+                error: function (e) {
+                    if (e.status === 400) {
+                        swal({
+                            icon: "warning",
+                            text: "평가 항목을 선택해주세요"
+                        })
+                    }
                 }
-            }
-        })
+            })
+        }
+    }
+
+    function validInput() {
+        if(question.value === "") {
+            swal({
+                icon: "warning",
+                text: "평가 문항을 입력해주세요",
+            });
+            return false;
+        }
+        if(resultMeasureType.value === "") {
+            swal({
+                icon: "warning",
+                text: "결과 단위를 입력해주세요",
+            });
+            return false;
+        }
+        return true;
     }
 
     function deleteQuestion() {
@@ -131,13 +171,19 @@
             data: {
                 'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}'
             },
-            success: function(){
-                window.location.href = '{% url 'mdm:eval_ques' %}'
+            success: function () {
+                swal({
+                    text: "삭제되었습니다",
+                    icon: "success",
+                }).then(() => {
+                    window.location.href = '{% url 'mdm:eval_ques' %}'
+                })
             },
-            error: function(res) {
-                if (res.status == 400) {
-                    alert("삭제할 문항이 없습니다")
-                }
+            error: function() {
+                swal({
+                    text: "삭제할 문항을 선택해주세요",
+                    icon: "warning",
+                });
             }
         })
     }
@@ -160,4 +206,3 @@
     $("#deleteButton").on("click", deleteQuestion);
     $('#main-category').on("change", selectMainCategory);
 </script>
-
