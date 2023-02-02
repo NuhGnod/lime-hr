@@ -114,7 +114,7 @@ def sheet(request, *args, **kwargs):
                              })
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def modal(req):
     if (req.method == 'GET'):
@@ -122,8 +122,7 @@ def modal(req):
         serializers = joinSerializer(related, many=True)
 
         return render(req, 'eval_sheet/eval_ques_pool_list.html', {'full_data': serializers.data})
-    if req.method == 'POST':
-        dict(ablt_ques_no=req.data.get('ablt_ques_no'))
+
 
 
 @api_view(['DELETE'])
