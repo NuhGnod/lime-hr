@@ -1,20 +1,16 @@
 {% load static %}
 <script>
-$.ajaxSetup({
-    headers: { "X-CSRFToken": '{{csrf_token}}' }
-  });
+    $.ajaxSetup({
+        headers: {"X-CSRFToken": '{{csrf_token}}'}
+    });
+
     function delete_ajax() {
         const csrf_token = jQuery("[name=csrfmiddlewaretoken]").val();
-
-        console.log(csrf_token)
-        console.log($("#token").children(1).val())
         $.ajax({
             url: "{% url 'management:code'%}",
             type: "DELETE",
             datatype: "json",
-
             data: {
-                {#"csrfmiddlewaretoken": 'u7nyk2OuBWkKL2weqJI3Ip03CRAszqGxBukuhPGHHw75CEbOytm5dqspjsJKsoR9'#}
                 'comm_cd': $("#comm_cd").val(),
                 'hi_comm_cd': $("#hi_comm_cd").val(),
                 'cd_nm': $("#cd_nm").val(),
@@ -26,13 +22,25 @@ $.ajaxSetup({
                 'del_yn': "Y"
             },
             success: function (data) {
-                console.log("data : ", data)
+                swal({
+                    icon: "success",
+                    title: "공통코드가 삭제되었습니다."
+                })
+                    .then(()=>{
+                        window.location.reload()
+                    })
             }
         })
     }
 
     function save_ajax() {
-        console.log($("#cd_desc").val())
+        if($("#cd_nm").val() == ""){
+            swal({
+                icon:"warning",
+                title:"코드 이름을 입력해주세요."
+            })
+            return;
+        }
         $.ajax({
             url: "{% url 'management:code' %}",
             type: "POST",
@@ -51,9 +59,14 @@ $.ajaxSetup({
 
             },
             success: function (data) {
-                window.location.reload();
+                swal({
+                    icon: "success",
+                    title: "공통코드가 생성되었습니다."
+                }).then(() => {
+                    window.location.reload();
 
-                console.log("data : ", data)
+                })
+
 
             }
         })
@@ -85,18 +98,21 @@ $.ajaxSetup({
             <div class="box-body">
                 <div class="form-group">
                     <label for="comm_cd">공통 코드</label>
-                    <input type="text" name="comm_cd" class="form-control" id="comm_cd" placeholder="공통코드 입력" value="{{ code.comm_cd }}">
+                    <input type="text" name="comm_cd" class="form-control" id="comm_cd" placeholder="공통코드 입력"
+                           value="{{ code.comm_cd }}">
                 </div>
                 <div class="form-group">
                     <label for="hi_comm_cd">상위 코드</label>
-                    <input name="hi_comm_cd" class="form-control" id="hi_comm_cd" placeholder="상위코드 입력" value="{{ code.hi_comm_cd }}">
+                    <input name="hi_comm_cd" class="form-control" id="hi_comm_cd" placeholder="상위코드 입력"
+                           value="{{ code.hi_comm_cd }}">
                 </div>
                 <label for="cd_nm">코드 이름</label>
                 <input name="cd_nm" class="form-control" id="cd_nm" placeholder="코드 이름 입력" value="{{ code.cd_nm }}">
             </div>
             <div class="form-group">
                 <label for="cd_desc">코드 상세</label>
-                <input name="cd_desc" class="form-control" id="cd_desc" placeholder="코드 상세 입력" value="{{ code.cd_desc }}">
+                <input name="cd_desc" class="form-control" id="cd_desc" placeholder="코드 상세 입력"
+                       value="{{ code.cd_desc }}">
             </div>
             <div class="form-group">
                 <label for="etc_1">비고 1</label>
@@ -112,7 +128,8 @@ $.ajaxSetup({
             </div>
             <div class="form-group">
                 <label for="alias_cd">대체 코드</label>
-                <input name="alias_cd" class="form-control" id="alias_cd" placeholder="대체 코드 입력" value="{{ code.alias_cd }}">
+                <input name="alias_cd" class="form-control" id="alias_cd" placeholder="대체 코드 입력"
+                       value="{{ code.alias_cd }}">
             </div>
             <div class="form-group">
                 <label for="del_yn">삭제 여부</label>
