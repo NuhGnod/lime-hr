@@ -35,20 +35,20 @@ services:
     depends_on:
       - web
 
-  mariadb:
-    image: mariadb
-    container_name: hrm_db
-    restart: always
-    ports:
-      - "3306:3306"
-    env_file:
-      - .env.db
-    volumes:
-      - /data/DB/conf.d:/etc/mysql/conf.d
-      - /data/DB/data:/var/lib/mysql
-      - /data/DB/initdb.d:/docker-entrypoint-initdb.d
-    environment:
-      TZ: Asia/Seoul
+#  mariadb:
+#    image: mariadb
+#    container_name: hrm_db
+#    restart: always
+#    ports:
+#      - "3306:3306"
+#    env_file:
+#      - .env.db
+#    volumes:
+#      - /data/DB/conf.d:/etc/mysql/conf.d
+#      - /data/DB/data:/var/lib/mysql
+#      - /data/DB/initdb.d:/docker-entrypoint-initdb.d
+#    environment:
+#      TZ: Asia/Seoul
 
 volumes:
   static:
