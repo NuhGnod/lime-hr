@@ -7,8 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - static:/static/
-      - media:/media/
+      - static:/app/static/
+      - media:/app/media/
     ports:
       - "8000:8000"
     stdin_open: true
@@ -29,9 +29,9 @@ services:
       - type: bind
         source: ./.conf/nginx/nginx.conf
         target: /etc/nginx/conf.d/default.conf
-        read_only: true
     ports:
       - "80:80"
+      - "443:443"  
     depends_on:
       - web
 
