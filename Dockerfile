@@ -1,26 +1,24 @@
 FROM python:3.8-slim-buster AS builder
 
+WORKDIR /usr/src/app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
 RUN apt-get update && \
     apt-get install -y gcc default-libmysqlclient-dev libjpeg-dev vim && \
     apt-get install -y python3-pip
 
-ENV PYTHONUNBUFFERED=1
-
-COPY . /app
-
-WORKDIR /app
-
+COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
 RUN pip install django-debug-toolbar
 
+COPY ./server_start.sh /usr/src/app/server_start.sh
 
+COPY . /usr/src/app/
 
-# FROM python:3.8-slim-buster
-# COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
-# COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-# WORKDIR /djangoproject
+RUN chmod 755 /usr/src/app/server_start.sh
+RUN ["chmod", "+x", "/usr/src/app/entrypoint.sh"]
 
-
-COPY server_start.sh /app
-ENTRYPOINT ["sh", "/app/server_start.sh"]
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 

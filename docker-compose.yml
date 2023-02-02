@@ -1,6 +1,5 @@
 version: '3.2'
 services:
-
   web:
     container_name: hrm_web
     build:
@@ -16,22 +15,21 @@ services:
     restart: always
 
   nginx:
-    image: nginx
+    build:
+      context: .
+      dockerfile: nginx_Dockerfile
     container_name: hrm_nginx
     restart: always
     volumes:
       - type: volume
         source: ./static
-        target: /static
+        target: /usr/src/app/static
       - type: volume
         source: ./media
-        target: /media
-      - type: bind
-        source: ./.conf/nginx/nginx.conf
-        target: /etc/nginx/conf.d/default.conf
+        target: /usr/src/app/media
     ports:
       - "80:80"
-      - "443:443"  
+      - "443:443"
     depends_on:
       - web
 
