@@ -2,11 +2,11 @@
 
     <div class="box-header">
         <h3 class="box-title">평가문항 목록</h3>
-        <button id="add_for_btn" style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가
-        </button>
+{#        <button id="add_for_btn" style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가#}
+{#        </button>#}
     </div>
     <!-- /.box-header -->
-    <div class="box-body table-responsive table-wrapper">
+    <div class="box-body table-responsive table-wrapper row">
         <table class="table table table-hover">
             <thead>
             <tr>
@@ -85,13 +85,14 @@
                     }
     }
 
-    $("#add_for_btn").on("click", add_ques_pool);
+    {#$("#add_for_btn").on("click", add_ques_pool);#}
 
     function row_select() {
         {#target_id = ($(this).children()[1].id)#}
-        $(this).css("background-color", "silver");
+        {#$(this).css("background-color", "silver");#}
         $(".add_for").html($(this).html())
         $(".add_for").attr('id', $(this).children()[0].innerText)
+        add_ques_pool()
 
     }
 
