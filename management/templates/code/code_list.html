@@ -95,7 +95,6 @@
         $('#add').on("click", add_comm_cd);
 
         function add_comm_cd() {
-            console.log("asdadasdsadsadad")
             $.ajax({
                 url: "{% url 'management:code_add' %}",
                 type: "GET",

@@ -6,13 +6,13 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body table-responsive">
-        <table class="table table table-hover">
+        <table class="table table-hover" style="text-align: center">
             <thead>
             <tr>
-                <th>번호</th>
-                <th>대분류</th>
-                <th>소분류</th>
-                <th>문항</th>
+                <th class="text-center" style="width: 10%">번호</th>
+                <th class="text-center" style="width: 10%">대분류</th>
+                <th class="text-center" style="width: 25%">소분류</th>
+                <th class="text-center" style="width: 55%">문항</th>
             </tr>
             </thead>
             <tbody>
@@ -21,7 +21,7 @@
                     <td> {{ i.ablt_ques_no }} </td>
                     <td> {{ i.eval_item_no.cd_nm }}</td>
                     <td> {{ i.eval_item_no.item_nm }}</td>
-                    <td> {{ i.question }}</td>
+                    <td style="text-align: left"> {{ i.question }}</td>
                 </tr>
             {% endfor %}
             </tbody>

@@ -366,9 +366,22 @@
            },
            success:function (data){
                 if (data.status == 405){
-                        alert(`삭제 할 수 없는 평가지입니다. \n (이미 평가된 기록이 있습니다.)`)
+                    swal({
+                        title:"삭제 할 수 없는 평가항목입니다.",
+                        text:"이미 평가된 기록이 있습니다.",
+                        icon:"error"
+                    })
                 }else if(data.status == 204) {
-                    alert(`평가항목이 삭제되었습니다.`)
+
+                     swal({
+                        title:"평가항목이 삭제되었습니다.",
+                        icon:"success"
+                    })
+                }else{
+                    swal({
+                        title:data.status,
+                        icon:"info"
+                    })
                 }
            },
        })
@@ -387,16 +400,28 @@
            },
            success:function (data){
            if (data.status == 405){
-               alert(`삭제 할 수 없는 평가지입니다. \n (이미 평가된 기록이 있습니다.)`)
+                swal({
+                        title:"삭제 할 수 없는 평가지입니다.",
+                        text:"이미 평가된 기록이 있습니다.",
+                        icon: "error"
+                    })
            }else if(data.status == 204) {
-                    alert(`평가지가 삭제되었습니다.`)
-                    window.location.reload()
+                    swal({
+                        title:"평가지가 삭제되었습니다.",
+                        icon: "success"
+                    })
+                    .then(()=>{
+                            window.location.reload()
+
+                        }
+                    )
                 }
            else{
-               alert(`알수없는 에러?`)
+                swal({
+                icon:"info",
+                title:data.status
+                })
            }
-
-
            },
        })
     }
@@ -406,7 +431,6 @@
 
         targetTab = "tab"+activeTab
         btn_class_name = $(this)[0].className.split(' ')[3]
-        console.log($(this)[0].className.split(' ')[3])
         var rowdata = []
         var rowarr = []
         otpt_valid= true
@@ -417,15 +441,16 @@
             if($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val() == ''){
             otpt_valid = false
             }
-
-            console.log($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val())
             rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val())
             rowarr.push(rowdata)
             rowdata = []
         }
         if (otpt_valid == false) {
-            alert(`평가항목의 순서란을 입력해주세요.`)
-            return;
+            swal({
+                icon:"warning",
+                title:"평가항목의 순서란을 입력해주세요."
+            })
+            return ;
         }
         $.ajax({
             url: "{% url 'mdm:eval_sheet' %}",
@@ -440,16 +465,45 @@
 
             },
             success: function (data) {
-                if (btn_class_name == "eval_sheet_save_btn"){
-                alert(`설문지가 저장되었습니다.`)
-                window.location.reload();
-
+                if (data.status == 405){
+                swal({
+                        title:"수정할 수 없습니다.",
+                        text:"이미 평가된 기록이 있습니다.",
+                        icon: "error"
+                    })
                 }
-                else if(btn_class_name == "eval_ques_save_btn"){
-                alert(`평가문항이 저장되었습니다.`)
+                else if(data.status == 200) {
+                     if (btn_class_name == "eval_sheet_save_btn"){
+                        swal({
+                            icon:"success",
+                            title:"평가지가 저장되었습니다."
+                        }).then(()=> {
+
+                        window.location.reload()
+                        })
+
+                     }
+                    else if(btn_class_name == "eval_ques_save_btn"){
+                        swal({
+                        icon:"success",
+                        title:"평가문항이 저장되었습니다."
+                        })
+                    }else
+                    swal({
+                        icon:"info",
+                        text:"?/",
+                        title:data.status
+                    })
                 }
-
-
+               else{
+                    swal({
+                    icon:"info",
+                    title:data.status
+                    })
+               }
+            },
+            error : function (e) {
+                console.log(e)
             }
         })
     }
