@@ -15,8 +15,7 @@ services:
     environment:
       TZ: Asia/Seoul
     networks:
-      hrm_network:
-        ipv4_address: 172.23.0.5
+      - hrm_network
 networks:
   hrm_network:
     external: true

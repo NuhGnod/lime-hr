@@ -153,11 +153,10 @@
     </div>
     {% include 'eval/eval_check_confirm_modal.html' %}
     <script>
-
-
         $(function () {
 
             $('#eval-plan').change(function () {
+
                 let eval_plan_no = $(this).val()
                 if (eval_plan_no) {
                     location.replace('/eval/desc?id=' + eval_plan_no);

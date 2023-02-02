@@ -1,50 +1,55 @@
 version: '3.2'
 services:
+
+  web:
+    container_name: hrm_web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - static:/static/
+      - media:/media/
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    restart: always
+
   nginx:
     image: nginx
     container_name: hrm_nginx
     restart: always
     volumes:
       - type: volume
-        source: static_hrm
+        source: ./static
         target: /static
       - type: volume
-        source: media_hrm
+        source: ./media
         target: /media
       - type: bind
         source: ./.conf/nginx/nginx.conf
         target: /etc/nginx/conf.d/default.conf
         read_only: true
-    depends_on:
-      - hrm_web
     ports:
       - "80:80"
-    networks:
-      - hrm_network
+    depends_on:
+      - web
 
-  hrm_web:
-    container_name: hrm_web
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./:/app/
-      - static_hrm:/static/
-      - media_hrm:/app/media/
-
-    ports:
-      - "8000:8000"
-    stdin_open: true
-    tty: true
+  mariadb:
+    image: mariadb
+    container_name: hrm_db
     restart: always
-    networks:
-      - hrm_network
-
-
-networks:
-  hrm_network:
-    driver: bridge
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env.db
+    volumes:
+      - /data/DB/conf.d:/etc/mysql/conf.d
+      - /data/DB/data:/var/lib/mysql
+      - /data/DB/initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      TZ: Asia/Seoul
 
 volumes:
-  static_hrm:
-  media_hrm:
+  static:
+  media:

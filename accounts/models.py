@@ -28,7 +28,6 @@ class MemberManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
     def save(self, *args, **kwargs):
         print("=====")
         print("저장")
@@ -42,6 +41,7 @@ class MemberManager(BaseUserManager):
         user.save()
         return user
 
+
 class EusoMem(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(db_column='id', primary_key=True, verbose_name='아이디')
     username = models.CharField(max_length=150, unique=True, blank=True, null=True, verbose_name="로그인ID")
@@ -54,7 +54,7 @@ class EusoMem(AbstractBaseUser, PermissionsMixin):
     posi_cd = models.CharField(max_length=20, blank=True, null=True)
     duty_resp_cd = models.CharField(max_length=20, blank=True, null=True)
     dept_no = models.IntegerField(db_column='dept_no', blank=True, null=True)
-    zip_no = models.CharField(max_length=50,blank=True, null=True)
+    zip_no = models.CharField(max_length=50, blank=True, null=True)
     mem_addr = models.CharField(max_length=100, blank=True, null=True)
     join_dt = models.CharField(max_length=8, blank=True, null=True)
     mem_stat_cd = models.CharField(max_length=20, blank=True, null=True, verbose_name="회원상태코드")
@@ -63,11 +63,12 @@ class EusoMem(AbstractBaseUser, PermissionsMixin):
     reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
     del_yn = models.CharField(max_length=1, blank=True, null=True, default='N', verbose_name="삭제여부")
-
+    is_staff = models.BooleanField(default=False, verbose_name="시스템관리자 여부")
     objects = MemberManager()
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['name', ]
+
     class Meta:
-        managed = True
+        managed = False
         db_table = 'euso_mem'
         ordering = ['-join_dt']
