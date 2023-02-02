@@ -34,21 +34,26 @@ def sheet(request, *args, **kwargs):
 
         objects_filter = CommCd.objects.filter(hi_comm_cd="CC010000")  # 평가 구분 코드
         eval_clss_list = CommCdSerializer(objects_filter, many=True)
+
         if eval_sheet_no is not None:  # 왼쪽의 리스트에서 row 하나 클릭한 상태.
             get = EvalSheet.objects.filter(eval_sheet_no=eval_sheet_no)  # 해당 row의 pk로 데이터 가져옴.
             ques_objects_filter = AbltEvalQues.objects.filter(eval_sheet_no=eval_sheet_no, del_yn='N')
             ques_serializer = AbltEvalQuesSerializer(ques_objects_filter, many=True)  # 중첩 serializer
-
+            eval_ques_able = True
             serializer = EvalSheetSerializer(get, many=True)
             data = serializer.data
             return render(request, 'eval_sheet/eval_sheet_detail.html', {'eval_sheet': data,
                                                                          'eval_clss_list': eval_clss_list.data,
-                                                                         'ablt_ques_no_list': ques_serializer.data
+                                                                         'ablt_ques_no_list': ques_serializer.data,
+                                                                         'eval_ques_able': eval_ques_able
                 , **kwargs})
+        eval_ques_able = False
+
         return render(request, 'eval_sheet/eval_sheet.html',
                       {'eval_sheet_list': eval_sheet_serializer.data,
                        'eval_clss_list': eval_clss_list.data,
                        'eval_sheet': data,
+                       'eval_ques_able': eval_ques_able,
                        **kwargs})
 
     if (request.method == 'POST'):
@@ -64,23 +69,6 @@ def sheet(request, *args, **kwargs):
             sheet_serializer.is_valid()
             sheet_serializer.save()
 
-            # 평가지 pk를 가져온 뒤, 해당 평가지에 평가항목들 추가.
-            sheet_objects_filter = EvalSheet.objects.filter(sheet_nm=reqdata.get('sheet_nm')).last()
-            e = EvalSheetSerializer(sheet_objects_filter)
-
-            for i in range(len(request.data) - 4):
-                # 이 반복 횟수는 ablt_ques_no의 갯수(즉 항목추가된 갯수)이다.
-
-                string = render_to_string('sql/sheet/upsert_ablt_eval_ques.sql',
-                                          {"eval_sheet_no": int(e.data.get('eval_sheet_no')),
-                                           "ablt_ques_no": int(reqdata.getlist('ablt_ques_no[{}][]'.format(i))[0]),
-                                           "eval_trgt_clss": reqdata.getlist('ablt_ques_no[{}][]'.format(i))[1],
-                                           "otpt_order": int(reqdata.getlist('ablt_ques_no[{}][]'.format(i))[0]),
-                                           "reg_mem_no": reqdata.get('reg_mem_no'),
-                                           "modf_mem_no": reqdata.get('modf_mem_no')})
-                fetchall = dict_fetchall(string)
-
-
         else:
             # 기존에 존재하는 평가지에서 저장버튼이 눌린 경우.
             # 무언가 수정되는 로직이다.
@@ -95,12 +83,12 @@ def sheet(request, *args, **kwargs):
 
             for i in range(len(request.data) - 4):
                 # 이 반복 횟수는 ablt_ques_no의 갯수(즉 항목추가된 갯수)이다.
-
+                print((reqdata))
                 string = render_to_string('sql/sheet/upsert_ablt_eval_ques.sql',
                                           {"eval_sheet_no": reqdata['origin_eval_sheet_no'],
                                            "ablt_ques_no": int(reqdata.getlist('ablt_ques_no[{}][]'.format(i))[0]),
                                            "eval_trgt_clss": reqdata.getlist('ablt_ques_no[{}][]'.format(i))[1],
-                                           "otpt_order": int(reqdata.getlist('ablt_ques_no[{}][]'.format(i))[0]),
+                                           "otpt_order": int(reqdata.getlist('ablt_ques_no[{}][]'.format(i))[2]),
                                            "reg_mem_no": reqdata.get('reg_mem_no'),
                                            "modf_mem_no": reqdata.get('modf_mem_no')})
                 fetchall = dict_fetchall(string)
@@ -141,7 +129,6 @@ def modal(req):
 @api_view(['DELETE'])
 @permission_classes([AllowAny])
 def eval_ques_delete(req):
-
     # 평가지상의 평가항목 삭제 로직
     reqdata = req.data.copy()
     # 이미 평가된 평가지상의 평가항목을 삭제하려는 경우, 삭제 불가.
