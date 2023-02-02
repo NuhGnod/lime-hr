@@ -22,4 +22,5 @@ VALUES ('{{eval_sheet_no}}',
         'N')
 ON DUPLICATE KEY UPDATE
     otpt_order='{{otpt_order}}',
-    del_yn= 'N'
+    del_yn= 'N',
+    modf_dt = sysdate()

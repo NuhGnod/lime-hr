@@ -20,4 +20,5 @@ ON DUPLICATE KEY UPDATE del_yn= 'N',
     sheet_desc = '{{sheet_desc}}',
     sheet_nm = '{{sheet_nm}}',
     modf_mem_no = '{{modf_mem_no}}',
-    eval_clss = '{{eval_clss}}'
+    eval_clss = '{{eval_clss}}',
+    modf_dt = sysdate()
