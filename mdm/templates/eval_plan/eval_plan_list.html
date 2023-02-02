@@ -4,6 +4,7 @@
         <h3 class="box-title">평가계획 목록</h3>
         <button onclick="addEvalPlan()" style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가</button>
     </div>
+
     <!-- /.box-header -->
     <div class="box-body table-responsive">
         <table class="table table table-hover">
@@ -12,19 +13,26 @@
                 <th>No</th>
                 <th>평가계획</th>
                 <th>평가일정</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             {% for eval_plan in eval_plan_ls %}
-                <tr style="cursor:pointer" onclick="clickEvalPlan({{ eval_plan.eval_plan_no }})">
+                <tr style="cursor:pointer" onclick="clickEvalPlan({{ eval_plan.eval_plan_no }})" id="evalPlanList">
                     <td>{{ forloop.counter }}</td>
                     <td>{{ eval_plan.eval_plan_nm }}</td>
                     <td>{{ eval_plan.eval_strt_dt }} ~ {{ eval_plan.eval_end_dt }}</td>
+                    {% if eval_plan.is_used == 'Y'  %}
+                        <td style="color: #D33724"><small>평가중</small></td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    <div class="box-body" style="text-align: right; color: #B5BBC8;"><small>* 이미 평가 진행중인 계획은 수정하거나 삭제할 수 없습니다.</small></div>
 </div>
 
 <script>
