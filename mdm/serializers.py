@@ -6,8 +6,6 @@ from management.models import CommCd
 from mdm.models import AbltEvalQues
 
 
-
-
 class GetEvalPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = EvalPlan
@@ -18,11 +16,13 @@ class GetEvalPlanDetailSerializer(serializers.ModelSerializer):
     eval_clss_nm = serializers.SerializerMethodField(read_only=True)
     eval_strt_dt = serializers.SerializerMethodField(read_only=True)
     eval_end_dt = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = EvalPlan
         fields = [
             'eval_plan_no', 'eval_plan_nm', 'eval_plan_desc', 'eval_strt_dt', 'eval_end_dt', 'eval_sheet_no',
-            'eval_clss', 'eval_clss_nm', 'sf_eval_wght', 's_eval_wght', 'm_eval_wght', 'j_eval_wght', 't_eval_wght', 'p_eval_wght'
+            'eval_clss', 'eval_clss_nm', 'sf_eval_wght', 's_eval_wght', 'm_eval_wght', 'j_eval_wght', 't_eval_wght',
+            'p_eval_wght'
         ]
 
     def get_eval_clss_nm(self, obj):
@@ -51,7 +51,7 @@ class CreateEvalPlanSerializer(serializers.ModelSerializer):
         fields = ['eval_plan_nm', 'eval_plan_desc', 'eval_strt_dt', 'eval_end_dt', 'eval_sheet_no', 'eval_clss',
                   'sf_eval_wght', 's_eval_wght', 'm_eval_wght', 'j_eval_wght', 't_eval_wght', 'p_eval_wght',
                   'reg_mem_no', 'modf_mem_no'
-            ]
+                  ]
 
 
 class EvalSheetSerializer(serializers.ModelSerializer):
@@ -86,7 +86,6 @@ class AbltQuesPoolSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class joinEvalItemSerializer(serializers.ModelSerializer):
     cd_nm = serializers.SerializerMethodField(read_only=True)
 
@@ -100,6 +99,13 @@ class joinEvalItemSerializer(serializers.ModelSerializer):
                   'modf_mem_no',
                   'del_yn',
                   'cd_nm']
+
+    def get_cd_nm(self, obj):
+        eval_item_clss = obj.eval_item_clss
+        comm_cd = CommCd.objects.filter(comm_cd=eval_item_clss).first()
+        return str(comm_cd.cd_nm)
+
+
 class EvalItemSerializer(serializers.ModelSerializer):
     cd_nm = serializers.SerializerMethodField(read_only=True)
 
@@ -165,6 +171,8 @@ class getAbltEvalQuesSerializer(serializers.ModelSerializer):
                   'modf_mem_no',
                   'reg_mem_no',
                   ]
+
+
 class AbltEvalQuesSerializer(serializers.ModelSerializer):
     ablt_ques_no = joinSerializer(allow_null=True)
     eval_trgt_clss_nm = serializers.SerializerMethodField(read_only=True)
@@ -187,6 +195,8 @@ class AbltEvalQuesSerializer(serializers.ModelSerializer):
         trgt = obj.eval_trgt_clss
         first = CommCd.objects.filter(comm_cd=trgt).first()
         return str(first.cd_nm)
+
+
 class QuesPoolSerializer(serializers.ModelSerializer):
     eval_item_no = EvalItemSerializer(read_only=True)
 
@@ -196,7 +206,6 @@ class QuesPoolSerializer(serializers.ModelSerializer):
 
 
 class CreateQuesPoolSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AbltQuesPool
         fields = [
@@ -213,4 +222,3 @@ class DelEvalPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = EvalPlan
         fields = ["eval_plan_no", "modf_mem_no", "del_yn"]
-

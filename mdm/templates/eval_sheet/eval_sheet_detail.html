@@ -6,7 +6,7 @@
         <div class="box-tools pull-right">
             <div class="btn-group">
 
-                <button type="button" class="btn btn-default btn-sm" onclick="save_ajax()">저장</button>
+                <button type="button" class="btn btn-default btn-sm eval_sheet_save_btn">저장</button>
                 <button type="button" class="btn btn-danger btn-sm" onclick="delete_ajax()">삭제</button>
             </div>
         </div>
@@ -51,6 +51,8 @@
 
     </div>
     <!-- /.box-header -->
+    {% if eval_ques_able == True %}
+
     <div class="nav-tabs-custom">
 
         <ul class="nav nav-tabs">
@@ -67,9 +69,13 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">평가 문항</h3>
                         <div class="pull-right">
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                            <button type="button" class="btn btn-default btn-sm eval_ques_save_btn"
+                                   >저장
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm " data-toggle="modal"
                                     data-target="#create-eval-sheet-modal">추가
                             </button>
+
 
                         </div>
                     </div>
@@ -91,6 +97,7 @@
                             </thead>
                             <tbody class="ques_tbody">
                             {% for i in ablt_ques_no_list %}
+
                                 {% if i.eval_trgt_clss == "CC009004" %}
                                     <tr class="text-center">
                                         <td id="{{ i.ablt_ques_no.ablt_ques_no }}"> {{ i.ablt_ques_no.ablt_ques_no }}</td>
@@ -99,8 +106,7 @@
                                         <td> {{ i.ablt_ques_no.question }}</td>
                                         <td> {{ i.ablt_ques_no.ans_type_nm }}</td>
                                         <td><input></td>
-                                        <td><input></td>
-{#                                        <td id="CC009004">자기</td>#}
+                                        <td><input value="{{ i.otpt_order }}"></td>
 
                                         <td>
                                             <button id="{{ i.ablt_ques_no.ablt_ques_no }}" type="button" class="btn btn-danger btn-sm delete_eval_ques_ajax">
@@ -128,7 +134,10 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">평가 문항</h3>
                         <div class="pull-right">
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                            <button type="button" class="btn btn-default btn-sm eval_ques_save_btn"
+                                   >저장
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm " data-toggle="modal"
                                     data-target="#create-eval-sheet-modal">추가
                             </button>
 
@@ -163,7 +172,7 @@
                                         <td> {{ i.ablt_ques_no.question }}</td>
                                         <td> {{ i.ablt_ques_no.ans_type_nm }}</td>
                                         <td><input></td>
-                                        <td><input></td>
+                                        <td><input value="{{ i.otpt_order }}"></td>
 {#                                        <td id="CC009003">동료</td>#}
 
                                         <td>
@@ -193,7 +202,10 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">평가 문항</h3>
                         <div class="pull-right">
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                            <button type="button" class="btn btn-default btn-sm eval_ques_save_btn"
+                                   >저장
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm " data-toggle="modal"
                                     data-target="#create-eval-sheet-modal">추가
                             </button>
 
@@ -227,7 +239,7 @@
                                         <td> {{ i.ablt_ques_no.question }}</td>
                                         <td> {{ i.ablt_ques_no.ans_type_nm }}</td>
                                         <td><input></td>
-                                        <td><input></td>
+                                        <td><input value="{{ i.otpt_order }}"></td>
 {#                                        <td id="CC009002">상사</td>#}
 
                                         <td>
@@ -255,7 +267,10 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">평가 문항</h3>
                         <div class="pull-right">
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                            <button type="button" class="btn btn-default btn-sm eval_ques_save_btn"
+                                   >저장
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm " data-toggle="modal"
                                     data-target="#create-eval-sheet-modal">추가
                             </button>
 
@@ -291,7 +306,7 @@
                                         <td> {{ i.ablt_ques_no.question }}</td>
                                         <td> {{ i.ablt_ques_no.ans_type_nm }}</td>
                                         <td><input></td>
-                                        <td><input></td>
+                                        <td><input value="{{ i.otpt_order }}"></td>
 {#                                        <td id="CC009001">부하</td>#}
 
                                         <td>
@@ -318,11 +333,14 @@
         </div>
         <!-- /.tab-content -->
     </div>
+        {% endif %}
+
     <!-- /.box-body -->
 
 </div>
 
 <script>
+
     var activeTab = "CC009004"
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -332,6 +350,8 @@
         headers: {"X-CSRFToken": '{{csrf_token}}'}
     });
     $(".delete_eval_ques_ajax").on("click", delete_eval_ques_ajax)
+    $(".eval_sheet_save_btn").on("click", save_ajax)
+    $(".eval_ques_save_btn").on("click", save_ajax)
  function delete_eval_ques_ajax() {
 
         $.ajax({
@@ -381,23 +401,32 @@
        })
     }
 
+
     function save_ajax() {
+
         targetTab = "tab"+activeTab
-        if (targetTab === "tabCC009004") {
-            console.log(`###############################################`)
-        }
+        btn_class_name = $(this)[0].className.split(' ')[3]
+        console.log($(this)[0].className.split(' ')[3])
         var rowdata = []
         var rowarr = []
-
+        otpt_valid= true
         rownum = $(`#${targetTab} .ques_tbody`).children().length;
         for (let i = 0; i < rownum; i++) {
-            rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children()[0].innerText)
+            rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children()[0].innerText) //eval_ques_no
             rowdata.push(activeTab) // 평가대상
+            if($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val() == ''){
+            otpt_valid = false
+            }
 
+            console.log($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val())
+            rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val())
             rowarr.push(rowdata)
             rowdata = []
         }
-
+        if (otpt_valid == false) {
+            alert(`평가항목의 순서란을 입력해주세요.`)
+            return;
+        }
         $.ajax({
             url: "{% url 'mdm:eval_sheet' %}",
             type: "POST",
@@ -411,7 +440,14 @@
 
             },
             success: function (data) {
+                if (btn_class_name == "eval_sheet_save_btn"){
+                alert(`설문지가 저장되었습니다.`)
                 window.location.reload();
+
+                }
+                else if(btn_class_name == "eval_ques_save_btn"){
+                alert(`평가문항이 저장되었습니다.`)
+                }
 
 
             }
