@@ -18,7 +18,7 @@ COPY ./server_start.sh /usr/src/app/server_start.sh
 COPY . /usr/src/app/
 
 RUN chmod 755 /usr/src/app/server_start.sh
-RUN ["chmod", "+x", "/usr/src/app/entrypoint.sh"]
+RUN ["chmod", "+x", "/usr/src/app/server_start.sh"]
 
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["/usr/src/app/server_start.sh"]
 
