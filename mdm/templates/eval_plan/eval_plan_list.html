@@ -1,7 +1,7 @@
 <div class="box box-primary">
 
     <div class="box-header">
-        <h3 class="box-title">평가계획 목록</h3>
+        <h3 class="box-title"><strong>평가계획 목록</strong></h3>
         <button onclick="addEvalPlan()" style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가</button>
     </div>
 
@@ -55,6 +55,7 @@
                 $("#jWght").val(0);
                 $("#tWght").val(0);
                 $("#pWght").val(0);
+                $("#detailHeader").html("<strong>평가 계획 추가</strong>")
             })
             .fail(function (xhr, status, errorThrown) {
                 $('#evalPlanDetail').html("오류 발생. <br>")
