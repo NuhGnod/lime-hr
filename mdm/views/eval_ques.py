@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.shortcuts import render
 from rest_framework.response import Response
 
@@ -20,7 +20,7 @@ ans_type_list = CommCd.objects.filter(hi_comm_cd='CC012000')
 ans_type_list_serializer = CommCdSerializer(ans_type_list, many=True)
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def get_all_question(request, **kwargs):
     eval_item_list = EvalItem.objects.all()
     eval_item_list_serializer = EvalItemSerializer(eval_item_list, many=True)
@@ -37,7 +37,7 @@ def get_all_question(request, **kwargs):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def save_question(requests):
     req = requests.data
     try:
@@ -72,7 +72,7 @@ def save_question(requests):
 
 
 @api_view(['GET', 'DELETE'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def get_question(request):
     if request.method == 'GET':
         ablt_ques_no = int(request.GET['ablt_ques_no'])
@@ -100,7 +100,7 @@ def get_question(request):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def ajax_add_question(request):
     eval_item_list = EvalItem.objects.all()
     eval_item_list_serializer = EvalItemSerializer(eval_item_list, many=True)
@@ -110,7 +110,8 @@ def ajax_add_question(request):
                    'ans_type_list': ans_type_list_serializer.data,
                    'eval_item_list': eval_item_list_serializer.data})
 
-
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def ajax_get_eval_item(request):
     cd_nm = request.GET['cd_nm']
     item_clss = CommCd.objects.get(cd_nm=cd_nm)
