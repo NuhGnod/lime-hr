@@ -1,18 +1,18 @@
 version: '3.2'
 services:
-  nginx:
-    image: nginx:latest
-    container_name: hrm_nginx
-    restart: always
-    volumes:
-      - ./static:/static
-      - ./media:/media
-      - ./.conf/nginx/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - web
+#  nginx:
+#    image: nginx:latest
+#    container_name: hrm_nginx
+#    restart: always
+#    volumes:
+#      - ./static:/static
+#      - ./media:/media
+#      - ./.conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    depends_on:
+#      - web
 
   web:
     container_name: hrm_web
@@ -20,8 +20,8 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./static:/app/staticfiles
-      - ./media:/usr/src/app/media
+      - /data/static:/app/staticfiles
+      - /data/media:/usr/src/app/media
     ports:
       - "8000:8000"
     stdin_open: true
