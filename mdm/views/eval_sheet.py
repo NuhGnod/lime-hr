@@ -16,7 +16,11 @@ from mdm.serializers import EvalSheetSerializer, joinSerializer, AbltEvalQuesSer
 
 
 # 평가지 view
+@api_view(['GET'])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def get_sheet_pagination(req):
 
+    return Response(status=status.HTTP_200_OK)
 
 @api_view(['GET', 'POST', 'DELETE'])
 @permission_classes([IsAuthenticated, IsAdminUser])
@@ -28,8 +32,11 @@ def sheet(request, *args, **kwargs):
         data = {
             'sheet_nm': ""
         }
-
-        objects_all = EvalSheet.objects.filter(del_yn='N') # 평가지 데이터 리스트 # 페이지네이션은 10개씩 보여준다.
+        count = EvalSheet.objects.count()
+        print("=================================")
+        print(count)
+        print("=================================")
+        objects_all = EvalSheet.objects.filter(del_yn='N')[0:10]  # 평가지 데이터 리스트 # 페이지네이션은 10개씩 보여준다.
         eval_sheet_serializer = EvalSheetSerializer(objects_all, many=True)
 
         objects_filter = CommCd.objects.filter(hi_comm_cd="CC010000")  # 평가 구분 코드
@@ -54,6 +61,7 @@ def sheet(request, *args, **kwargs):
                        'eval_clss_list': eval_clss_list.data,
                        'eval_sheet': data,
                        'eval_ques_able': eval_ques_able,
+                       'sheet_count' :count,
                        **kwargs})
 
     if (request.method == 'POST'):
@@ -126,7 +134,7 @@ def sheet(request, *args, **kwargs):
 @permission_classes([IsAuthenticated, IsAdminUser])
 def modal(req):
     if (req.method == 'GET'):
-        related = AbltQuesPool.objects.all()
+        related = AbltQuesPool.objects.filter(del_yn='N')
         serializers = joinSerializer(related, many=True)
 
         return render(req, 'eval_sheet/eval_ques_pool_list.html', {'full_data': serializers.data})
