@@ -30,3 +30,8 @@ def page_not_found(request, exception):
 def server_error(request):
     context = {}
     return render(request, 'errors/500.html', context, status=500)
+
+
+def csrf_failure(request, reason=""):
+    context = {}
+    return render(request, 'errors/403.html', context, status=500)

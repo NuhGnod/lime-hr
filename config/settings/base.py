@@ -93,6 +93,8 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+CSRF_FAILURE_VIEW = 'config.views.csrf_failure'
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
