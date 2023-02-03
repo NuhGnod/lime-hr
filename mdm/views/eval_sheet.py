@@ -16,11 +16,7 @@ from mdm.serializers import EvalSheetSerializer, joinSerializer, AbltEvalQuesSer
 
 
 # 평가지 view
-@api_view(['GET'])
-@permission_classes([IsAuthenticated, IsAdminUser])
-def get_sheet_pagination(req):
 
-    return Response(status=status.HTTP_200_OK)
 
 @api_view(['GET', 'POST', 'DELETE'])
 @permission_classes([IsAuthenticated, IsAdminUser])
