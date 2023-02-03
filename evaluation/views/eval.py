@@ -1,7 +1,7 @@
 import datetime
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
@@ -15,8 +15,9 @@ from accounts.models import EusoMem
 from django.db import transaction
 from django.db.models import Max
 
+
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def evaluation_main(request, *args, **kwargs):
     '''
     평가 메인 페이지
@@ -135,7 +136,7 @@ def get_eval_progress(mem_no, eval_plan_no):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 @transaction.atomic()
 def get_all_evaluation(request, pk, *args, **kwargs):
     '''
@@ -195,7 +196,7 @@ def get_all_evaluation(request, pk, *args, **kwargs):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 @transaction.atomic()
 def insert_evaluation_form(request, pk, *args, **kwargs):
     '''
@@ -230,7 +231,7 @@ def insert_evaluation_form(request, pk, *args, **kwargs):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def complete_evaluation(request, *args, **kwargs):
     '''
     모든 평가를 완료하였을때 완료페이지 이동

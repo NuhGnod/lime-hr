@@ -19,8 +19,7 @@ from django.conf.urls.static import static
 from evaluation.utils import set_cache_data
 from django.conf import settings
 from config.views import *
-
-
+from django.conf.urls import handler400, handler403, handler404, handler500
 
 urlpatterns = [
     path('', home_view, name='main'),
@@ -31,7 +30,6 @@ urlpatterns = [
     path('manage/', include('management.urls')),
 ]
 
-
 if settings.DEBUG:
     import debug_toolbar
 
@@ -41,6 +39,11 @@ if settings.DEBUG:
     ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler400 = bad_request
+handler403 = permission_denied
+handler404 = page_not_found
+handler500 = server_error
 
 # 캐쉬 데이터 로딩
 set_cache_data()
