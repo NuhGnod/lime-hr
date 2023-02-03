@@ -13,7 +13,7 @@
                 <th>No</th>
                 <th>평가계획</th>
                 <th>평가일정</th>
-                <th></th>
+                <th>평가진행여부</th>
             </tr>
             </thead>
             <tbody>
@@ -22,11 +22,8 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ eval_plan.eval_plan_nm }}</td>
                     <td>{{ eval_plan.eval_strt_dt }} ~ {{ eval_plan.eval_end_dt }}</td>
-                    {% if eval_plan.is_used == 'Y'  %}
-                        <td style="color: #D33724"><small>평가중</small></td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
+                    <td class="text-center">{{ eval_plan.is_used }}</td>
+
                 </tr>
             {% endfor %}
             </tbody>
