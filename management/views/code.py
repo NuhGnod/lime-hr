@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from django.urls import reverse
@@ -9,7 +9,7 @@ from management.serializers import *
 
 
 @api_view(['POST', 'GET', 'DELETE'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 @csrf_exempt
 def code(req):
     test = req.data.copy()
@@ -57,7 +57,7 @@ def code(req):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 @csrf_exempt
 def code_list(req):
     comm_cd = req.GET['comm_cd']
@@ -67,7 +67,7 @@ def code_list(req):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def code_add(req):
     listt = {
         'comm_cd': "",

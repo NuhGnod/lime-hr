@@ -3,7 +3,7 @@ import time
 from django.template.loader import render_to_string
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser
 from django.shortcuts import render
 from django.http import JsonResponse, QueryDict
 from rest_framework.response import Response
@@ -19,7 +19,7 @@ from mdm.serializers import EvalSheetSerializer, joinSerializer, AbltEvalQuesSer
 
 
 @api_view(['GET', 'POST', 'DELETE'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def sheet(request, *args, **kwargs):
     reqdata = request.data.copy()
     reqdata['modf_mem_no'] = request.user.id
@@ -29,7 +29,7 @@ def sheet(request, *args, **kwargs):
             'sheet_nm': ""
         }
 
-        objects_all = EvalSheet.objects.filter(del_yn='N')  # 평가지 데이터 리스트
+        objects_all = EvalSheet.objects.filter(del_yn='N') # 평가지 데이터 리스트 # 페이지네이션은 10개씩 보여준다.
         eval_sheet_serializer = EvalSheetSerializer(objects_all, many=True)
 
         objects_filter = CommCd.objects.filter(hi_comm_cd="CC010000")  # 평가 구분 코드
@@ -123,7 +123,7 @@ def sheet(request, *args, **kwargs):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def modal(req):
     if (req.method == 'GET'):
         related = AbltQuesPool.objects.all()
@@ -133,7 +133,7 @@ def modal(req):
 
 
 @api_view(['DELETE'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def eval_ques_delete(req):
     # 평가지상의 평가항목 삭제 로직
     reqdata = req.data.copy()
@@ -162,7 +162,7 @@ def eval_ques_delete(req):
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def create_eval_sheet(req):
     empty_eval_sheet = {
         "eval_sheet_nm": ""
