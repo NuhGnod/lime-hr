@@ -1,18 +1,20 @@
 <div class="box box-primary" id="list">
 
     <div class="box-header">
-        <h3 class="box-title">평가문항 목록</h3>
+        <h3 class="box-title">
+            <strong>평가문항 목록</strong>
+        </h3>
         <button style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right" id="addQuestionButton">추가</button>
     </div>
-    <!-- /.box-header -->
+
     <div class="box-body table-responsive">
-        <table class="table table table-hover">
+        <table class="table table-hover" style="text-align: center">
             <thead>
             <tr>
-                <th>번호</th>
-                <th>대분류</th>
-                <th>소분류</th>
-                <th>문항</th>
+                <th class="text-center" style="width: 10%">번호</th>
+                <th class="text-center" style="width: 10%">대분류</th>
+                <th class="text-center" style="width: 25%">소분류</th>
+                <th class="text-center" style="width: 55%">문항</th>
             </tr>
             </thead>
             <tbody>
@@ -21,7 +23,7 @@
                     <td> {{ i.ablt_ques_no }} </td>
                     <td> {{ i.eval_item_no.cd_nm }}</td>
                     <td> {{ i.eval_item_no.item_nm }}</td>
-                    <td> {{ i.question }}</td>
+                    <td style="text-align: left"> {{ i.question }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -35,26 +37,26 @@
 
     function addQuestion() {
         $.ajax({
-                url: "{% url 'mdm:add_question' %}",
-                type: "GET",
-                datatype: "json",
-                success: function(res) {
-                    $("#ques_pool_detail").html(res)
-                }
+            url: "{% url 'mdm:add_question' %}",
+            type: "GET",
+            datatype: "json",
+            success: function(res) {
+                $("#ques_pool_detail").html(res)
+            }
         })
     }
 
     function getQuestion() {
         $.ajax({
-                url: "{% url 'mdm:get_question' %}",
-                type: "GET",
-                datatype: "json",
-                data: {
-                    'ablt_ques_no': $(this).children().first()[0].innerText
-                },
-                success: function(res) {
-                    $("#ques_pool_detail").html(res)
-                }
+            url: "{% url 'mdm:get_question' %}",
+            type: "GET",
+            datatype: "json",
+            data: {
+                'ablt_ques_no': $(this).children().first()[0].innerText
+            },
+            success: function(res) {
+                $("#ques_pool_detail").html(res)
+            }
         })
     }
 

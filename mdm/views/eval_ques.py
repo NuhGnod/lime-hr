@@ -1,6 +1,7 @@
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.shortcuts import render
 from rest_framework.response import Response
 
@@ -51,14 +52,20 @@ def save_question(requests):
         # if: 평가문항 저장 / else: 평가문항 수정
         if req["ablt_ques_no"] == "":
             serializer = CreateQuesPoolSerializer(data=ques_dict)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(
+                    {"status": status.HTTP_201_CREATED}
+                )
         else:
             ablt_ques_no = int(req["ablt_ques_no"])
             update_question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
             serializer = CreateQuesPoolSerializer(update_question, data=ques_dict)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(
+                    {"status": status.HTTP_200_OK}
+                )
 
     except ValueError:
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -110,7 +117,6 @@ def ajax_get_eval_item(request):
 
     eval_item_list = EvalItem.objects.filter(eval_item_clss=item_clss.comm_cd)
     eval_item_list_serializer = EvalItemSerializer(eval_item_list, many=True)
-    print(eval_item_list_serializer)
 
     return render(request, 'eval_ques/eval_item_select_box.html',
                   {"eval_item_list": eval_item_list_serializer.data})

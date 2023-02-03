@@ -1,15 +1,27 @@
 from datetime import datetime
 from rest_framework import serializers
 
-from mdm.models import EvalPlan, EvalSheet, EvalItem, AbltQuesPool
+from mdm.models import EvalPlan, EvalSheet, EvalItem, AbltQuesPool, AbltEvalRslt
 from management.models import CommCd
 from mdm.models import AbltEvalQues
 
 
 class GetEvalPlanSerializer(serializers.ModelSerializer):
+    is_used = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = EvalPlan
-        fields = ['eval_plan_no', 'eval_plan_nm', 'eval_strt_dt', 'eval_end_dt']
+        fields = ['eval_plan_no', 'eval_plan_nm', 'eval_strt_dt', 'eval_end_dt', 'is_used']
+
+    def get_is_used(self, obj):
+        eval_plan_no = obj.eval_plan_no
+        is_used = 'N'
+
+        # 해당 계획이 사용 되었는지 확인
+        ablt_eval_res_qs = AbltEvalRslt.objects.filter(eval_plan_no=eval_plan_no)
+        if ablt_eval_res_qs.exists():
+            is_used = 'Y'
+        return is_used
 
 
 class GetEvalPlanDetailSerializer(serializers.ModelSerializer):

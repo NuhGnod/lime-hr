@@ -2,10 +2,14 @@
 
 <div class="box">
     <div class="box-header">
-        <h3 class="box-title">평가계획 상세정보</h3>
+        <h3 class="box-title" id="detailHeader"><strong>평가계획 상세정보</strong></h3>
         <div class="form-group pull-right">
             <button id="evalPlanSave" type="submit" class="btn btn-primary btn-sm">저장</button>
-            <button id="evalPlanDel" type="button" class="btn btn-danger btn-sm ">삭제</button>
+            {% if eval_plan_detail.eval_plan_no %}
+                <button id="evalPlanDel" type="button" class="btn btn-danger btn-sm">삭제</button>
+            {% else %}
+                <button id="evalPlanDel" type="button" class="btn btn-danger btn-sm " disabled>삭제</button>
+            {% endif %}
         </div>
 
     </div>
@@ -115,7 +119,7 @@
                         <label for="abltWghtSum">비중 합계</label>
                         <input id="abltWghtSum" type="text" class="form-control"
                                value="" disabled>
-                        <span class='help-block' style="display: none;">가중치 합이 100이 되도록 해주세요</span>
+                        <span class='help-block' style="display: none;"><small>가중치 합이 100이 되도록 해주세요</small></span>
                     </div>
                 </div>
             </div>
@@ -137,7 +141,7 @@
                         <label for="kpiWghtSum">비중 합계</label>
                         <input id="kpiWghtSum" type="text" class="form-control"
                                value="" disabled>
-                        <span class='help-block' style="display: none;">가중치 합이 100이 되도록 해주세요</span>
+                        <span class='help-block' style="display: none;"><small>가중치 합이 100이 되도록 해주세요</small></span>
                     </div>
                 </div>
             </div>
@@ -146,45 +150,54 @@
 </div>
 
 <script>
+
     function kpiWghtSum() {
+        let tWght = $("#tWght").val();
+        let pWght = $("#pWght").val();
+        return Number(tWght) + Number(pWght);
+    }
+
+    function kpiWghtValidator() {
         let kpiEvalWght = $("#kpiEvalWght");
 
         console.log("kpiEvalWght")
-        let tWght = $("#tWght").val();
-        let pWght = $("#pWght").val();
-        let abltWghtSum = Number(tWght) + Number(pWght);
 
-        $("#kpiWghtSum").val(abltWghtSum);
+        let abltWghtTot = kpiWghtSum()
 
-        if ( abltWghtSum !== 100 ) {
-            kpiEvalWght.removeClass("has-success");
+        $("#kpiWghtSum").val(abltWghtTot);
+
+        if ( abltWghtTot !== 100 ) {
             kpiEvalWght.addClass("has-error");
             $("#kpiWghtSum").next().css("display", "block")
         } else {
             kpiEvalWght.removeClass("has-error");
-            kpiEvalWght.addClass("has-success");
+
             $("#kpiWghtSum").next().css("display", "none")
         }
     }
 
-
     function abltWghtSum() {
-        let abltEvalWght = $("#abltEvalWght")
-
-        console.log("abltWghtSum")
         let sfWght = $('#sfWght').val()
         let sWght = $('#sWght').val()
         let mWght = $('#mWght').val()
         let jWght = $('#jWght').val()
-        let abltWghtSum = Number(sfWght) + Number(sWght) + Number(mWght) + Number(jWght)
+        return Number(sfWght) + Number(sWght) + Number(mWght) + Number(jWght)
+    }
 
-        $("#abltWghtSum").val(abltWghtSum)
 
-        if (abltWghtSum !== 100) {
+    function abltWghtValidator() {
+        let abltEvalWght = $("#abltEvalWght")
+
+        let abltWghtTot = abltWghtSum();
+
+        console.log("abltWghtSum")
+        $("#abltWghtSum").val(abltWghtTot)
+
+        if (abltWghtTot !== 100) {
             abltEvalWght.removeClass("has-success")
             abltEvalWght.addClass("has-error")
             $("#abltWghtSum").next().css("display", "block")
-        } else if (abltWghtSum === 100) {
+        } else {
             abltEvalWght.removeClass(("has-error"))
             abltEvalWght.addClass("has-success")
             $("#abltWghtSum").next().css("display", "none")
@@ -192,33 +205,44 @@
     }
 
 
-    function validErr(val) {
-        val.closest("div").addClass("has-error");
-        val.next().css("display", "block").text("값을 확인해주세요");
+    function validErr(element) {
+        element.closest("div").addClass("has-error");
+        element.next().css("display", "block").text("값을 확인해주세요");
     }
 
 
-    function delValidErr(val) {
-        val.closest("div").removeClass("has-error");
-        val.next().css("display", "none");
+    function delValidErr(element) {
+        element.closest("div").removeClass("has-error");
+        element.next().css("display", "none");
     }
 
 
     $(function () {
         $('#evalPlanNm').keydown(function (event) {
-            delValidErr(this)
+            delValidErr($(this))
         })
 
         $('#evalPlanDesc').keydown(function (event) {
-            delValidErr(this)
+            delValidErr($(this))
         })
 
-        $('#evalClss').on("click", function (event) {
-            delValidErr(this)
+        // 평가 항목 변경시 비중 항목 변경
+        // validErr 박스 제거
+        $('#evalClss').change(function (event) {
+            if ($(this).val() === "CC010001") {
+                $('#kpiEvalWght').css("display", "block");
+                $('#abltEvalWght').css("display", "none");
+                kpiWghtValidator()
+            } else if ($(this).val() === "CC010002") {
+                $('#abltEvalWght').css("display", "block");
+                $('#kpiEvalWght').css("display", "none");
+                abltWghtValidator()
+            }
+            delValidErr($('#evalClss'))
         })
 
-        $('#evalSheet').on("click", function (event) {
-            delValidErr(this)
+        $('#evalSheet').change(function (event) {
+            delValidErr($(this))
         })
 
         $('#evalDateRange').daterangepicker();
@@ -228,35 +252,22 @@
         if ("{{ eval_plan_detail.eval_clss }}" === "CC010001") {
             $('#kpiEvalWght').css("display", "block");
             $('#abltEvalWght').css("display", "none");
-            abltWghtSum()
+            kpiWghtValidator()
         } else if ("{{ eval_plan_detail.eval_clss }}" === "CC010002") {
             $('#abltEvalWght').css("display", "block");
             $('#kpiEvalWght').css("display", "none");
-            abltWghtSum()
+            abltWghtValidator()
         }
-
-        // 평가 항목 변경시 평가 비중 항목 변경
-        $('#evalClss').on('change', function () {
-            if ($(this).val() === "CC010001") {
-                $('#kpiEvalWght').css("display", "block");
-                $('#abltEvalWght').css("display", "none");
-                abltWghtSum()
-            } else if ($(this).val() === "CC010002") {
-                $('#abltEvalWght').css("display", "block");
-                $('#kpiEvalWght').css("display", "none");
-                abltWghtSum()
-            }
-        })
 
 
         // 역량 평가 항목 숫자 변경 시 비중 합계 계산
         $("#abltEvalWght").keyup(function (event) {
-            abltWghtSum()
+            abltWghtValidator()
         });
 
         // kpi 평가 항목 숫자 변경 시 비중 합계 계산
         $("#kpiEvalWght").keyup(function (event) {
-            kpiWghtSum()
+            kpiWghtValidator()
         });
 
         // 평가 계획 저장
@@ -265,51 +276,125 @@
             console.log("저장 버튼 눌림")
 
             let data = $("#evalPlanDetailForm").serializeArray();
+            console.log(data)
 
+            // 텍스트, 셀렉박스 데이터가 있는지 확인
             data.forEach(function (el, idx) {
                 let ChkTargetArr = ["evalPlanNm", "evalPlanDesc", "evalClss", "evalSheet"]
                 if (ChkTargetArr.includes(el.name)) {
-                    if (el.value.length == 0 || el.value == "") {
+                    if (el.value.length === 0 || el.value === "") {
                         validErr($(`#${el.name}`))
+                        validate = false
+                    } else {
+                        validate = true
                     }
                 }
             })
-            $.ajaxSetup({
-                headers: {'X-CSRFToken': '{{ csrf_token }}'}
-            });
 
-            $.ajax({
-                url: "{% url 'mdm:eplan_save' %}",
-                type: "POST",
-                datatype: "json",
-                data: data
-                })
-                .fail(function (xhr, status, errorThrown, html) {
-                        $('#eplan_error').html(html)
+            // 가중치 합이 100인지 확인
+            if ($("#evalClss").val() === "CC010002") {
+                let abltWghtTot = abltWghtSum();
+                if (abltWghtTot === 100) {
+                    validate = true;
+                } else {
+                    validate = false;
+                }
+            } else if ($("#evalClss").val() === "CC010001") {
+                let kpiWghtTot = kpiWghtSum();
+                if (kpiWghtTot === 100) {
+                    validate = true;
+                } else {
+                    validate = false;
+                }
+            }
+
+
+            console.log($("#evalClss").val())
+
+            if (validate) {
+                $.ajaxSetup({
+                headers: {'X-CSRFToken': '{{ csrf_token }}'}
+                });
+
+                $.ajax({
+                    url: "{% url 'mdm:eplan_save' %}",
+                    type: "POST",
+                    datatype: "json",
+                    data: data,
+                    success : function (html, status, xhr) {
+                        console.log("응답 성공")
+                        if (xhr.statusText === "IM Used") {
+                            swal({
+                                text: "이미 진행중인 평가 계획입니다. 수정이나 삭제할 수 없습니다.",
+                                icon: "warning"
+                            })
+                            $("#eplan_error").html(html)
+                        } else {
+                            $(window).prop("location", "{% url 'mdm:eval_plan' %}")
+                        }
+
+                    },
+                    error : function (html) {$("#eplan_error").html(html)},
+                    complete: function (xhr, status) {
+                        console.log(xhr)
                     }
-                )
-            })
+                })
+            } else {
+                swal({
+                    text: "값을 확인해주세요",
+                    icon: "warning",
+                })
+            }
+        })
 
         // 평가 계획 삭제
-        $("#evalPlanDel").click(function () {
-            $.ajaxSetup({
-                headers: {'X-CSRFToken': '{{ csrf_token }}'}
-            });
+        {% if eval_plan_detail.eval_plan_no %}
+            $("#evalPlanDel").click(function () {
+                swal({
+                    text: "{{ eval_plan_detail.eval_plan_nm }}을/를 삭제하시겠습니까?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true
+                }).then((value) => {
+                    console.log(value)
+                    if (value) {
 
-            $.ajax({
-                url: "{% url 'mdm:eplan_del' %}",
-                type: "POST",
-                datatype: "json",
-                data: {
-                    eval_plan_no: {{ eval_plan_detail.eval_plan_no }},
-                    eval_clss: $('#evalClss').val()
+                        $.ajaxSetup({
+                            headers: {'X-CSRFToken': '{{ csrf_token }}'}
+                        });
+
+                        $.ajax({
+                            url: "{% url 'mdm:eplan_del' %}",
+                            type: "POST",
+                            datatype: "json",
+                            data: {
+                                eval_plan_no: {{ eval_plan_detail.eval_plan_no }},
+                                eval_clss: $('#evalClss').val()
+                                },
+                            success : function (html, status, xhr) {
+                                if (xhr.statusText === "IM Used") {
+                                    swal({
+                                        text: "이미 진행중인 평가 계획입니다. 수정이나 삭제할 수 없습니다.",
+                                        icon: "warning"
+                                    }).then((value) => {
+                                        $("#eplan_error").html(html);
+                                    })
+
+                                } else {
+                                    swal({
+                                        text: "평가 계획이 삭제되었습니다.",
+                                        icon: "success"
+                                    }).then((value) => {
+                                        $(window).prop("location", "{% url 'mdm:eval_plan' %}")
+                                    })
+                                }
+                            }
+                        })
                     }
                 })
-                .fail(function (xhr, status, errorThrown, html) {
-                        $('#eplan_error').html(html)
-                    }
-                )
-        })
+
+            })
+        {% endif %}
 
         // 평가 제목 로딩시 글자수 세기
         let title = $("#evalPlanNm").val()
@@ -366,6 +451,6 @@
                 $(this).next().css("display", "none")
             }
         });
-    });
+    })
 
 </script>

@@ -1,9 +1,10 @@
 <div class="box box-primary">
 
     <div class="box-header">
-        <h3 class="box-title">평가계획 목록</h3>
+        <h3 class="box-title"><strong>평가계획 목록</strong></h3>
         <button onclick="addEvalPlan()" style="cursor: pointer" type="button" class="btn btn-default btn-sm pull-right">추가</button>
     </div>
+
     <!-- /.box-header -->
     <div class="box-body table-responsive">
         <table class="table table table-hover">
@@ -12,19 +13,23 @@
                 <th>No</th>
                 <th>평가계획</th>
                 <th>평가일정</th>
+                <th>평가진행여부</th>
             </tr>
             </thead>
             <tbody>
             {% for eval_plan in eval_plan_ls %}
-                <tr style="cursor:pointer" onclick="clickEvalPlan({{ eval_plan.eval_plan_no }})">
+                <tr style="cursor:pointer" onclick="clickEvalPlan({{ eval_plan.eval_plan_no }})" id="evalPlanList">
                     <td>{{ forloop.counter }}</td>
                     <td>{{ eval_plan.eval_plan_nm }}</td>
                     <td>{{ eval_plan.eval_strt_dt }} ~ {{ eval_plan.eval_end_dt }}</td>
+                    <td class="text-center">{{ eval_plan.is_used }}</td>
+
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    <div class="box-body" style="text-align: right; color: #B5BBC8;"><small>* 이미 평가 진행중인 계획은 수정하거나 삭제할 수 없습니다.</small></div>
 </div>
 
 <script>
@@ -47,6 +52,7 @@
                 $("#jWght").val(0);
                 $("#tWght").val(0);
                 $("#pWght").val(0);
+                $("#detailHeader").html("<strong>평가 계획 추가</strong>")
             })
             .fail(function (xhr, status, errorThrown) {
                 $('#evalPlanDetail').html("오류 발생. <br>")
