@@ -1,4 +1,4 @@
-{% extends "_layout.html" %}
+
 {% load static %}
 
 {% block content %}
@@ -6,24 +6,13 @@
         <h2 class="headline text-yellow"> 403</h2>
 
         <div class="error-content">
-          <h3><i class="fa fa-warning text-yellow"></i> 권한이 없습니다.</h3>
+          <h3><i class="fa fa-warning text-yellow"></i>페이지 접근권한이 없습니다.</h3>
 
           <p>
-            We could not find the page you were looking for.
-            Meanwhile, you may <a href="../../index.html">return to dashboard</a> or try using the search form.
+            요청한 페이지 접근권한이 없습니다.<br/>
+            다시 시도해주세요. <br/>
+            <a href="{% url 'main' %}">홈으로 돌아가기</a>
           </p>
-
-          <form class="search-form">
-            <div class="input-group">
-              <input type="text" name="search" class="form-control" placeholder="Search">
-
-              <div class="input-group-btn">
-                <button type="submit" name="submit" class="btn btn-warning btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </div>
-            </div>
-            <!-- /.input-group -->
-          </form>
         </div>
         <!-- /.error-content -->
       </div>
