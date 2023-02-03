@@ -34,4 +34,4 @@ def server_error(request):
 
 def csrf_failure(request, reason=""):
     context = {}
-    return render(request, 'errors/403.html', context, status=500)
+    return render(request, 'errors/403.html', context, status=403)
