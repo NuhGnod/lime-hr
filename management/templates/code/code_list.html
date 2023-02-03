@@ -33,15 +33,16 @@
 
                             <tbody>
                             {% for code in code_list %}
+                                
                                 <tr style="cursor: pointer" class="ctr">
                                     <td id="{{ code.comm_cd }}">{{ code.comm_cd }}</td>
-                                    <td>{{ code.hi_comm_cd }}</td>
+                                    <td>{{ code.hi_comm_cd|default:"" }}</td>
                                     <td>{{ code.cd_nm }}</td>
-                                    <td>{{ code.cd_desc }}</td>
-                                    <td>{{ code.etc_1 }}</td>
-                                    <td>{{ code.etc_2 }}</td>
-                                    <td>{{ code.etc_3 }}</td>
-                                    <td>{{ code.alias_cd }}</td>
+                                    <td>{{ code.cd_desc|default:"" }}</td>
+                                    <td>{{ code.etc_1|default:"" }}</td>
+                                    <td>{{ code.etc_2|default:"" }}</td>
+                                    <td>{{ code.etc_3|default:"" }}</td>
+                                    <td>{{ code.alias_cd|default:"" }}</td>
                                     <td>{{ code.del_yn }}</td>
 
                                 </tr>
