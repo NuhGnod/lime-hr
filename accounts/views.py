@@ -11,14 +11,14 @@ from management.models import CommCd
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_profile(request, pk, *args, **kwargs):
     qs = EusoMem.objects.get(pk=pk)
 
     print("==================")
     print(qs)
     print("==================")
-    pass
+    return render(request, "auth/profile.html", {'mem_detail': qs})
 
 
 @api_view(['GET', 'POST'])
