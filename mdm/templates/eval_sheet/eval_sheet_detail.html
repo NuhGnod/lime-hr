@@ -6,6 +6,7 @@
         <div class="box-tools pull-right">
             <div class="btn-group">
 
+
                 <button type="button" class="btn btn-default btn-sm eval_sheet_save_btn">저장</button>
                 <button type="button" class="btn btn-danger btn-sm" onclick="delete_ajax()">삭제</button>
             </div>
@@ -99,7 +100,7 @@
                             {% for i in ablt_ques_no_list %}
 
                                 {% if i.eval_trgt_clss == "CC009004" %}
-                                    <tr class="text-center">
+                                    <tr class="text-center new_ques_{{ i.ablt_ques_no.ablt_ques_no }}">
                                         <td id="{{ i.ablt_ques_no.ablt_ques_no }}"> {{ i.ablt_ques_no.ablt_ques_no }}</td>
                                         <td> {{ i.ablt_ques_no.eval_item_no.cd_nm }}</td>
                                         <td> {{ i.ablt_ques_no.eval_item_no.item_nm }}</td>
@@ -165,7 +166,7 @@
                             <tbody class="ques_tbody">
                             {% for i in ablt_ques_no_list %}
                                 {% if i.eval_trgt_clss == "CC009003" %}
-                                    <tr class="text-center">
+                                    <tr class="text-center new_ques_{{ i.ablt_ques_no.ablt_ques_no }}">
                                         <td> {{ i.ablt_ques_no.ablt_ques_no }}</td>
                                         <td> {{ i.ablt_ques_no.eval_item_no.cd_nm }}</td>
                                         <td> {{ i.ablt_ques_no.eval_item_no.item_nm }}</td>
@@ -232,7 +233,7 @@
                             <tbody class="ques_tbody">
                             {% for i in ablt_ques_no_list %}
                                 {% if i.eval_trgt_clss == "CC009002" %}
-                                    <tr class="text-center">
+                                    <tr class="text-center new_ques_{{ i.ablt_ques_no.ablt_ques_no }}">
                                         <td> {{ i.ablt_ques_no.ablt_ques_no }}</td>
                                         <td> {{ i.ablt_ques_no.eval_item_no.cd_nm }}</td>
                                         <td> {{ i.ablt_ques_no.eval_item_no.item_nm }}</td>
@@ -299,7 +300,7 @@
 
 
                                 {% if i.eval_trgt_clss == "CC009001" %}
-                                    <tr class="text-center">
+                                    <tr class="text-center new_ques_{{ i.ablt_ques_no.ablt_ques_no }}">
                                         <td> {{ i.ablt_ques_no.ablt_ques_no }}</td>
                                         <td> {{ i.ablt_ques_no.eval_item_no.cd_nm }}</td>
                                         <td> {{ i.ablt_ques_no.eval_item_no.item_nm }}</td>
@@ -339,172 +340,218 @@
 
 </div>
 
-<script>
+        <script>
 
-    var activeTab = "CC009004"
+            var activeTab = "CC009004"
 
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        activeTab = $(e.target)[0].id;
-    })
-    $.ajaxSetup({
-        headers: {"X-CSRFToken": '{{csrf_token}}'}
-    });
-    $(".delete_eval_ques_ajax").on("click", delete_eval_ques_ajax)
-    $(".eval_sheet_save_btn").on("click", save_ajax)
-    $(".eval_ques_save_btn").on("click", save_ajax)
- function delete_eval_ques_ajax() {
-
-        $.ajax({
-           url: "{% url 'mdm:eval_ques_delete' %}",
-           type:"DELETE",
-           datatype: "json",
-           data: {
-                'eval_trgt_clss':activeTab,
-                'ablt_ques_no' : $(this)[0].id,
-               'eval_sheet_no' :$(".eval_sheet_no_pk")[0].id,
-               'del_yn' : 'Y'
-           },
-           success:function (data){
-                if (data.status == 405){
-                    swal({
-                        title:"삭제 할 수 없는 평가항목입니다.",
-                        text:"이미 평가된 기록이 있습니다.",
-                        icon:"error"
-                    })
-                }else if(data.status == 204) {
-
-                     swal({
-                        title:"평가항목이 삭제되었습니다.",
-                        icon:"success"
-                    })
-                }else{
-                    swal({
-                        title:data.status,
-                        icon:"info"
-                    })
-                }
-           },
-       })
-
-    }
-    function delete_ajax() {
-
-        $.ajax({
-           url: "{% url 'mdm:eval_sheet' %}",
-           type:"DELETE",
-           datatype: "json",
-           data: {
-
-               'eval_sheet_no' :$(".eval_sheet_no_pk")[0].id,
-               'del_yn' : 'Y'
-           },
-           success:function (data){
-           if (data.status == 405){
-                swal({
-                        title:"삭제 할 수 없는 평가지입니다.",
-                        text:"이미 평가된 기록이 있습니다.",
-                        icon: "error"
-                    })
-           }else if(data.status == 204) {
-                    swal({
-                        title:"평가지가 삭제되었습니다.",
-                        icon: "success"
-                    })
-                    .then(()=>{
-                            window.location.reload()
-
-                        }
-                    )
-                }
-           else{
-                swal({
-                icon:"info",
-                title:data.status
-                })
-           }
-           },
-       })
-    }
-
-
-    function save_ajax() {
-
-        targetTab = "tab"+activeTab
-        btn_class_name = $(this)[0].className.split(' ')[3]
-        var rowdata = []
-        var rowarr = []
-        otpt_valid= true
-        rownum = $(`#${targetTab} .ques_tbody`).children().length;
-        for (let i = 0; i < rownum; i++) {
-            rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children()[0].innerText) //eval_ques_no
-            rowdata.push(activeTab) // 평가대상
-            if($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val() == ''){
-            otpt_valid = false
-            }
-            rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val())
-            rowarr.push(rowdata)
-            rowdata = []
-        }
-        if (otpt_valid == false) {
-            swal({
-                icon:"warning",
-                title:"평가항목의 순서란을 입력해주세요."
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                activeTab = $(e.target)[0].id;
             })
-            return ;
-        }
-        $.ajax({
-            url: "{% url 'mdm:eval_sheet' %}",
-            type: "POST",
-            datatype: "json",
-            data: {
-                'origin_eval_sheet_no' :Number($(".eval_sheet_no_pk")[0].id),
-                'eval_clss': $("#eval_clss option:selected")[0].id,
-                'sheet_nm': $("#sheet_nm").val(),
-                'sheet_desc': $("#sheet_desc").val(),
-                'ablt_ques_no': rowarr,
+            $.ajaxSetup({
+                headers: {"X-CSRFToken": '{{csrf_token}}'}
+            });
+            $(".delete_eval_ques_ajax").on("click", delete_eval_ques_ajax)
+            $(".eval_sheet_save_btn").on("click", save_ajax)
+            $(".eval_ques_save_btn").on("click", save_ajax)
+         function new_delete_eval_ques_ajax(id) {
 
-            },
-            success: function (data) {
-                if (data.status == 405){
-                swal({
-                        title:"수정할 수 없습니다.",
-                        text:"이미 평가된 기록이 있습니다.",
-                        icon: "error"
-                    })
-                }
-                else if(data.status == 200) {
-                     if (btn_class_name == "eval_sheet_save_btn"){
-                        swal({
-                            icon:"success",
-                            title:"평가지가 저장되었습니다."
-                        }).then(()=> {
 
-                        window.location.reload()
-                        })
+                $.ajax({
+                   url: "{% url 'mdm:eval_ques_delete' %}",
+                   type:"DELETE",
+                   datatype: "json",
+                   data: {
+                        'eval_trgt_clss':activeTab,
+                        'ablt_ques_no' : id,
+                       'eval_sheet_no' :$(".eval_sheet_no_pk")[0].id,
+                       'del_yn' : 'Y'
+                   },
+                   success:function (data){
+                        if (data.status == 405){
+                            swal({
+                                title:"삭제 할 수 없는 평가항목입니다.",
+                                text:"이미 평가된 기록이 있습니다.",
+                                icon:"error"
+                            })
+                        }else if(data.status == 204) {
 
-                     }
-                    else if(btn_class_name == "eval_ques_save_btn"){
-                        swal({
-                        icon:"success",
-                        title:"평가문항이 저장되었습니다."
-                        })
-                    }else
-                    swal({
-                        icon:"info",
-                        text:"?/",
-                        title:data.status
-                    })
-                }
-               else{
-                    swal({
-                    icon:"info",
-                    title:data.status
-                    })
-               }
-            },
-            error : function (e) {
-                console.log(e)
+                             swal({
+                                title:"평가항목이 삭제되었습니다.",
+                                icon:"success"
+                            })
+                        }else{
+                            swal({
+                                title:data.status,
+                                icon:"info"
+                            })
+                        }
+                   },
+               })
+                $(`.new_ques_${id}`).remove()
+
             }
-        })
-    }
+         function delete_eval_ques_ajax() {
+
+
+                $.ajax({
+                   url: "{% url 'mdm:eval_ques_delete' %}",
+                   type:"DELETE",
+                   datatype: "json",
+                   data: {
+                        'eval_trgt_clss':activeTab,
+                        'ablt_ques_no' : $(this)[0].id,
+                       'eval_sheet_no' :$(".eval_sheet_no_pk")[0].id,
+                       'del_yn' : 'Y'
+                   },
+                   success:function (data){
+                        if (data.status == 405){
+                            swal({
+                                title:"삭제 할 수 없는 평가항목입니다.",
+                                text:"이미 평가된 기록이 있습니다.",
+                                icon:"error"
+                            })
+                        }else if(data.status == 204) {
+
+                             swal({
+                                title:"평가항목이 삭제되었습니다.",
+                                icon:"success"
+                            })
+                        }else{
+                            swal({
+                                title:data.status,
+                                icon:"info"
+                            })
+                        }
+                   },
+               })
+                $(`.new_ques_${$(this)[0].id}`).remove()
+
+            }
+            function delete_ajax() {
+                if($(".eval_sheet_no_pk")[0].id == ''){
+
+                    swal({
+                    icon:"warning",
+                    text:"평가지 정보가 없습니다.",
+                    title:"삭제할 평가지를 선택해주세요."})
+                    return;
+                }
+                $.ajax({
+                   url: "{% url 'mdm:eval_sheet' %}",
+                   type:"DELETE",
+                   datatype: "json",
+                   data: {
+
+                       'eval_sheet_no' :$(".eval_sheet_no_pk")[0].id,
+                       'del_yn' : 'Y'
+                   },
+                   success:function (data){
+                   if (data.status == 405){
+                        swal({
+                                title:"삭제 할 수 없는 평가지입니다.",
+                                text:"이미 평가된 기록이 있습니다.",
+                                icon: "error"
+                            })
+                   }else if(data.status == 204) {
+                            swal({
+                                title:"평가지가 삭제되었습니다.",
+                                icon: "success"
+                            })
+                            .then(()=>{
+                                    window.location.reload()
+
+                                }
+                            )
+                        }
+                   else{
+                        swal({
+                        icon:"info",
+                        title:data.status
+                        })
+                   }
+                   },
+               })
+            }
+
+
+            function save_ajax() {
+
+                targetTab = "tab"+activeTab
+                btn_class_name = $(this)[0].className.split(' ')[3]
+                var rowdata = []
+                var rowarr = []
+                otpt_valid= true
+                rownum = $(`#${targetTab} .ques_tbody`).children().length;
+                for (let i = 0; i < rownum; i++) {
+                    rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children()[0].innerText) //eval_ques_no
+                    rowdata.push(activeTab) // 평가대상
+                    if($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val() == ''){
+                    otpt_valid = false
+                    }
+                    rowdata.push($(`#${targetTab} .ques_tbody`).children().eq(i).children().eq(6).children().val())
+                    rowarr.push(rowdata)
+                    rowdata = []
+                }
+                if (otpt_valid == false) {
+                    swal({
+                        icon:"warning",
+                        title:"평가항목의 순서란을 입력해주세요."
+                    })
+                    return ;
+                }
+                $.ajax({
+                    url: "{% url 'mdm:eval_sheet' %}",
+                    type: "POST",
+                    datatype: "json",
+                    data: {
+                        'origin_eval_sheet_no' :Number($(".eval_sheet_no_pk")[0].id),
+                        'eval_clss': $("#eval_clss option:selected")[0].id,
+                        'sheet_nm': $("#sheet_nm").val(),
+                        'sheet_desc': $("#sheet_desc").val(),
+                        'ablt_ques_no': rowarr,
+
+                    },
+                    success: function (data) {
+                        if (data.status == 405){
+                        swal({
+                                title:"수정할 수 없습니다.",
+                                text:"이미 평가된 기록이 있습니다.",
+                                icon: "error"
+                            })
+                        }
+                        else if(data.status == 200) {
+                             if (btn_class_name == "eval_sheet_save_btn"){
+                                swal({
+                                    icon:"success",
+                                    title:"평가지가 저장되었습니다."
+                                }).then(()=> {
+
+                                window.location.reload()
+                                })
+
+                             }
+                            else if(btn_class_name == "eval_ques_save_btn"){
+                                swal({
+                                icon:"success",
+                                title:"평가문항이 저장되었습니다."
+                                })
+                            }else
+                            swal({
+                                icon:"info",
+                                text:"?/",
+                                title:data.status
+                            })
+                        }
+                       else{
+                            swal({
+                            icon:"info",
+                            title:data.status
+                            })
+                       }
+                    },
+                    error : function (e) {
+                        console.log(e)
+                    }
+                })
+            }
 </script>

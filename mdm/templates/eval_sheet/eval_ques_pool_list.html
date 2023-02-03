@@ -44,10 +44,10 @@
 <script>
     $(".ctr").on("click", row_select);
 
-    function add_ques_pool() {
-
+    function add_ques_pool(idsss) {
+        idss = idsss
         var insertTr = ""
-        insertTr += "<tr class='text-center ques_row'>";
+        insertTr += `<tr class='text-center ques_row new_ques_${idss}'>`;
         insertTr += "<td>" + $(".add_for").children()[0].innerText + "</td>";
         insertTr += "<td>" + $(".add_for").children()[1].innerText + "</td>";
         insertTr += "<td>" + $(".add_for").children()[2].innerText + "</td>";
@@ -55,7 +55,8 @@
         insertTr += "<td>" + $(".add_for").children()[4].innerText + "</td>";
         insertTr += "<td><input></input></td>";
         insertTr += "<td><input></input></td>";
-        insertTr += "<td><button type='button' class='btn btn-danger btn-sm' onclick='delete_ajax()'>삭제</button></td>";
+        insertTr += `<td><button id="${idss}" type='button' class='btn btn-danger btn-sm' onclick='new_delete_eval_ques_ajax(${idss})'>삭제</button></td>`;
+        {#$(".delete_eval_ques_ajax").on("click", delete_eval_ques_ajax)#}
 
         insertTr += "</tr>";
         targetTab = "tab" + activeTab
@@ -92,7 +93,7 @@
         {#$(this).css("background-color", "silver");#}
         $(".add_for").html($(this).html())
         $(".add_for").attr('id', $(this).children()[0].innerText)
-        add_ques_pool()
+        add_ques_pool($(this).children()[0].innerText)
 
     }
 
