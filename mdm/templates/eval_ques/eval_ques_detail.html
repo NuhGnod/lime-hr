@@ -16,7 +16,7 @@
             <div class="form-group">
                 <label>문항분류</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <select class="form-control" style="width:27%; display:inline-block" id="main-category">
-                    <option value="선택">=========선택=========</option>
+                    <option value="선택">전체</option>
                     {% for i in eval_item_clss %}
                         {% if i.cd_nm == ablt_ques.eval_item_no.cd_nm %}
                             <option selected>{{ i.cd_nm }}</option>
@@ -27,7 +27,7 @@
                 </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
                 <select class="form-control" style="width:27%; display:inline-block" id="detail-category">
-                    <option value="선택">=========선택=========</option>
+                    <option value="선택">선택</option>
                     {% for i in eval_item_list %}
                         {% if i.eval_item_no == ablt_ques.eval_item_no.eval_item_no %}
                             <option selected value="{{ i.eval_item_no }}">{{ i.item_nm }}</option>
@@ -178,28 +178,39 @@
     }
 
     function deleteQuestion() {
-        $.ajax({
-            url: "{% url 'mdm:get_question' %}",
-            type: "DELETE",
-            datatype: "json",
-            data: {
-                'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}'
-            },
-            success: function () {
-                swal({
-                    text: "삭제되었습니다",
-                    icon: "success",
-                }).then(() => {
-                    window.location.href = '{% url 'mdm:eval_ques' %}'
+        swal({
+            text: "삭제하시겠습니까?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: "{% url 'mdm:get_question' %}",
+                    type: "DELETE",
+                    datatype: "json",
+                    data: {
+                        'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}'
+                    },
+                    success: function () {
+                        swal("삭제되었습니다",
+                            {icon: "success"}
+                        ).then(() => {
+                            window.location.href = '{% url 'mdm:eval_ques' %}'
+                        })
+                    },
+                    error: function () {
+                        swal({
+                            text: "삭제할 문항을 선택해주세요",
+                            icon: "warning",
+                        });
+                    }
                 })
-            },
-            error: function() {
-                swal({
-                    text: "삭제할 문항을 선택해주세요",
-                    icon: "warning",
-                });
+            } else {
+                swal("취소되었습니다")
             }
         })
+
     }
 
     function selectMainCategory() {
