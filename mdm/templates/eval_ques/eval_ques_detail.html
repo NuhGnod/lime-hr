@@ -178,6 +178,14 @@
     }
 
     function deleteQuestion() {
+        if ('{{ ablt_ques.ablt_ques_no }}' === "") {
+            swal({
+                text: "삭제할 문항을 선택해주세요",
+                icon: "warning",
+            });
+            return;
+        }
+
         swal({
             text: "삭제하시겠습니까?",
             icon: "warning",
@@ -198,19 +206,12 @@
                         ).then(() => {
                             window.location.href = '{% url 'mdm:eval_ques' %}'
                         })
-                    },
-                    error: function () {
-                        swal({
-                            text: "삭제할 문항을 선택해주세요",
-                            icon: "warning",
-                        });
                     }
                 })
             } else {
                 swal("취소되었습니다")
             }
         })
-
     }
 
     function selectMainCategory() {

@@ -89,14 +89,11 @@ def get_question(request):
                        'ans_type_list': ans_type_list_serializer.data})
 
     if request.method == 'DELETE':
-        try:
-            ablt_ques_no = request.data['ablt_ques_no']
-            question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
-            question.del_yn = 'Y'
-            question.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except ValueError:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        ablt_ques_no = request.data['ablt_ques_no']
+        question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
+        question.del_yn = 'Y'
+        question.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
