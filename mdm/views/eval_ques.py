@@ -40,35 +40,31 @@ def get_all_question(request, **kwargs):
 @permission_classes([IsAuthenticated, IsAdminUser])
 def save_question(requests):
     req = requests.data
-    try:
-        ques_dict = {
-            "eval_item_no": int(req["eval_item_no"]),
-            "question": req["question"],
-            "rslt_msr_type": req["rslt_msr_type"],
-            "ans_type": req["ans_type"],
-            "reg_mem_no": requests.user.id,
-            "modf_mem_no": requests.user.id
-        }
-        # if: 평가문항 저장 / else: 평가문항 수정
-        if req["ablt_ques_no"] == "":
-            serializer = CreateQuesPoolSerializer(data=ques_dict)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(
-                    {"status": status.HTTP_201_CREATED}
-                )
-        else:
-            ablt_ques_no = int(req["ablt_ques_no"])
-            update_question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
-            serializer = CreateQuesPoolSerializer(update_question, data=ques_dict)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(
-                    {"status": status.HTTP_200_OK}
-                )
-
-    except ValueError:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    ques_dict = {
+        "eval_item_no": int(req["eval_item_no"]),
+        "question": req["question"],
+        "rslt_msr_type": req["rslt_msr_type"],
+        "ans_type": req["ans_type"],
+        "reg_mem_no": requests.user.id,
+        "modf_mem_no": requests.user.id
+    }
+    # if: 평가문항 저장 / else: 평가문항 수정
+    if req["ablt_ques_no"] == "":
+        serializer = CreateQuesPoolSerializer(data=ques_dict)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(
+                {"status": status.HTTP_201_CREATED}
+            )
+    else:
+        ablt_ques_no = int(req["ablt_ques_no"])
+        update_question = AbltQuesPool.objects.get(ablt_ques_no=ablt_ques_no)
+        serializer = CreateQuesPoolSerializer(update_question, data=ques_dict)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(
+                {"status": status.HTTP_200_OK}
+            )
 
 
 @api_view(['GET', 'DELETE'])
@@ -106,6 +102,7 @@ def ajax_add_question(request):
                   {'eval_item_clss': eval_item_clss_serializer.data,
                    'ans_type_list': ans_type_list_serializer.data,
                    'eval_item_list': eval_item_list_serializer.data})
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsAdminUser])

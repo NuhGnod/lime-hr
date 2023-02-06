@@ -115,6 +115,7 @@
     let answerFormat = document.getElementById("answerFormat");
     let question = document.getElementById("question");
     let resultMeasureType = document.getElementById("result_measure");
+    let detail_category = document.getElementById("detail-category");
 
     function saveQuestion() {
         if (validInput()) {
@@ -124,7 +125,7 @@
                 dataType: "json",
                 data: {
                     'ablt_ques_no': '{{ ablt_ques.ablt_ques_no }}',
-                    'eval_item_no': document.getElementById("detail-category").value,
+                    'eval_item_no': detail_category.value,
                     'question': question.value,
                     'rslt_msr_type': resultMeasureType.value,
                     'ans_type': answerFormat.value
@@ -147,19 +148,18 @@
                         })
                     }
                 },
-                error: function (e) {
-                    if (e.status === 400) {
-                        swal({
-                            icon: "warning",
-                            text: "평가 항목을 선택해주세요"
-                        })
-                    }
-                }
             })
         }
     }
 
     function validInput() {
+        if (detail_category.value === "선택") {
+            swal({
+                icon: "warning",
+                text: "평가 항목을 선택해주세요"
+            })
+            return false;
+        }
         if(question.value === "") {
             swal({
                 icon: "warning",
