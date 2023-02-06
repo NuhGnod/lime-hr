@@ -41,7 +41,9 @@ FROM (SELECT er.eval_rel_no,
 
                            WHERE ep.eval_plan_no = '{{eval_plan_no}}'
                              AND ep.del_yn = 'N') B ON er.eval_trgt_clss = B.eval_trgt_clss
-      WHERE eval_mem_no = '{{mem_no}}') A
+      WHERE eval_mem_no = '{{mem_no}}'
+        AND er.del_yn = 'N'
+      ) A
          LEFT OUTER JOIN ablt_eval_rslt aer ON A.eval_rel_no = aer.eval_rel_no
     AND A.eval_sheet_no = aer.eval_sheet_no AND A.ablt_ques_no = aer.ablt_ques_no AND
                                                A.eval_plan_no = aer.eval_plan_no

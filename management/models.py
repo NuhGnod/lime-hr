@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import EusoMem
 
+
 # Create your models here.
 class CommCd(models.Model):
     comm_cd = models.CharField(primary_key=True, max_length=10)
@@ -115,6 +116,13 @@ class EusoDept(models.Model):
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
     del_yn = models.CharField(max_length=1, blank=True, null=True)
     hi_dept_no = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        if self.hi_dept_no:
+            hi_dept_nm = EusoDept.objects.get(dept_no=self.hi_dept_no).dept_nm
+            dept_group_nm = CommCd.objects.get(comm_cd=self.dept_cd)
+
+        return "(" + hi_dept_nm + " / " + dept_group_nm + ")" + self.name
 
     class Meta:
         managed = True

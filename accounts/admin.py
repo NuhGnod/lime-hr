@@ -2,12 +2,12 @@ from django.contrib import admin
 from accounts.models import EusoMem
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from management.models import CommCd
+from management.models import EusoDept
+from management.utils import get_dept_choices
 from datetime import datetime
 admin.site.site_header = "LIME-HRM 관리"
 admin.site.index_title = "LIME_HRM 관리"
 admin.site.site_title = "데이터 관리"
-
 
 class UserBaseForm(forms.ModelForm):
     CODE_CHOICES = (
@@ -48,7 +48,9 @@ class UserBaseForm(forms.ModelForm):
         ('CC014002', '재직'),
         ('CC014003', '퇴사'),
     )
-    password = ReadOnlyPasswordHashField(label="Password")
+    DEPT_CHOICES = get_dept_choices()
+    password= ReadOnlyPasswordHashField(label='비밀번호')
+    dept_no = forms.ChoiceField(choices=DEPT_CHOICES, label='부서')
     posi_cd = forms.ChoiceField(choices=POSI_CHOICES, label='직위코드')
     duty_resp_cd = forms.ChoiceField(choices=DUTY_RESP_CHOICES, label='직책코드')
     mem_stat_cd = forms.ChoiceField(choices=MEM_STAT_CHOICES, label='사원상태')
@@ -95,6 +97,8 @@ class UserCreateForm(forms.ModelForm):
         ('CC014002', '재직'),
         ('CC014003', '퇴사'),
     )
+    DEPT_CHOICES = get_dept_choices()
+    dept_no = forms.ChoiceField(choices=DEPT_CHOICES, label='부서')
     posi_cd = forms.ChoiceField(choices=POSI_CHOICES, label='직위코드')
     duty_resp_cd = forms.ChoiceField(choices=DUTY_RESP_CHOICES, label='직책코드')
     mem_stat_cd = forms.ChoiceField(choices=MEM_STAT_CHOICES, label='사원상태')
@@ -117,27 +121,19 @@ class EusoMemAdmin(admin.ModelAdmin):
     form = UserBaseForm
     add_form = UserCreateForm
     fieldsets = [
-        ('회원정보', {'fields': ['username', 'password', 'name', 'mem_stat_cd', 'posi_cd', 'duty_resp_cd', 'del_yn', ]}),
+        ('회원정보', {'fields': ['username', 'password', 'name', 'mem_stat_cd', 'dept_no', 'posi_cd', 'duty_resp_cd', 'del_yn', ]}),
         ("권한", {"fields": ("is_superuser", "groups")}),
     ]
 
     def save_model(self, request, obj, form, change):
-        print("=======================")
         obj.email = obj.username
-        obj.set_password('dbzmfflem1!')
+        if obj.password is None:
+            obj.set_password('dbzmfflem1!')
         obj.reg_mem_no = request.user.id
         obj.modf_mem_no = request.user.id
         if obj.is_superuser == 1:
             obj.is_staff = 1
 
-        # print(request.user)
-        # print(request.user.username)
-        # print(request.user.email)
-        # print(request.user.set_password('dbzmfflem1!'))
-        # print("=======================")
-        # obj.user = request.user
-        # obj.user.set_email()
-        # obj.user.set_password('dbzmfflem1!')
         super().save_model(request, obj, form, change)
 
 

@@ -27,14 +27,14 @@
         <br/>
         <ul class="list-group list-group-unbordered">
             <li class="list-group-item">
-                <b>부서</b> <a class="pull-right">{{ mem_detail.posi_cd | get_code_nm }}</a>
+                <b>부서</b> <label class="pull-right">{{ mem_detail.dept_no | get_dept_nm }}</label>
             </li>
             <li class="list-group-item">
 
-                <b>직급</b> <a class="pull-right">{{ mem_detail.duty_resp_cd | get_code_nm }} </a>
+                <b>직급</b> <label class="pull-right">{{ mem_detail.posi_cd | get_code_nm }} </label>
             </li>
             <li class="list-group-item">
-                <b>직책</b> <a class="pull-right">{{ mem_detail.duty_resp_cd | get_code_nm }}</a>
+                <b>직책</b> <label class="pull-right">{{ mem_detail.duty_resp_cd | get_code_nm }}</label>
             </li>
         </ul>
 

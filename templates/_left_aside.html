@@ -25,39 +25,25 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             {% if user|has_groups:"일반사원" %}
-                <li class="header">일반</li>
-                <li class="active treeview">
-                    <a href="#">
-                        <i class="fa fa-edit"></i> <span>평가</span>
-                        <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li class="active"><a href="{% url 'evaluation:eval' %}"><i class="fa fa-circle-o"></i> 역량평가</a>
-                        </li>
-
-                    </ul>
-                </li>
+                <li class="header">평가</li>
+                <li><a href="{% url 'evaluation:eval' %}"><i class="fa fa-edit"></i> <span>역량평가</span></a></li>
             {% endif %}
 
             {% if user|has_groups:"인사관리자" %}
                 <li class="header">기준정보 관리</li>
 
-                <li class="active"><a href="{% url 'evaluation:eval_rel' %}"><i class="fa fa-circle-o"></i> 평가관계관리</a>
-                </li>
-                <li><a href="{% url 'mdm:eval_item' %}"><i class="fa fa-circle-o"></i> <span>평가항목관리</span></a></li>
-                <li><a href="{% url 'mdm:eval_ques' %}"><i class="fa fa-circle-o"></i> <span>평가문항관리</span></a></li>
-                <li><a href="{% url 'mdm:eval_sheet' %}"><i class="fa fa-circle-o"></i> <span>평가지관리</span></a></li>
-                <li><a href="{% url 'mdm:eval_plan' %}"><i class="fa fa-circle-o"></i> <span>평가계획관리</span></a></li>
-                <li class="active"><a href="{% url 'evaluation:eval_rslt' %}"><i class="fa fa-circle-o"></i> 평가결과관리</a>
-                </li>
-                <li><a href="#"><i class="fa fa-circle-o"></i> <span>업무일지관리</span></a></li>
+                <li><a href="{% url 'evaluation:eval_rel' %}"><i class="fa fa-users"></i> <span>평가관계관리</span></a></li>
+                <li><a href="{% url 'mdm:eval_item' %}"><i class="fa fa-tag"></i> <span>평가항목관리</span></a></li>
+                <li><a href="{% url 'mdm:eval_ques' %}"><i class="fa fa-tags"></i> <span>평가문항관리</span></a></li>
+                <li><a href="{% url 'mdm:eval_sheet' %}"><i class="fa fa-list-ol"></i> <span>평가지관리</span></a></li>
+                <li><a href="{% url 'mdm:eval_plan' %}"><i class="fa fa-calendar-check-o"></i> <span>평가계획관리</span></a></li>
+                <li><a href="{% url 'evaluation:eval_rslt' %}"><i class="fa fa-list-alt"></i> <span>평가결과관리</span></a></li>
+{#                <li><a href="#"><i class="fa fa-circle-o"></i> <span>업무일지관리</span></a></li>#}
             {% endif %}
             {% if user|has_groups:"인사관리자" or user|has_groups:"시스템관리자" or user|has_groups:"관리자" %}
                 <li class="header">시스템 관리</li>
-                <li><a href="#"><i class="fa fa-users"></i> <span>회원관리</span></a></li>
-                <li><a href="{% url 'management:pjt_list' %}"><i class="fa fa-circle-o"></i> <span>프로젝트 관리</span></a>
+                {#                <li><a href="#"><i class="fa fa-users"></i> <span>회원관리</span></a></li>#}
+                <li><a href="{% url 'management:pjt_list' %}"><i class="fa fa-suitcase"></i> <span>프로젝트 관리</span></a>
                 </li>
                 <li><a href="{% url 'management:code' %}"><i class="fa fa-code"></i> <span>공통코드관리</span></a></li>
             {% endif %}

@@ -8,9 +8,6 @@ env = environ.Env(DEBUG=(bool, False))
 # 프로젝트 기본 경로 지정
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 ROOT_DIR = os.path.dirname(BASE_DIR)
-print("=======================")
-print(ROOT_DIR)
-print("=======================x")
 
 # env 파일 경로 지정
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
