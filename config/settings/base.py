@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # service app
     'accounts',
     'evaluation',
+    'journal',
     'mdm',
     'management',
 ]

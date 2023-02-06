@@ -2,9 +2,7 @@ from django.contrib import admin
 from accounts.models import EusoMem
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from management.models import EusoDept
 from management.utils import get_dept_choices
-from datetime import datetime
 admin.site.site_header = "LIME-HRM 관리"
 admin.site.index_title = "LIME_HRM 관리"
 admin.site.site_title = "데이터 관리"
@@ -49,7 +47,7 @@ class UserBaseForm(forms.ModelForm):
         ('CC014003', '퇴사'),
     )
     DEPT_CHOICES = get_dept_choices()
-    password= ReadOnlyPasswordHashField(label='비밀번호')
+    password = ReadOnlyPasswordHashField(label='비밀번호')
     dept_no = forms.ChoiceField(choices=DEPT_CHOICES, label='부서')
     posi_cd = forms.ChoiceField(choices=POSI_CHOICES, label='직위코드')
     duty_resp_cd = forms.ChoiceField(choices=DUTY_RESP_CHOICES, label='직책코드')
@@ -98,6 +96,7 @@ class UserCreateForm(forms.ModelForm):
         ('CC014003', '퇴사'),
     )
     DEPT_CHOICES = get_dept_choices()
+    # password = ReadOnlyPasswordHashField(label='비밀번호', help_text="최초생성시 비밀번호는 기본값으로 생성됩니다.")
     dept_no = forms.ChoiceField(choices=DEPT_CHOICES, label='부서')
     posi_cd = forms.ChoiceField(choices=POSI_CHOICES, label='직위코드')
     duty_resp_cd = forms.ChoiceField(choices=DUTY_RESP_CHOICES, label='직책코드')

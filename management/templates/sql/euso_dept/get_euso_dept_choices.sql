@@ -23,12 +23,17 @@ WITH RECURSIVE CTE AS (SELECT dept_no,
                        FROM euso_dept P
                                 INNER JOIN CTE ON P.hi_dept_no = CTE.dept_no
                        WHERE P.del_yn = 'N')
-SELECT CTE.dept_no AS dept_no,
-       concat(CTE.dept_group_nm, ' > ', (SELECT dept_nm FROM euso_dept WHERE dept_no = CTE.hi_dept_no), ' > ',
+SELECT CTE.dept_no         AS dept_no,
+        concat(CTE.dept_group_nm, ' | ', IFNULL(concat((SELECT dept_nm FROM euso_dept WHERE dept_no = CTE.hi_dept_no),' > '),''),
               CTE.dept_nm) AS dept_nm
 FROM CTE
-WHERE LEVEL > 1
+WHERE
+    {% if dept_level is not None %}
+  CTE.LEVEL > {{dept_level}}
+    {% else %}
+  CTE.LEVEL > 1
+    {% endif %}
     {% if dept_no is not None %}
-     AND dept_no = '{{dept_no}}'
+  AND dept_no = '{{dept_no}}'
     {% endif %}
 ORDER BY dept_cd, path

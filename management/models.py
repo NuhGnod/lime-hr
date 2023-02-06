@@ -109,21 +109,16 @@ class PjtJoinHist(models.Model):
 class EusoDept(models.Model):
     dept_no = models.AutoField(primary_key=True)
     dept_cd = models.CharField(max_length=10, blank=True, null=True)
+    hi_dept_no = models.IntegerField(blank=True, null=True)
     dept_nm = models.CharField(max_length=50, blank=True, null=True)
-    reg_mem_no = models.IntegerField(blank=True, null=True)
-    modf_mem_no = models.IntegerField(blank=True, null=True)
+    reg_mem_no = models.IntegerField(blank=True, null=True, verbose_name='등록 회원ID')
+    modf_mem_no = models.IntegerField(blank=True, null=True, verbose_name='수정자 ID')
     reg_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
     del_yn = models.CharField(max_length=1, blank=True, null=True)
-    hi_dept_no = models.IntegerField(blank=True, null=True)
 
-    def __str__(self):
-        if self.hi_dept_no:
-            hi_dept_nm = EusoDept.objects.get(dept_no=self.hi_dept_no).dept_nm
-            dept_group_nm = CommCd.objects.get(comm_cd=self.dept_cd)
-
-        return "(" + hi_dept_nm + " / " + dept_group_nm + ")" + self.name
 
     class Meta:
         managed = True
         db_table = 'euso_dept'
+        verbose_name = '부서'
