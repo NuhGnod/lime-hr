@@ -1,0 +1,181 @@
+{% extends "_layout.html" %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'plugins/fullcalendar/fullcalendar.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fullcalendar/fullcalendar.print.css' %}" media="print">
+    <link rel="stylesheet" href="{% static 'css/journal-custom.css' %}">
+    <div class="row">
+
+        <!-- /.col -->
+        <div class="col-md-9">
+            <div class="box box-primary">
+                <div class="box-body no-padding">
+                    <!-- THE CALENDAR -->
+                    <div id="journal-calendar"></div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /. box -->
+        </div>
+        <div class="col-md-3">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h4 class="box-title">특이사항</h4>
+                </div>
+                <div class="box-body">
+                    <!-- the events -->
+                    <div id="external-events">
+                        <div class="external-event bg-yellow" id="1">휴가</div>
+                        <div class="external-event bg-green" id="2">휴직</div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /. box -->
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 id="detail-date" class="box-title">날짜를 선택해주세요</h3>
+                </div>
+                <div class="box-body">
+                    <h4>일정</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Event</th>
+                                    <th>상태</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-day-event">
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>업무일지 작성</td>
+                                    <td>N</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                    <!-- /btn-group -->
+                    <button class="btn btn-primary btn-block">업무일지 작성하러가기</button>
+                    <!-- /input-group -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+
+            /* initialize the external events
+             -----------------------------------------------------------------*/
+            function ini_events(ele) {
+                ele.each(function () {
+
+                    // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+                    // it doesn't need to have a start or end
+                    let eventObject = {
+                        title: $.trim($(this).text()) // use the element's text as the event title
+                    };
+
+                    // store the Event Object in the DOM element so we can get to it later
+                    $(this).data('eventObject', eventObject);
+
+                    // make the event draggable using jQuery UI
+                    $(this).draggable({
+                        zIndex: 1070,
+                        revert: true, // will cause the event to go back to its
+                        revertDuration: 0  //  original position after the drag
+                    });
+
+                });
+            }
+
+            ini_events($('#external-events div.external-event'));
+
+            /* initialize the calendar
+             -----------------------------------------------------------------*/
+            //Date for the calendar events (dummy data)
+            let date = new Date();
+            let d = date.getDate(),
+                m = date.getMonth(),
+                y = date.getFullYear();
+            $('#journal-calendar').fullCalendar({
+                header: {
+                    left: null,
+                    center: 'title',
+                    right: 'prev,next today'
+                }
+                , titleFormat: {
+                    month: 'YYYY년 MMMM',
+                    {#week: "MMM d[ yyyy]{ '&#8212;'[ MMM] d yyyy}",#}
+                    {#day: 'YYYY년 MMMM d일 dddd'#}
+                },
+                buttonText: {
+                    today: '오늘',
+                    month: '월',
+                    week: '주',
+                    day: '일'
+                },
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+
+                dayClick: function (date, jsEvent, view) {
+                    $('#detail-date').text(date.format('YYYY년 MM월 DD일'));
+
+                    let eventList = [];
+                    $('#journal-calendar').fullCalendar('clientEvents', function (event) {
+                        // match the event date with clicked date if true render clicked date events
+                        if (moment(date).format('YYYY-MM-DD') == moment(event._start).format('YYYY-MM-DD')) {
+                            // do your stuff here
+                            eventList.push(event);
+                        }
+                    })
+
+                    let tbodyHtml = '';
+                    if(eventList.length > 0){
+                        eventList.forEach((item)=>{
+                           tbodyHtml += '<tr><td>'+item.title+'</td><td></td></tr>'
+                        });
+                    }
+
+                    $('#detail-day-event').html(tbodyHtml)
+                },
+                editable: false,
+                droppable: true, // this allows things to be dropped onto the calendar !!!
+                drop: function (date, allDay) { // this function is called when something is dropped
+
+                    // retrieve the dropped element's stored Event Object
+                    let originalEventObject = $(this).data('eventObject');
+                    // we need to copy it, so that multiple events don't have a reference to the same object
+                    let copiedEventObject = $.extend({}, originalEventObject);
+
+                    // assign it the date that was reported
+                    copiedEventObject.id = $(this)[0].id;
+                    copiedEventObject.start = date;
+                    copiedEventObject.allDay = allDay;
+                    copiedEventObject.backgroundColor = $(this).css("background-color");
+                    copiedEventObject.borderColor = $(this).css("border-color");
+
+                    // render the event on the calendar
+                    // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                    $('#journal-calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+                    // is the "remove after drop" checkbox checked?
+                    if ($('#drop-remove').is(':checked')) {
+                        // if so, remove the element from the "Draggable Events" list
+                        $(this).remove();
+                    }
+
+                },
+
+            });
+
+        });
+    </script>
+{% endblock %}

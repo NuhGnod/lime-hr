@@ -72,4 +72,5 @@ class EusoMem(AbstractBaseUser, PermissionsMixin):
     class Meta:
         managed = False
         db_table = 'euso_mem'
+        verbose_name = '사원'
         ordering = ['-join_dt']
