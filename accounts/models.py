@@ -56,7 +56,7 @@ class EusoMem(AbstractBaseUser, PermissionsMixin):
     dept_no = models.IntegerField(db_column='dept_no', blank=True, null=True)
     zip_no = models.CharField(max_length=50, blank=True, null=True)
     mem_addr = models.CharField(max_length=100, blank=True, null=True)
-    join_dt = models.CharField(max_length=8, blank=True, null=True)
+    join_dt = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     mem_stat_cd = models.CharField(max_length=20, blank=True, null=True, verbose_name="회원상태코드")
     reg_mem_no = models.IntegerField(blank=True, null=True)
     modf_mem_no = models.IntegerField(blank=True, null=True)
@@ -64,6 +64,7 @@ class EusoMem(AbstractBaseUser, PermissionsMixin):
     modf_dt = models.DateTimeField(blank=True, null=True, auto_now=True)
     del_yn = models.CharField(max_length=1, blank=True, null=True, default='N', verbose_name="삭제여부")
     is_staff = models.BooleanField(default=False, verbose_name="시스템관리자 여부")
+    profile_img = models.ImageField(upload_to='profile')
     objects = MemberManager()
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['name', ]

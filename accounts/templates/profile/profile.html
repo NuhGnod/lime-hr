@@ -1,0 +1,16 @@
+{% extends "_layout.html" %}
+{% load static %}
+{% load common_tags %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-3">
+            {% include 'profile/profile_basic.html' %}
+        </div>
+        <div class="col-md-9">
+
+            {% include 'profile/profile_detail.html' %}
+        </div>
+    </div>
+
+{% endblock %}

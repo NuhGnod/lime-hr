@@ -1,86 +1,66 @@
 {% load static %}
+{% load common_tags %}
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="{% static 'img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">
+                <img
+                        {% if mem_detail.profile_img %}
+                            src="{{ mem_detail.profile_img.url|default:'' }}"
+                        {% else %}
+                            src="/media/profile/default_avatar.png"
+                        {% endif %}
+
+                            class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
-                <p>{{ user.name}}</p>
+                <p>{{ user.name }}</p>
                 <span class="text-gray">{{ request.session.duty_resp_nm }}</span>
-{#                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>#}
+                {#                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>#}
             </div>
         </div>
 
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
-            <li class="header">일반</li>
-            <li class="active treeview">
-                <a href="#">
-                    <i class="fa fa-edit"></i> <span>평가</span>
-                    <span class="pull-right-container">
+            {% if user|has_groups:"일반사원" %}
+                <li class="header">일반</li>
+                <li class="active treeview">
+                    <a href="#">
+                        <i class="fa fa-edit"></i> <span>평가</span>
+                        <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="active"><a href="{% url 'evaluation:eval' %}"><i class="fa fa-circle-o"></i> 역량평가</a></li>
-                    <li class="active"><a href="{% url 'evaluation:eval_rslt' %}"><i class="fa fa-circle-o"></i> 평가결과관리</a></li>
-                    <li class="active"><a href="{% url 'evaluation:eval_rel' %}"><i class="fa fa-circle-o"></i> 평가관계관리</a></li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-user"></i> <span>개인정보</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> Profile</a></li>
-                    <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> 경력정보</a></li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-edit"></i> <span>평가</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="active"><a href="{% url 'evaluation:eval' %}"><i class="fa fa-circle-o"></i> 역량평가</a></li>
-                    <li><a href="index2.html"><i class="fa fa-circle-o"></i> 평가이력조회</a></li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-calendar"></i>
-                    <span>업무일지</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> 업무일지 작성</a></li>
-                    <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> 업무일지 조회</a></li>
-                </ul>
-            </li>
-            <li><a href="{% url 'management:pjt_list' %}"><i class="fa fa-circle-o"></i> <span>프로젝트 관리</span></a></li>
-            <li class="header">기준정보 관리</li>
-            <li><a href="{% url 'mdm:eval_item' %}"><i class="fa fa-circle-o"></i> <span>평가항목관리</span></a></li>
-            <li><a href="{% url 'mdm:eval_ques' %}"><i class="fa fa-circle-o"></i> <span>평가문항관리</span></a></li>
-            <li><a href="{% url 'mdm:eval_sheet' %}"><i class="fa fa-circle-o"></i> <span>평가지관리</span></a></li>
-            <li><a href="{% url 'mdm:eval_plan' %}"><i class="fa fa-circle-o"></i> <span>평가계획관리</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o"></i> <span>평가결과관리</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o"></i> <span>업무일지관리</span></a></li>
-            <li class="header">시스템 관리</li>
-            <li><a href="#"><i class="fa fa-users"></i> <span>회원관리</span></a></li>
-            <li><a href="{% url 'management:code' %}"><i class="fa fa-code"></i> <span>공통코드관리</span></a></li>
-            <li><a href="#"><i class="fa fa-list"></i> <span>메뉴관리</span></a></li>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="active"><a href="{% url 'evaluation:eval' %}"><i class="fa fa-circle-o"></i> 역량평가</a>
+                        </li>
 
+                    </ul>
+                </li>
+            {% endif %}
 
+            {% if user|has_groups:"인사관리자" %}
+                <li class="header">기준정보 관리</li>
+
+                <li class="active"><a href="{% url 'evaluation:eval_rel' %}"><i class="fa fa-circle-o"></i> 평가관계관리</a>
+                </li>
+                <li><a href="{% url 'mdm:eval_item' %}"><i class="fa fa-circle-o"></i> <span>평가항목관리</span></a></li>
+                <li><a href="{% url 'mdm:eval_ques' %}"><i class="fa fa-circle-o"></i> <span>평가문항관리</span></a></li>
+                <li><a href="{% url 'mdm:eval_sheet' %}"><i class="fa fa-circle-o"></i> <span>평가지관리</span></a></li>
+                <li><a href="{% url 'mdm:eval_plan' %}"><i class="fa fa-circle-o"></i> <span>평가계획관리</span></a></li>
+                <li class="active"><a href="{% url 'evaluation:eval_rslt' %}"><i class="fa fa-circle-o"></i> 평가결과관리</a>
+                </li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> <span>업무일지관리</span></a></li>
+            {% endif %}
+            {% if user|has_groups:"인사관리자" or user|has_groups:"시스템관리자" or user|has_groups:"관리자" %}
+                <li class="header">시스템 관리</li>
+                <li><a href="#"><i class="fa fa-users"></i> <span>회원관리</span></a></li>
+                <li><a href="{% url 'management:pjt_list' %}"><i class="fa fa-circle-o"></i> <span>프로젝트 관리</span></a>
+                </li>
+                <li><a href="{% url 'management:code' %}"><i class="fa fa-code"></i> <span>공통코드관리</span></a></li>
+            {% endif %}
         </ul>
     </section>
     <!-- /.sidebar -->
