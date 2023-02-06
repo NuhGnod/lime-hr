@@ -110,11 +110,18 @@ def ajax_add_question(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsAdminUser])
 def ajax_get_eval_item(request):
-    cd_nm = request.GET['cd_nm']
-    item_clss = CommCd.objects.get(cd_nm=cd_nm)
+    try:
+        cd_nm = request.GET['cd_nm']
+        item_clss = CommCd.objects.get(cd_nm=cd_nm)
 
-    eval_item_list = EvalItem.objects.filter(eval_item_clss=item_clss.comm_cd)
-    eval_item_list_serializer = EvalItemSerializer(eval_item_list, many=True)
+        eval_item_list = EvalItem.objects.filter(eval_item_clss=item_clss.comm_cd)
+        eval_item_list_serializer = EvalItemSerializer(eval_item_list, many=True)
 
-    return render(request, 'eval_ques/eval_item_select_box.html',
-                  {"eval_item_list": eval_item_list_serializer.data})
+        return render(request, 'eval_ques/eval_item_select_box.html',
+                      {"eval_item_list": eval_item_list_serializer.data})
+    except CommCd.DoesNotExist:
+        eval_item_list = EvalItem.objects.all()
+        eval_item_list_serializer = EvalItemSerializer(eval_item_list, many=True)
+
+        return render(request, 'eval_ques/eval_item_select_box.html',
+                      {"eval_item_list": eval_item_list_serializer.data})
