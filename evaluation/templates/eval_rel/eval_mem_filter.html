@@ -1,0 +1,173 @@
+<div class="box">
+<div class="box-body">
+<div class="row">
+    <div class="form-group col-md-4">
+        <label>검색 리스트 필터</label>
+        <select id="filterSelect" class="form-control" data-placeholder="필터 선택" style="width: 100%;">
+            <option value="tree">조직도</option>
+            <option value="pjt">프로젝트</option>
+        </select>
+    </div>
+
+
+    <div id="treeFilter" style="display: block;">
+        <div class="form-group col-md-4">
+            <label>그룹 선택</label>
+            <select id="groupSelect" class="form-control" data-placeholer="그룹 선택" style="width: 100%">
+                <option value="all">전체</option>
+                {% for dept_grp in dept_grp_ls %}
+                    <option value="{{ dept_grp.comm_cd }}">{{ dept_grp.cd_nm }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label>부서 선택</label>
+            <select id="deptSelect" class="form-control" data-placeholer="부서 선택" style="width: 100%">
+                <option value="all" id="">전체</option>
+                {% for dept in dept_ls %}
+                    <optgroup label="{{ dept.dept_nm }}" class="{{ dept.dept_cd }}">
+
+                        {% if dept.dw_dept|length > 0 %}
+                            <option value="{{ dept.dept_no }}">{{ dept.dept_nm }} 전체</option>
+                            {% for dw_dept in dept.dw_dept %}
+                                <option value="{{ dw_dept.dept_no }}">{{ dw_dept.dept_nm }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="{{ dept.dept_no }}">{{ dept.dept_nm }} 전체</option>
+                        {% endif %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+
+    <div id="pjtFilter" style="display: none;">
+        <div class="form-group col-md-8">
+            <label>프로젝트 선택</label>
+            <select id="pjtSelect" class="form-control select2" data-placeholer="그룹 선택" style="width: 100%">
+                <option value="all">전체</option>
+                {% for pjt in pjt_ls %}
+                    <option value="{{ pjt.pjt_no }}">{{ pjt.pjt_nm }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<script>
+    const filterSelect = $("#filterSelect")
+    const groupSelect = $("#groupSelect")
+    const deptSelect = $("#deptSelect")
+    const pjtSelect = $("#pjtSelect")
+
+    function treeAjax () {
+        let filter = filterSelect.val()
+        let groupCd = groupSelect.val()
+        let deptNo = deptSelect.val()
+
+        console.log("filter : ", filter)
+        console.log("groupCd : ", groupCd)
+        console.log("deptNo : ", deptNo)
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+        })
+
+        $.ajax({
+            url: "{% url 'evaluation:rel_tree_mem_ls' %}",
+            type: "POST",
+            datatype: "json",
+            data: {
+                filter: filter,
+                group_cd: groupCd,
+                dept_no: deptNo
+                },
+            success : function (html, status, xhr) {
+                $("#evalMemList").html(html)
+                }
+            })
+    }
+
+    function pjtAjax() {
+        let filter = filterSelect.val()
+        let pjt_no = pjtSelect.val()
+
+        console.log("filter : ", filter)
+        console.log("pjt_no : ", pjt_no)
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": '{{csrf_token}}' }
+        })
+
+        $.ajax({
+            url: "{% url 'evaluation:rel_pjt_mem_ls' %}",
+            type: "POST",
+            datatype: "json",
+            data: {
+                filter: filter,
+                pjt_no: pjt_no
+                },
+            success : function (html, status, xhr) {
+                $("#evalMemList").html(html)
+                }
+            })
+        }
+
+    $(function () {
+        //Initialize Select2 Elements
+        $(".select2").select2();
+
+        $("#groupSelect").change(function (event) {
+            deptSelect.val("all")
+            treeAjax()
+            let deptGroupCd = groupSelect.val()
+            let deptArr = deptSelect.children()
+
+            if (deptGroupCd === "all") {
+                for (let i = 1; i < deptArr.length; i++) {
+                    $(deptArr[i]).removeAttr("hidden")
+
+                }
+            } else {
+                for (let i = 1; i < deptArr.length; i++) {
+                    $(deptArr[i]).attr("hidden", "hidden")
+                }
+                let deptDetailArr = $(`.${deptGroupCd}`).get()
+                for (let j = 0; j < deptDetailArr.length; j++) {
+                    $(deptDetailArr[j]).removeAttr("hidden")
+                }
+
+            }
+
+        })
+
+        $("#deptSelect").change(function () {
+            treeAjax()
+        })
+
+        $("#pjtSelect").change(function () {
+            pjtAjax()
+        })
+
+        $("#filterSelect").change(function () {
+            let filter = $("#filterSelect option:selected").val()
+            if (filter === "tree") {
+                $("#pjtFilter").hide()
+                $("#treeFilter").show()
+                groupSelect.val("all")
+                deptSelect.val("all")
+                treeAjax()
+            } else if (filter === 'pjt') {
+                $("#treeFilter").hide()
+                $("#pjtFilter").show()
+                pjtSelect.val("all")
+                pjtAjax()
+            }
+        })
+
+
+    })
+</script>

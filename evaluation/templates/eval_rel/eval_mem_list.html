@@ -1,0 +1,116 @@
+
+<div class="box-header">
+    <h3 class="box-title">사원 목록</h3>
+</div>
+<div class="box-body">
+
+<div class="row">
+    <div class="col-md-10">
+        <table id="memList" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 1px"></th>
+                    <th>사원명</th>
+                    <th>그룹</th>
+                    <th>부서</th>
+                    <th>직책</th>
+                    <th>직위</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mem in euso_mem_list %}
+                    <tr id="row_{{ mem.id }}" style="cursor: pointer" onclick="chkBoxClick('row_{{ mem.id }}')">
+                        <td>
+                            <input type="checkbox" class="minimal" value="{{ mem.id }}">
+                        </td>
+                        <td>{{ mem.name }}</td>
+                        <td>{{ mem.group_nm }}</td>
+                        <td>{{ mem.dept_nm }}</td>
+                        <td>{{ mem.duty_resp_nm }}</td>
+                        <td>{{ mem.posi_nm }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+        <div class="box-solid col-md-1">
+            <a class="btn btn-app bg-olive">
+                <i class="fa fa-arrow-right"></i> 평가자
+            </a>
+            <a class="btn btn-app">
+                <i class="fa fa-arrow-right"></i> 상사
+            </a>
+            <a class="btn btn-app">
+                <i class="fa fa-arrow-right"></i> 동료
+            </a>
+            <a class="btn btn-app">
+                <i class="fa fa-arrow-right"></i> 부하
+            </a>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function chkBoxClick(value) {
+        let checkBox = $(`#${value}`).find('td:first-child :checkbox')
+        console.log(checkBox.attr("checked"))
+        if (checkBox.attr("checked") === "checked") {
+            checkBox.removeAttr("checked")
+            checkBox.iCheck({
+              checkboxClass: 'icheckbox_minimal-blue',
+              radioClass: 'iradio_minimal-blue'
+            });
+        } else {
+            checkBox.attr("checked", "checked")
+            checkBox.iCheck({
+              checkboxClass: 'icheckbox_minimal-blue',
+              radioClass: 'iradio_minimal-blue'
+            });
+        }
+
+
+    }
+
+    $(function () {
+        $('input[type="checkbox"].minimal').iCheck({
+          checkboxClass: 'icheckbox_minimal-blue',
+          radioClass: 'iradio_minimal-blue'
+        });
+
+        $("#memList").DataTable({
+            "language": {
+                "decimal": "",
+                    "emptyTable": "표에서 사용할 수있는 데이터가 없습니다.",
+                    "info": "총 _TOTAL_명   _START_에서 _END_까지 표시",
+                    "infoEmpty": "0 개 항목 중 0 ~ 0 개 표시",
+                    "infoFiltered": "(_MAX_ 총 항목에서 필터링 됨)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "_MENU_",
+                    "loadingRecords": "로드 중 ...",
+                    "processing": "처리 중 ...",
+                    "search": "사원명 검색: ",
+                    "zeroRecords": "일치하는 레코드가 없습니다.",
+                    "paginate": {
+                        "first": "처음",
+                        "last": "마지막",
+                        "next": "다음",
+                        "previous": "이전"
+                    },
+                    "aria": {
+                        "sortAscending": ": 오름차순으로 정렬",
+                        "sortDescending": ": 내림차순으로 정렬"
+                    }
+            },
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": false,
+            "autoWidth": true
+        });
+    })
+</script>

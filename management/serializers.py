@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from management.models import CommCd, EusoPjt, PjtJoinHist, CsOrgn
+from management.models import CommCd, EusoPjt, PjtJoinHist, CsOrgn, EusoDept
 from accounts.models import EusoMem
 
 
@@ -26,6 +26,12 @@ class EusoPjtSerializer(serializers.ModelSerializer):
     class Meta:
         model = EusoPjt
         fields = '__all__'
+
+
+class GetPjtListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EusoPjt
+        fields = ["pjt_no", "pjt_nm"]
 
 
 class CreatePjtSerializer(serializers.ModelSerializer):
@@ -75,3 +81,23 @@ class DelPjtJoinMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = PjtJoinHist
         fields = ['join_hist_no', 'mem_no', 'del_yn', 'modf_mem_no']
+
+
+class GetNestedEusoDeptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EusoDept
+        fields = ["dept_no", "dept_nm"]
+
+
+class GetEusoDeptSerializer(serializers.ModelSerializer):
+    dw_dept = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = EusoDept
+        fields = ["dept_cd", "dept_no", "dept_nm", "dw_dept"]
+
+    def get_dw_dept(self, obj):
+        hi_dept_no = obj.dept_no
+        dept_qs = EusoDept.objects.filter(hi_dept_no=hi_dept_no, del_yn="N")
+        dept_nested_serializer = GetNestedEusoDeptSerializer(dept_qs, many=True)
+        return dept_nested_serializer.data

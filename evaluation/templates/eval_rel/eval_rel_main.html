@@ -1,0 +1,18 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+
+<div class="col-md-6">
+    {% include "eval_rel/eval_mem_filter.html" %}
+    <div class="box" id="evalMemList">
+        {% include "eval_rel/eval_mem_list.html" %}
+    </div>
+</div>
+
+<div class="col-md-6">
+    {% include "eval_rel/eval_rel.html" %}
+</div>
+
+
+
+{% endblock %}
