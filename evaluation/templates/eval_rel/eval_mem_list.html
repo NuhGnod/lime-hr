@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-md-10">
-        <table id="memList" class="table table-bordered table-striped">
+        <table id="memList" class="table table-bordered table-striped hover">
             <thead>
                 <tr>
                     <th style="width: 1px"></th>
@@ -19,9 +19,9 @@
             </thead>
             <tbody>
                 {% for mem in euso_mem_list %}
-                    <tr id="row_{{ mem.id }}" style="cursor: pointer" onclick="chkBoxClick('row_{{ mem.id }}')">
+                    <tr id="row_{{ mem.id }}" style="cursor: pointer;" onclick="chkBoxClick('row_{{ mem.id }}')">
                         <td>
-                            <input type="checkbox" class="minimal" value="{{ mem.id }}">
+                            <input name="memIdChkBox" type="checkbox" value='{"mem_id": "{{ mem.id }}", "mem_nm": "{{ mem.name }}"}'>
                         </td>
                         <td>{{ mem.name }}</td>
                         <td>{{ mem.group_nm }}</td>
@@ -35,16 +35,16 @@
     </div>
 
         <div class="box-solid col-md-1">
-            <a class="btn btn-app bg-olive">
+            <a id="evalSfBtn" class="btn btn-app" onclick="addEvalSf()">
                 <i class="fa fa-arrow-right"></i> 평가자
             </a>
-            <a class="btn btn-app">
+            <a id="evalSBtn" class="btn btn-app" onclick="addBeEvalMem('evalSTbl')">
                 <i class="fa fa-arrow-right"></i> 상사
             </a>
-            <a class="btn btn-app">
+            <a id="evalMBtn" class="btn btn-app" onclick="addBeEvalMem('evalMTbl')">
                 <i class="fa fa-arrow-right"></i> 동료
             </a>
-            <a class="btn btn-app">
+            <a id="evalJBtn" class="btn btn-app" onclick="addBeEvalMem('evalJTbl')">
                 <i class="fa fa-arrow-right"></i> 부하
             </a>
 
@@ -54,32 +54,91 @@
 
 
 <script>
+
+    // 평가자 추가 disable
+    function EvalSfBtnStyle() {
+        if ($('#evalSfTbl').find('td:first-child').length === 1) {
+            $("#evalSfBtn").removeClass("bg-olive").addClass("disabled")
+            $("#evalSBtn").removeClass("disabled").addClass("bg-olive")
+            $("#evalMBtn").removeClass("disabled").addClass("bg-olive")
+            $("#evalJBtn").removeClass("disabled").addClass("bg-olive")
+        } else {
+            $("#evalSfBtn").removeClass("disabled").addClass("bg-olive")
+            $("#evalSBtn").removeClass("bg-olive").addClass("disabled")
+            $("#evalMBtn").removeClass("bg-olive").addClass("disabled")
+            $("#evalJBtn").removeClass("bg-olive").addClass("disabled")
+        }
+    }
+
+    // 체크 박스 전체 checked 해제
+    function removeChecked() {
+        let memIdChkBox = $('input[name=memIdChkBox]:checkbox')
+        memIdChkBox.prop("checked", false)
+        memIdChkBox.attr("checked", false)
+    }
+
+    // 체크 박스 행 선택
     function chkBoxClick(value) {
         let checkBox = $(`#${value}`).find('td:first-child :checkbox')
         console.log(checkBox.attr("checked"))
         if (checkBox.attr("checked") === "checked") {
+            checkBox.prop("checked", false)
             checkBox.removeAttr("checked")
-            checkBox.iCheck({
-              checkboxClass: 'icheckbox_minimal-blue',
-              radioClass: 'iradio_minimal-blue'
-            });
+
         } else {
-            checkBox.attr("checked", "checked")
-            checkBox.iCheck({
-              checkboxClass: 'icheckbox_minimal-blue',
-              radioClass: 'iradio_minimal-blue'
-            });
+            checkBox.prop("checked", true)
+            checkBox.attr("checked", true)
+        }
+    }
+
+    function addEvalSf() {
+        let memIdChkBox = $('input:checkbox[name=memIdChkBox]:checked').toArray()
+        console.log(memIdChkBox)
+        if (memIdChkBox.length === 1) {
+            let memIdDic = JSON.parse($(memIdChkBox[0]).val())
+            let newRow = `<tr id='rel_${memIdDic['mem_id']}'>`
+                            + "<td hidden>" + memIdDic["mem_id"] + "</td>"
+                            + "<td>" + memIdDic["mem_nm"] + "</td>"
+                            + `<td><input onclick=delEvalMem(${memIdDic['mem_id']}) type='button' class='btn btn-block btn-danger btn-xs' value='삭제'></td>`
+                        + "<tr>"
+
+            $("#evalSfTbl").append(newRow)
+            $(memIdChkBox[0].closest('tr')).hide()
+
+        } else {
+            swal({
+                text: "평가자는 한명만 선택할 수 있습니다."
+            })
         }
 
+        console.log("평가자 추가 버튼")
+        removeChecked()
+        EvalSfBtnStyle()
+    }
 
+    function addBeEvalMem(tbl) {
+        console.log(tbl)
+        let memIdChkBox = $('input:checkbox[name=memIdChkBox]:checked').toArray()
+        console.log(memIdChkBox)
+        for (let i = 0; i < memIdChkBox.length; i++) {
+            let memIdDic = JSON.parse($(memIdChkBox[i]).val())
+            console.log(memIdDic)
+            let newRow = `<tr id='rel_${memIdDic['mem_id']}'>`
+                            + "<td hidden>" + memIdDic["mem_id"] + "</td>"
+                            + "<td>" + memIdDic["mem_nm"] + "</td>"
+                            + `<td><input onclick=delEvalMem(${memIdDic['mem_id']}) type='button' class='btn btn-block btn-danger btn-xs' value='삭제'></td>`
+                        + "<tr>"
+            $(`#${tbl}`).append(newRow)
+            $(memIdChkBox[i].closest('tr')).hide()
+        }
+        removeChecked()
     }
 
     $(function () {
-        $('input[type="checkbox"].minimal').iCheck({
-          checkboxClass: 'icheckbox_minimal-blue',
-          radioClass: 'iradio_minimal-blue'
-        });
+        // 로딩시 평가자 추가 버튼 스타일
+        EvalSfBtnStyle()
 
+        // 로딩시 데이터 테이블 기초 설정
         $("#memList").DataTable({
             "language": {
                 "decimal": "",
