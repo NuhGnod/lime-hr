@@ -32,7 +32,7 @@ def sheet(request, *args, **kwargs):
         print("=================================")
         print(count)
         print("=================================")
-        objects_all = EvalSheet.objects.filter(del_yn='N')[0:10]  # 평가지 데이터 리스트 # 페이지네이션은 10개씩 보여준다.
+        objects_all = EvalSheet.objects.filter(del_yn='N') # 평가지 데이터 리스트 # 페이지네이션은 10개씩 보여준다.
         eval_sheet_serializer = EvalSheetSerializer(objects_all, many=True)
 
         objects_filter = CommCd.objects.filter(hi_comm_cd="CC010000")  # 평가 구분 코드
